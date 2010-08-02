@@ -45,18 +45,7 @@ class t_go_generator : public t_generator {
     : t_generator(program)
   {
     std::map<std::string, std::string>::const_iterator iter;
-
-    iter = parsed_options.find("new_style");
-    gen_newstyle_ = (iter != parsed_options.end());
-
-    iter = parsed_options.find("twisted");
-    gen_twisted_ = (iter != parsed_options.end());
-
-    if (gen_twisted_){
-      out_dir_base_ = "gen-go.twisted";
-    } else {
-      out_dir_base_ = "gen-go";
-    }
+    out_dir_base_ = "gen-go";
   }
 
   /**
@@ -215,16 +204,6 @@ class t_go_generator : public t_generator {
   }
 
  private:
-
-  /**
-   * True iff we should generate new-style classes.
-   */
-  bool gen_newstyle_;
-
-  /**
-   * True iff we should generate Twisted-friendly RPC services.
-   */
-  bool gen_twisted_;
   
   /**
    * File streams
@@ -2708,6 +2687,5 @@ string t_go_generator::type_to_spec_args(t_type* ttype) {
 
 
 THRIFT_REGISTER_GENERATOR(go, "Go",
-"    new_style:       Generate new-style classes.\n" \
-"    twisted:         Generate Twisted-friendly RPC services.\n"
+""
 );
