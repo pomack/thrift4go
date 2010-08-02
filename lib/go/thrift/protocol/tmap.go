@@ -99,18 +99,31 @@ func (p *tMap) ValueType() TType {
 
 func (p *tMap) Len() int {
   if p.l.Len() != 0 { return p.l.Len() }
-  if p.b != nil { return len(p.b) }
-  if p.i08 != nil { return len(p.i08) }
-  if p.i16 != nil { return len(p.i16) }
-  if p.i32 != nil { return len(p.i32) }
-  if p.i64 != nil { return len(p.i64) }
-  if p.f64 != nil { return len(p.f64) }
-  if p.s != nil { return len(p.s) }
-  return p.size;
+  switch p.KeyType() {
+  case STOP, VOID:
+    return 0
+  case BOOL:
+    return len(p.b)
+  case BYTE:
+    return len(p.i08)
+  case I16:
+    return len(p.i16)
+  case I32:
+    return len(p.i32)
+  case I64:
+    return len(p.i64)
+  case DOUBLE:
+    return len(p.f64)
+  case STRING, UTF8, UTF16:
+    return len(p.s)
+  default:
+    return p.size
+  }
+  return p.size
 }
 
 func (p *tMap) Get(key interface{}) (interface{}, bool) {
-  if p.keyType.IsEmptyType() {
+  if p.KeyType().IsEmptyType() {
     return nil, false
   }
   if key == nil {
@@ -121,58 +134,61 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
     }
     return nil, false
   }
-  useKey, ok := p.keyType.CoerceData(key)
+  useKey, ok := p.KeyType().CoerceData(key)
   if !ok { return nil, false }
-  switch p.keyType {
-  case STOP:
-    // if here, then we don't have a key type yet and key is not nil
-    // so this is pretty much an empty map
-    return nil, false
-  case VOID:
+  switch p.KeyType() {
+  case STOP, VOID:
     // if here, then we don't have a key type yet and key is not nil
     // so this is pretty much an empty map
     return nil, false
   case BOOL:
     m := p.b
     if m == nil { return nil, false }
-    v, ok := m[useKey.(bool)]
-    if ok { return v, true }
+    if v, ok := m[useKey.(bool)]; ok {
+      return v, true
+    }
     return nil, true
   case BYTE:
     m := p.i08
-    v, ok := m[useKey.(byte)]
-    if ok { return v, true }
+    if v, ok := m[useKey.(byte)]; ok {
+      return v, true
+    }
     return nil, false
   case DOUBLE:
     m := p.f64
     if m == nil { return nil, false }
-    v, ok := m[useKey.(float64)]
-    if ok { return v, true }
+    if v, ok := m[useKey.(float64)]; ok {
+      return v, true
+    }
     return nil, false
   case I16:
     m := p.i16
     if m == nil { return nil, false }
-    v, ok := m[useKey.(int16)]
-    if ok { return v, true }
+    if v, ok := m[useKey.(int16)]; ok {
+      return v, true
+    }
     return nil, false
   case I32:
     m := p.i32
     if m == nil { return nil, false }
-    v, ok := m[useKey.(int32)]
-    if ok { return v, true }
+    if v, ok := m[useKey.(int32)]; ok {
+      return v, true
+    }
     return nil, false
   case I64:
     m := p.i64
     if m == nil { return nil, false }
-    v, ok := m[useKey.(int64)]
-    if ok { return v, true }
+    if v, ok := m[useKey.(int64)]; ok {
+      return v, true
+    }
     return nil, false
   case STRING, UTF8, UTF16:
     // TODO(pomack) properly handle ENUM
     m := p.s
     if m == nil { return nil, false }
-    v, ok := m[useKey.(string)]
-    if ok { return v, true }
+    if v, ok := m[useKey.(string)]; ok {
+      return v, true
+    }
     return nil, false
   case STRUCT:
     for elem := range p.l.Iter() {
@@ -242,21 +258,21 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
 
 
 func (p *tMap) Set(key, value interface{}) {
-  if p.keyType == STOP || p.keyType == VOID {
+  if p.KeyType() == STOP || p.KeyType() == VOID {
     p.keyType = TypeFromValue(key)
   }
-  coercedKey, ok := p.keyType.CoerceData(key)
+  coercedKey, ok := p.KeyType().CoerceData(key)
   if !ok { return }
-  if p.valueType == STOP || p.valueType == VOID {
+  if p.ValueType() == STOP || p.ValueType() == VOID {
     p.valueType = TypeFromValue(value)
   }
-  coercedValue, ok := p.valueType.CoerceData(value)
+  coercedValue, ok := p.ValueType().CoerceData(value)
   if !ok { return }
   newElem := NewTMapElem(coercedKey, coercedValue)
-  if !p.keyType.IsBaseType() {
+  if !p.KeyType().IsBaseType() {
     for elem := p.l.Front(); elem != nil; elem = elem.Next() {
       k := elem.Value.(TMapElem).Key()
-      if cmp, ok := p.keyType.Compare(coercedKey, k); ok && cmp >= 0 {
+      if cmp, ok := p.KeyType().Compare(coercedKey, k); ok && cmp >= 0 {
         if cmp == 0 {
           p.l.InsertAfter(newElem, elem)
           p.l.Remove(elem)
@@ -270,12 +286,8 @@ func (p *tMap) Set(key, value interface{}) {
     return
   }
   if key == nil { return }
-  switch p.keyType {
-  case STOP:
-    // if here, then we don't have a key type yet and key is not nil
-    // so this is pretty much an empty map
-    return
-  case VOID:
+  switch p.KeyType() {
+  case STOP, VOID:
     // if here, then we don't have a key type yet and key is not nil
     // so this is pretty much an empty map
     return
@@ -315,7 +327,7 @@ func (p *tMap) Set(key, value interface{}) {
 }
 
 func (p *tMap) Contains(key interface{}) bool {
-  coercedKey, ok := p.keyType.CoerceData(key)
+  coercedKey, ok := p.KeyType().CoerceData(key)
   if !ok { return false }
   if coercedKey == nil {
     for elem := p.l.Front(); elem != nil; elem = elem.Next() {
@@ -325,7 +337,7 @@ func (p *tMap) Contains(key interface{}) bool {
     return false
   }
   if !ok { return false }
-  switch p.keyType {
+  switch p.KeyType() {
   case STOP:
     // if here, then we don't have a key type yet and key is not nil
     // so this is pretty much an empty map
@@ -434,7 +446,7 @@ func (p *tMap) Contains(key interface{}) bool {
 
 // Iterate over all elements; driver for range
 func (p *tMap) iterate(c chan<- TMapElem) {
-  switch p.keyType {
+  switch p.KeyType() {
   case STOP, VOID:
     close(c)
   case BOOL:
@@ -501,7 +513,7 @@ func (p *tMap) Iter() <-chan TMapElem {
 
 // Iterate over all keys; driver for range
 func (p *tMap) iterateKeys(c chan<- interface{}) {
-  switch p.keyType {
+  switch p.KeyType() {
   case STOP, VOID:
     close(c)
   case BOOL:
@@ -567,7 +579,7 @@ func (p *tMap) KeyIter() <-chan interface{} {
 
 // Iterate over all values; driver for range
 func (p *tMap) iterateValues(c chan<- interface{}) {
-  switch p.keyType {
+  switch p.KeyType() {
   case STOP, VOID:
     close(c)
   case BOOL:
@@ -647,24 +659,22 @@ func (p *tMap) CompareTo(other interface{}) (int, bool) {
 }
 
 func (p *tMap) Keys() []interface{} {
-  size := p.l.Len()
+  size := p.Len()
   values := make([]interface{}, size, size)
   i := 0
-  for v := range p.l.Iter() {
-    elem := v.(TMapElem)
-    values[i] = elem.Key()
+  for k := range p.KeyIter() {
+    values[i] = k
     i++
   }
   return values
 }
 
 func (p *tMap) Values() []interface{} {
-  size := p.l.Len()
+  size := p.Len()
   values := make([]interface{}, size, size)
   i := 0
-  for v := range p.l.Iter() {
-    elem := v.(TMapElem)
-    values[i] = elem.Value()
+  for v := range p.ValueIter() {
+    values[i] = v
     i++
   }
   return values

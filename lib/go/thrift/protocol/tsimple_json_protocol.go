@@ -37,7 +37,7 @@ import (
 /**
  * JSON protocol implementation for thrift.
  *
- * This protocol is write-only and produces a simple output format
+ * This protocol produces/consumes a simple output format
  * suitable for parsing by scripting languages.  It should not be
  * confused with the full-featured TJSONProtocol.
  *
@@ -263,7 +263,7 @@ func (p *context) WriteDouble(value float64) os.Error {
 func (p *context) WriteString(value string) os.Error {
   if p.writer == nil { return os.EOF }
   p.value = value
-  return p.writeStringData(json.Quote(value))
+  return p.writeStringData(JsonQuote(value))
 }
 
 func (p *context) WriteBinary(value []byte) os.Error {
@@ -577,7 +577,7 @@ func (p *ListContext) WriteDouble(value float64) os.Error {
 
 func (p *ListContext) WriteString(value string) os.Error {
   if p.writer == nil { return os.EOF }
-  return p.writeStringData(json.Quote(value))
+  return p.writeStringData(JsonQuote(value))
 }
 
 func (p *ListContext) WriteBinary(value []byte) os.Error {
@@ -772,27 +772,27 @@ func (p *ObjectContext) WriteBool(value bool) os.Error {
 func (p *ObjectContext) WriteI32(value int32) os.Error {
   if p.writer == nil { return os.EOF }
   s := strconv.Itoa(int(value))
-  if p.onKey { s = json.Quote(s) }
+  if p.onKey { s = strconv.Quote(s) }
   return p.writeStringData(s)
 }
 
 func (p *ObjectContext) WriteI64(value int64) os.Error {
   if p.writer == nil { return os.EOF }
   s := strconv.Itoa64(value)
-  if p.onKey { s = json.Quote(s) }
+  if p.onKey { s = strconv.Quote(s) }
   return p.writeStringData(s)
 }
 
 func (p *ObjectContext) WriteDouble(value float64) os.Error {
   if p.writer == nil { return os.EOF }
   s := strconv.Ftoa64(value, 'g', 10)
-  if p.onKey { s = json.Quote(s) }
+  if p.onKey { s = strconv.Quote(s) }
   return p.writeStringData(s)
 }
 
 func (p *ObjectContext) WriteString(value string) os.Error {
   if p.writer == nil { return os.EOF }
-  return p.writeStringData(json.Quote(value))
+  return p.writeStringData(JsonQuote(value))
 }
 
 func (p *ObjectContext) WriteBinary(value []byte) os.Error {
@@ -949,6 +949,19 @@ func (p *ObjectContext) ReadClose(r *bufio.Reader) os.Error {
   if err != nil { return err; }
   return readNonSignificantWhitespace(r);
 }
+
+func JsonQuote(s string) string {
+  b, _ := json.Marshal(s)
+  s1 := string(b)
+  return s1
+}
+
+func JsonUnquote(s string) (string, bool) {
+  s1 := new(string)
+  err := json.Unmarshal([]byte(s), s1)
+  return *s1, err == nil
+}
+
 
 /**
  * Push a new write context onto the stack.
@@ -1584,14 +1597,14 @@ func ReadStringBody(reader *bufio.Reader) (string, TProtocolException) {
     }
   }
   if i & 0x01 == 1 {
-    v, ok := json.Unquote(string(JSON_QUOTE) + line);
+    v, ok := JsonUnquote(string(JSON_QUOTE) + line);
     if !ok { return "", NewTProtocolExceptionFromOsError(err); }
     return v, nil;
   }
   s, err := readQuotedStringBody(reader);
   if err != nil { return "", NewTProtocolExceptionFromOsError(err); }
   str := string(JSON_QUOTE) + line + s;
-  v, ok := json.Unquote(str);
+  v, ok := JsonUnquote(str);
   if !ok { return "", NewTProtocolException(INVALID_DATA, "Unable to parse as JSON string " + str); }
   return v, nil;
 }

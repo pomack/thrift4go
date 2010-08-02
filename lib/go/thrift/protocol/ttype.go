@@ -352,28 +352,28 @@ type Enumer interface {
 func TypeFromValue(data interface{}) TType {
   if data == nil { return VOID }
   t := reflect.Typeof(data)
-  switch t.(type) {
-  case *reflect.BoolType:
+  switch t.Kind() {
+  case reflect.Bool:
     return BOOL
-  case *reflect.FloatType, *reflect.Float32Type, *reflect.Float64Type:
+  case reflect.Float, reflect.Float32, reflect.Float64:
     return DOUBLE
-  case *reflect.IntType:
+  case reflect.Int:
     return I32
-  case *reflect.Int8Type:
+  case reflect.Int8:
     return BYTE
-  case *reflect.Int16Type:
+  case reflect.Int16:
     return I16
-  case *reflect.Int32Type:
+  case reflect.Int32:
     return I32
-  case *reflect.Int64Type:
+  case reflect.Int64:
     return I64
-  case *reflect.StringType:
+  case reflect.String:
     return STRING
-  case *reflect.MapType:
+  case reflect.Map:
     return MAP
-  case *reflect.ArrayType, *reflect.SliceType:
+  case reflect.Array, reflect.Slice:
     return LIST
-  case *reflect.StructType, *reflect.InterfaceType:
+  case reflect.Struct, reflect.Interface:
     if _, ok := data.(TMap); ok { return MAP }
     if _, ok := data.(TSet); ok { return SET }
     if _, ok := data.(TList); ok { return LIST }

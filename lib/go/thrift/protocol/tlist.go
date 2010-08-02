@@ -112,7 +112,16 @@ func (p *tList) Less(i, j int) bool {
 }
 
 func (p *tList) Iter() <-chan interface{} {
-  return p.l.Iter()
+  c := make(chan interface{})
+  go p.iterate(c)
+  return c
+}
+
+func (p *tList) iterate(c chan<- interface{}) {
+    for _, elem := range *p.l {
+      c <- elem
+    }
+    close(c)
 }
 
 func (p *tList) indexOf(data interface{}) int {
