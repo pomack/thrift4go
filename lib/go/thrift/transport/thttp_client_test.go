@@ -17,37 +17,37 @@
  * under the License.
  */
 
-package transport_test;
+package transport_test
 
 import (
-  . "thrift/transport"
-  "testing"
-  "http"
-  "io"
-  "net"
+	. "thrift/transport"
+	"testing"
+	"http"
+	"io"
+	"net"
 )
 
-type HTTPEchoServer struct {}
+type HTTPEchoServer struct{}
 
 func (p *HTTPEchoServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-  w.WriteHeader(http.StatusOK)
-  io.Copy(w, req.Body)
+	w.WriteHeader(http.StatusOK)
+	io.Copy(w, req.Body)
 }
 
 func TestHttpClient(t *testing.T) {
-  addr, err := FindAvailableTCPServerPort(40000)
-  if err != nil {
-    t.Fatalf("Unable to find available tcp port addr: %s", err)
-  }
-  l, err := net.Listen(addr.Network(), addr.String())
-  if err != nil {
-    t.Fatalf("Unable to setup tcp listener on %s: %s", addr.String(), err)
-  }
-  go http.Serve(l, &HTTPEchoServer{})
-  trans, err := NewTHttpPostClient("http://" + addr.String())
-  if err != nil {
-    l.Close()
-    t.Fatalf("Unable to connect to %s: %s", addr.String(), err)
-  }
-  TransportTest(t, trans, trans)
+	addr, err := FindAvailableTCPServerPort(40000)
+	if err != nil {
+		t.Fatalf("Unable to find available tcp port addr: %s", err)
+	}
+	l, err := net.Listen(addr.Network(), addr.String())
+	if err != nil {
+		t.Fatalf("Unable to setup tcp listener on %s: %s", addr.String(), err)
+	}
+	go http.Serve(l, &HTTPEchoServer{})
+	trans, err := NewTHttpPostClient("http://" + addr.String())
+	if err != nil {
+		l.Close()
+		t.Fatalf("Unable to connect to %s: %s", addr.String(), err)
+	}
+	TransportTest(t, trans, trans)
 }

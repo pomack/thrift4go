@@ -17,15 +17,15 @@
  * under the License.
  */
 
-package transport_test;
+package transport_test
 
 import (
-  . "thrift/transport";
-  "testing";
-  "bytes";
+	. "thrift/transport"
+	"testing"
+	"bytes"
 )
 
 func TestIOStreamTransport(t *testing.T) {
-  trans := NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 1024)))
-  TransportTest(t, trans, trans)
+	trans := NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 1024)))
+	TransportTest(t, trans, trans)
 }

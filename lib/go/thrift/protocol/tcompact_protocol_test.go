@@ -17,42 +17,41 @@
  * under the License.
  */
 
-package protocol_test;
+package protocol_test
 
 import (
-  . "thrift/protocol";
-  //"thrift/transport";
-  "testing";
-  //"bytes";
+	. "thrift/protocol"
+	//"thrift/transport";
+	"testing"
+	//"bytes";
 )
 
 func TestReadWriteCompactProtocol(t *testing.T) {
-  ReadWriteProtocolTest(t, NewTCompactProtocolFactory())
-  /*
-  transports := []transport.TTransport{
-    transport.NewTMemoryBuffer(), 
-    transport.NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 16384))),
-    transport.NewTFramedTransport(transport.NewTMemoryBuffer()),
-  }
-  for _, trans := range transports {
-    p := NewTCompactProtocol(trans);
-    ReadWriteBool(t, p, trans);
-    p = NewTCompactProtocol(trans);
-    ReadWriteByte(t, p, trans);
-    p = NewTCompactProtocol(trans);
-    ReadWriteI16(t, p, trans);
-    p = NewTCompactProtocol(trans);
-    ReadWriteI32(t, p, trans);
-    p = NewTCompactProtocol(trans);
-    ReadWriteI64(t, p, trans);
-    p = NewTCompactProtocol(trans);
-    ReadWriteDouble(t, p, trans);
-    p = NewTCompactProtocol(trans);
-    ReadWriteString(t, p, trans);
-    p = NewTCompactProtocol(trans);
-    ReadWriteBinary(t, p, trans);
-    trans.Close();
-  }
-  */
+	ReadWriteProtocolTest(t, NewTCompactProtocolFactory())
+	/*
+	  transports := []transport.TTransport{
+	    transport.NewTMemoryBuffer(), 
+	    transport.NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 16384))),
+	    transport.NewTFramedTransport(transport.NewTMemoryBuffer()),
+	  }
+	  for _, trans := range transports {
+	    p := NewTCompactProtocol(trans);
+	    ReadWriteBool(t, p, trans);
+	    p = NewTCompactProtocol(trans);
+	    ReadWriteByte(t, p, trans);
+	    p = NewTCompactProtocol(trans);
+	    ReadWriteI16(t, p, trans);
+	    p = NewTCompactProtocol(trans);
+	    ReadWriteI32(t, p, trans);
+	    p = NewTCompactProtocol(trans);
+	    ReadWriteI64(t, p, trans);
+	    p = NewTCompactProtocol(trans);
+	    ReadWriteDouble(t, p, trans);
+	    p = NewTCompactProtocol(trans);
+	    ReadWriteString(t, p, trans);
+	    p = NewTCompactProtocol(trans);
+	    ReadWriteBinary(t, p, trans);
+	    trans.Close();
+	  }
+	*/
 }
-

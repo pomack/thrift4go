@@ -17,11 +17,11 @@
  * under the License.
  */
 
-package base;
+package base
 
 import (
-  "thrift/protocol";
-  "thrift";
+	"thrift/protocol"
+	"thrift"
 )
 
 /**
@@ -30,5 +30,5 @@ import (
  *
  */
 type TProcessor interface {
-  Process(in, out protocol.TProtocol, seqid int32) (bool, thrift.TException)
+	Process(in, out protocol.TProtocol, seqid int32) (bool, thrift.TException)
 }

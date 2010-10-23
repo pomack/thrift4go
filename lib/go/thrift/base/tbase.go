@@ -17,11 +17,11 @@
  * under the License.
  */
 
-package base;
+package base
 
 import (
-  "thrift/protocol"
-  "thrift"
+	"thrift/protocol"
+	"thrift"
 )
 
 /**
@@ -30,42 +30,42 @@ import (
  */
 type TBase interface {
 
-  /**
-   * Reads the TObject from the given input protocol.
-   *
-   * @param iprot Input protocol
-   */
-  Read(iprot protocol.TProtocol) (err thrift.TException)
+	/**
+	 * Reads the TObject from the given input protocol.
+	 *
+	 * @param iprot Input protocol
+	 */
+	Read(iprot protocol.TProtocol) (err thrift.TException)
 
-  /**
-   * Writes the objects out to the protocol
-   *
-   * @param oprot Output protocol
-   */
-  Write(oprot protocol.TProtocol) (err thrift.TException)
+	/**
+	 * Writes the objects out to the protocol
+	 *
+	 * @param oprot Output protocol
+	 */
+	Write(oprot protocol.TProtocol) (err thrift.TException)
 
-  /**
-   * Check if a field is currently set or unset.
-   *
-   * @param field
-   */
-  IsSet(field protocol.TField) bool
+	/**
+	 * Check if a field is currently set or unset.
+	 *
+	 * @param field
+	 */
+	IsSet(field protocol.TField) bool
 
-  /**
-   * Get a field's value by field variable. Primitive types will be wrapped in 
-   * the appropriate "boxed" types.
-   *
-   * @param field
-   */
-  FieldValue(field protocol.TField) interface{}
+	/**
+	 * Get a field's value by field variable. Primitive types will be wrapped in 
+	 * the appropriate "boxed" types.
+	 *
+	 * @param field
+	 */
+	FieldValue(field protocol.TField) interface{}
 
-  /**
-   * Set a field's value by field variable. Primitive types must be "boxed" in
-   * the appropriate object wrapper type.
-   *
-   * @param field
-   */
-  SetFieldValue(field protocol.TField, value interface{})
+	/**
+	 * Set a field's value by field variable. Primitive types must be "boxed" in
+	 * the appropriate object wrapper type.
+	 *
+	 * @param field
+	 */
+	SetFieldValue(field protocol.TField, value interface{})
 
-  DeepCopy() TBase
+	DeepCopy() TBase
 }

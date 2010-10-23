@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package protocol;
+package protocol
 
 import (
-  "thrift/transport"
+	"thrift/transport"
 )
 
 /**
@@ -28,5 +28,5 @@ import (
  *
  */
 type TProtocolFactory interface {
-  GetProtocol(trans transport.TTransport) TProtocol;
+	GetProtocol(trans transport.TTransport) TProtocol
 }

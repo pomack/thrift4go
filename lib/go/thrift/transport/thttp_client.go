@@ -17,121 +17,130 @@
  * under the License.
  */
 
-package transport;
+package transport
 
 import (
-  "bytes";
-  "http";
-  "os";
+	"bytes"
+	"http"
+	"os"
 )
 
 
 type THttpClient struct {
-  response *http.Response;
-  url *http.URL;
-  requestBuffer *bytes.Buffer;
-  nsecConnectTimeout int64;
-  nsecReadTimeout int64;
+	response           *http.Response
+	url                *http.URL
+	requestBuffer      *bytes.Buffer
+	nsecConnectTimeout int64
+	nsecReadTimeout    int64
 }
 
 type THttpClientTransportFactory struct {
-  url string;
-  isPost bool;
+	url    string
+	isPost bool
 }
 
 func (p *THttpClientTransportFactory) GetTransport(trans TTransport) TTransport {
-  if trans != nil {
-    t, ok := trans.(*THttpClient)
-    if ok && t.url != nil {
-      if t.requestBuffer != nil {
-        t2, _ := NewTHttpPostClient(t.url.String())
-        return t2
-      }
-      t2, _ := NewTHttpClient(t.url.String())
-      return t2
-    }
-  }
-  if p.isPost {
-    s, _ := NewTHttpPostClient(p.url)
-    return s
-  }
-  s, _ := NewTHttpClient(p.url)
-  return s
+	if trans != nil {
+		t, ok := trans.(*THttpClient)
+		if ok && t.url != nil {
+			if t.requestBuffer != nil {
+				t2, _ := NewTHttpPostClient(t.url.String())
+				return t2
+			}
+			t2, _ := NewTHttpClient(t.url.String())
+			return t2
+		}
+	}
+	if p.isPost {
+		s, _ := NewTHttpPostClient(p.url)
+		return s
+	}
+	s, _ := NewTHttpClient(p.url)
+	return s
 }
 
 func NewTHttpClientTransportFactory(url string) *THttpClientTransportFactory {
-  return &THttpClientTransportFactory{url:url, isPost:false}
+	return &THttpClientTransportFactory{url: url, isPost: false}
 }
 
 func NewTHttpPostClientTransportFactory(url string) *THttpClientTransportFactory {
-  return &THttpClientTransportFactory{url:url, isPost:true}
+	return &THttpClientTransportFactory{url: url, isPost: true}
 }
 
 
 func NewTHttpClient(url string) (TTransport, os.Error) {
-  response, finalUrl, err := http.Get(url);
-  if err != nil { return nil, err; }
-  parsedURL, err := http.ParseURL(finalUrl);
-  if err != nil { return nil, err; }
-  return &THttpClient{response:response, url:parsedURL}, nil;
+	response, finalUrl, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	parsedURL, err := http.ParseURL(finalUrl)
+	if err != nil {
+		return nil, err
+	}
+	return &THttpClient{response: response, url: parsedURL}, nil
 }
 
 func NewTHttpPostClient(url string) (TTransport, os.Error) {
-  parsedURL, err := http.ParseURL(url);
-  if err != nil { return nil, err; }
-  buf := make([]byte, 0, 1024);
-  return &THttpClient{url:parsedURL, requestBuffer:bytes.NewBuffer(buf)}, nil;
+	parsedURL, err := http.ParseURL(url)
+	if err != nil {
+		return nil, err
+	}
+	buf := make([]byte, 0, 1024)
+	return &THttpClient{url: parsedURL, requestBuffer: bytes.NewBuffer(buf)}, nil
 }
 
 func (p *THttpClient) Open() os.Error {
-  // do nothing
-  return nil;
+	// do nothing
+	return nil
 }
 
 func (p *THttpClient) IsOpen() bool {
-  return p.response != nil || p.requestBuffer != nil;
+	return p.response != nil || p.requestBuffer != nil
 }
 
-func (p* THttpClient) Peek() bool {
-  return p.IsOpen();
+func (p *THttpClient) Peek() bool {
+	return p.IsOpen()
 }
 
 func (p *THttpClient) Close() os.Error {
-  if p.response != nil && p.response.Body != nil {
-    err := p.response.Body.Close();
-    p.response = nil;
-    return err;
-  }
-  if p.requestBuffer != nil {
-    p.requestBuffer.Reset();
-    p.requestBuffer = nil;
-  }
-  return nil;
+	if p.response != nil && p.response.Body != nil {
+		err := p.response.Body.Close()
+		p.response = nil
+		return err
+	}
+	if p.requestBuffer != nil {
+		p.requestBuffer.Reset()
+		p.requestBuffer = nil
+	}
+	return nil
 }
 
 func (p *THttpClient) Read(buf []byte) (int, os.Error) {
-  if p.response == nil { return 0, NewTTransportException(NOT_OPEN, "Response buffer is empty, no request."); }
-  n, err := p.response.Body.Read(buf);
-  return n, NewTTransportExceptionFromOsError(err);
+	if p.response == nil {
+		return 0, NewTTransportException(NOT_OPEN, "Response buffer is empty, no request.")
+	}
+	n, err := p.response.Body.Read(buf)
+	return n, NewTTransportExceptionFromOsError(err)
 }
 
 func (p *THttpClient) ReadAll(buf []byte) (int, os.Error) {
-  return ReadAllTransport(p, buf);
+	return ReadAllTransport(p, buf)
 }
 
 func (p *THttpClient) Write(buf []byte) (int, os.Error) {
-  n, err := p.requestBuffer.Write(buf);
-  return n, err
+	n, err := p.requestBuffer.Write(buf)
+	return n, err
 }
 
 func (p *THttpClient) Flush() os.Error {
-  response, err := http.Post(p.url.String(), "application/x-thrift", p.requestBuffer);
-  if err != nil { return NewTTransportExceptionFromOsError(err); }
-  if response.StatusCode != http.StatusOK {
-    // TODO(pomack) log bad response
-    return NewTTransportException(UNKNOWN, "HTTP Response code: " + string(response.StatusCode));
-  }
-  p.response = response;
-  return nil;
+	response, err := http.Post(p.url.String(), "application/x-thrift", p.requestBuffer)
+	if err != nil {
+		return NewTTransportExceptionFromOsError(err)
+	}
+	if response.StatusCode != http.StatusOK {
+		// TODO(pomack) log bad response
+		return NewTTransportException(UNKNOWN, "HTTP Response code: "+string(response.StatusCode))
+	}
+	p.response = response
+	return nil
 }
-

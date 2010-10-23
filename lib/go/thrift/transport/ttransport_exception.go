@@ -17,11 +17,11 @@
  * under the License.
  */
 
-package transport;
+package transport
 
 import (
-  "thrift";
-  "os";
+	"thrift"
+	"os"
 )
 
 /**
@@ -29,51 +29,57 @@ import (
  *
  */
 type TTransportException interface {
-  thrift.TException;
-  TypeId() int;
+	thrift.TException
+	TypeId() int
 }
 
 const (
-  UNKNOWN      = 0;
-  NOT_OPEN     = 1;
-  ALREADY_OPEN = 2;
-  TIMED_OUT    = 3;
-  END_OF_FILE  = 4;
+	UNKNOWN      = 0
+	NOT_OPEN     = 1
+	ALREADY_OPEN = 2
+	TIMED_OUT    = 3
+	END_OF_FILE  = 4
 )
 
 type tTransportException struct {
-  typeId int;
-  message string;
+	typeId  int
+	message string
 }
 
 func (p *tTransportException) TypeId() int {
-  return p.typeId;
+	return p.typeId
 }
 
 func (p *tTransportException) String() string {
-  return p.message;
+	return p.message
 }
 
 func NewTTransportExceptionDefault() TTransportException {
-  return NewTTransportExceptionDefaultType(UNKNOWN);
+	return NewTTransportExceptionDefaultType(UNKNOWN)
 }
 
 func NewTTransportExceptionDefaultType(t int) TTransportException {
-  return NewTTransportException(t, "");
+	return NewTTransportException(t, "")
 }
 
 func NewTTransportExceptionDefaultString(m string) TTransportException {
-  return NewTTransportException(UNKNOWN, m);
+	return NewTTransportException(UNKNOWN, m)
 }
 
 func NewTTransportException(t int, m string) TTransportException {
-  return &tTransportException{typeId:t, message:m};
+	return &tTransportException{typeId: t, message: m}
 }
 
 func NewTTransportExceptionFromOsError(e os.Error) TTransportException {
-  if e == nil { return nil; }
-  t, ok := e.(TTransportException);
-  if ok { return t; }
-  if e == os.EOF { return NewTTransportException(END_OF_FILE, e.String()); }
-  return NewTTransportExceptionDefaultString(e.String());
+	if e == nil {
+		return nil
+	}
+	t, ok := e.(TTransportException)
+	if ok {
+		return t
+	}
+	if e == os.EOF {
+		return NewTTransportException(END_OF_FILE, e.String())
+	}
+	return NewTTransportExceptionDefaultString(e.String())
 }

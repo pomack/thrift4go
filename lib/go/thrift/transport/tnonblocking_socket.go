@@ -17,54 +17,54 @@
  * under the License.
  */
 
-package transport;
+package transport
 
 import (
-  "net";
-  "os";
+	"net"
+	"os"
 )
 
 /**
  * Socket implementation of the TTransport interface. To be commented soon!
  */
 type TNonblockingSocket struct {
-  conn net.Conn;
-  addr net.Addr;
-  /**
-   * Socket timeout
-   */
-  nsecTimeout int64;
+	conn net.Conn
+	addr net.Addr
+	/**
+	 * Socket timeout
+	 */
+	nsecTimeout int64
 }
 
 type TNonblockingSocketTransportFactory struct {
-  addr net.Addr;
+	addr net.Addr
 }
 
 func (p *TNonblockingSocketTransportFactory) GetTransport(trans TTransport) TTransport {
-  if trans != nil {
-    t, ok := trans.(*TNonblockingSocket)
-    if ok {
-      s, _ := NewTNonblockingSocketAddr(t.addr)
-      s.SetTimeout(t.nsecTimeout)
-      return s
-    }
-  }
-  s, _ := NewTNonblockingSocketAddr(p.addr);
-  return s
+	if trans != nil {
+		t, ok := trans.(*TNonblockingSocket)
+		if ok {
+			s, _ := NewTNonblockingSocketAddr(t.addr)
+			s.SetTimeout(t.nsecTimeout)
+			return s
+		}
+	}
+	s, _ := NewTNonblockingSocketAddr(p.addr)
+	return s
 }
 
 func NewTNonblockingSocketTransportFactory(addr net.Addr) *TNonblockingSocketTransportFactory {
-  return &TNonblockingSocketTransportFactory{addr:addr}
+	return &TNonblockingSocketTransportFactory{addr: addr}
 }
 
 func NewTNonblockingSocketConn(conn net.Conn) (*TNonblockingSocket, TTransportException) {
-  s := &TNonblockingSocket{conn:conn, addr:conn.RemoteAddr()};
-  return s, nil;
+	s := &TNonblockingSocket{conn: conn, addr: conn.RemoteAddr()}
+	return s, nil
 }
 
 func NewTNonblockingSocketAddr(addr net.Addr) (*TNonblockingSocket, TTransportException) {
-  s := &TNonblockingSocket{addr:addr}
-  return s, nil;
+	s := &TNonblockingSocket{addr: addr}
+	return s, nil
 }
 
 /**
@@ -73,88 +73,88 @@ func NewTNonblockingSocketAddr(addr net.Addr) (*TNonblockingSocket, TTransportEx
  * @param timeout Nanoseconds timeout
  */
 func (p *TNonblockingSocket) SetTimeout(nsecTimeout int64) os.Error {
-  p.nsecTimeout = nsecTimeout;
-  return nil;
+	p.nsecTimeout = nsecTimeout
+	return nil
 }
 
 /**
  * Checks whether the socket is connected.
  */
-func (p *TNonblockingSocket) IsOpen() (bool) {
-  return p.conn != nil;
+func (p *TNonblockingSocket) IsOpen() bool {
+	return p.conn != nil
 }
 
 /**
  * Connects the socket, creating a new socket object if necessary.
  */
 func (p *TNonblockingSocket) Open() os.Error {
-  if p.conn == nil {
-    conn, err := net.Dial(p.addr.Network(), "", p.addr.String());
-    if err != nil { return NewTTransportExceptionFromOsError(err); }
-    p.conn = conn;
-    return nil;
-  }
-  return NewTTransportException(ALREADY_OPEN, "Socket already open");
+	if p.conn == nil {
+		conn, err := net.Dial(p.addr.Network(), "", p.addr.String())
+		if err != nil {
+			return NewTTransportExceptionFromOsError(err)
+		}
+		p.conn = conn
+		return nil
+	}
+	return NewTTransportException(ALREADY_OPEN, "Socket already open")
 }
 
 /**
  * Perform a nonblocking read into buffer.
  */
 func (p *TNonblockingSocket) Read(buf []byte) (int, os.Error) {
-  return p.conn.Read(buf)
+	return p.conn.Read(buf)
 }
 
 
 func (p *TNonblockingSocket) ReadAll(buf []byte) (int, os.Error) {
-  return ReadAllTransport(p, buf);
+	return ReadAllTransport(p, buf)
 }
 
 /**
  * Perform a nonblocking write of the data in buffer;
  */
 func (p *TNonblockingSocket) Write(buf []byte) (int, os.Error) {
-  return p.conn.Write(buf)
+	return p.conn.Write(buf)
 }
 
 /**
  * Flushes the underlying output stream if not null.
  */
 func (p *TNonblockingSocket) Flush() os.Error {
-  f, ok := p.conn.(Flusher);
-  if ok {
-    err := f.Flush();
-    if err != nil {
-      return NewTTransportExceptionFromOsError(err);
-    }
-  }
-  return nil;
+	f, ok := p.conn.(Flusher)
+	if ok {
+		err := f.Flush()
+		if err != nil {
+			return NewTTransportExceptionFromOsError(err)
+		}
+	}
+	return nil
 }
 
 func (p *TNonblockingSocket) Addr() net.Addr {
-  return p.addr;
+	return p.addr
 }
 
-func (p* TNonblockingSocket) Peek() bool {
-  return p.IsOpen();
+func (p *TNonblockingSocket) Peek() bool {
+	return p.IsOpen()
 }
 
 /**
  * Closes the socket.
  */
 func (p *TNonblockingSocket) Close() os.Error {
-  if p.conn != nil {
-    err := p.conn.Close();
-    if err != nil { return err; }
-    p.conn = nil;
-  }
-  return nil;
+	if p.conn != nil {
+		err := p.conn.Close()
+		if err != nil {
+			return err
+		}
+		p.conn = nil
+	}
+	return nil
 }
 
 func (p *TNonblockingSocket) Interrupt() os.Error {
-  // TODO(pomack) fix Interrupt as it is probably not right
-  return p.Close();
+	// TODO(pomack) fix Interrupt as it is probably not right
+	return p.Close()
 }
-
-
-
-

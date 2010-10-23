@@ -18,12 +18,11 @@
  */
 
 
-package protocol;
+package protocol
 
 type TContainer interface {
-  Len() int
-  Contains(data interface{}) bool
-  Equals(other interface{}) bool
-  CompareTo(other interface{}) (int, bool)
+	Len() int
+	Contains(data interface{}) bool
+	Equals(other interface{}) bool
+	CompareTo(other interface{}) (int, bool)
 }
-

@@ -17,26 +17,26 @@
  * under the License.
  */
 
-package base_test;
+package base_test
 
 import (
-  . "thrift/base"
-  "testing"
+	. "thrift/base"
+	"testing"
 )
 
 func TestTApplicationException(t *testing.T) {
-  exc := NewTApplicationException(UNKNOWN, "")
-  if exc.String() != "" {
-    t.Fatalf("Expected empty string for exception but found '%s'", exc.String())
-  }
-  if exc.TypeId() != UNKNOWN {
-    t.Fatalf("Expected type UNKNOWN for exception but found '%s'", exc.TypeId())
-  }
-  exc = NewTApplicationException(WRONG_METHOD_NAME, "junk_method")
-  if exc.String() != "junk_method" {
-    t.Fatalf("Expected 'junk_method' for exception but found '%s'", exc.String())
-  }
-  if exc.TypeId() != WRONG_METHOD_NAME {
-    t.Fatalf("Expected type WRONG_METHOD_NAME for exception but found '%s'", exc.TypeId())
-  }
+	exc := NewTApplicationException(UNKNOWN, "")
+	if exc.String() != "" {
+		t.Fatalf("Expected empty string for exception but found '%s'", exc.String())
+	}
+	if exc.TypeId() != UNKNOWN {
+		t.Fatalf("Expected type UNKNOWN for exception but found '%s'", exc.TypeId())
+	}
+	exc = NewTApplicationException(WRONG_METHOD_NAME, "junk_method")
+	if exc.String() != "junk_method" {
+		t.Fatalf("Expected 'junk_method' for exception but found '%s'", exc.String())
+	}
+	if exc.TypeId() != WRONG_METHOD_NAME {
+		t.Fatalf("Expected type WRONG_METHOD_NAME for exception but found '%s'", exc.TypeId())
+	}
 }

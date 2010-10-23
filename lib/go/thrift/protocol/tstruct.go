@@ -17,74 +17,73 @@
  * under the License.
  */
 
-package protocol;
+package protocol
 
 /**
  * Helper class that encapsulates struct metadata.
  *
  */
 type TStruct interface {
-  TContainer
-  TStructName() string
-  TStructFields() TFieldContainer
-  String() string
-  GetAttribute(field string) interface{}
-  GetAttributeByFieldId(field int16) interface{}
+	TContainer
+	TStructName() string
+	TStructFields() TFieldContainer
+	String() string
+	GetAttribute(field string) interface{}
+	GetAttributeByFieldId(field int16) interface{}
 }
 
 type tStruct struct {
-  name string
-  fields TFieldContainer
+	name   string
+	fields TFieldContainer
 }
 
 func NewTStructEmpty(name string) TStruct {
-  return &tStruct{name:name, fields:NewTFieldContainer(make([]TField, 0, 0))}
+	return &tStruct{name: name, fields: NewTFieldContainer(make([]TField, 0, 0))}
 }
 
 func NewTStruct(name string, fields []TField) TStruct {
-  return &tStruct{name:name, fields:NewTFieldContainer(fields)}
+	return &tStruct{name: name, fields: NewTFieldContainer(fields)}
 }
 
 func (p *tStruct) TStructName() string {
-  return p.name;
+	return p.name
 }
 
 func (p *tStruct) TStructFields() TFieldContainer {
-  return p.fields;
+	return p.fields
 }
 
 func (p *tStruct) String() string {
-  return p.name;
+	return p.name
 }
 
 func (p *tStruct) Len() int {
-  return p.fields.Len();
+	return p.fields.Len()
 }
 
 func (p *tStruct) Contains(data interface{}) bool {
-  return p.fields.Contains(data)
+	return p.fields.Contains(data)
 }
 
 func (p *tStruct) Equals(other interface{}) bool {
-  cmp, ok := p.CompareTo(other)
-  return ok && cmp == 0
-} 
+	cmp, ok := p.CompareTo(other)
+	return ok && cmp == 0
+}
 
 func (p *tStruct) CompareTo(other interface{}) (int, bool) {
-  return TType(STRUCT).Compare(p, other)
+	return TType(STRUCT).Compare(p, other)
 }
 
 func (p *tStruct) GetAttribute(field string) interface{} {
-  return nil;
+	return nil
 }
 
 func (p *tStruct) GetAttributeByFieldId(id int16) interface{} {
-  return nil;
+	return nil
 }
-  
-var ANONYMOUS_STRUCT TStruct;
+
+var ANONYMOUS_STRUCT TStruct
 
 func init() {
-  ANONYMOUS_STRUCT = NewTStructEmpty("");
+	ANONYMOUS_STRUCT = NewTStructEmpty("")
 }
-

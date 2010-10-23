@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package base;
+package base
 
 import (
-  "thrift/transport";
+	"thrift/transport"
 )
 
 
@@ -29,18 +29,17 @@ import (
  * instance.
  */
 type TProcessorFactory interface {
-  GetProcessor(trans transport.TTransport) TProcessor;
+	GetProcessor(trans transport.TTransport) TProcessor
 }
 
 type tProcessorFactory struct {
-  processor TProcessor;
+	processor TProcessor
 }
 
 func NewTProcessorFactory(p TProcessor) TProcessorFactory {
-  return &tProcessorFactory{processor:p};
+	return &tProcessorFactory{processor: p}
 }
 
 func (p *tProcessorFactory) GetProcessor(trans transport.TTransport) TProcessor {
-  return p.processor;
+	return p.processor
 }
-

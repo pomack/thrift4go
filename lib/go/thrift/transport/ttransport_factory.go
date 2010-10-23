@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package transport;
+package transport
 
 /**
  * Factory class used to create wrapped instance of Transports.
@@ -27,11 +27,10 @@ package transport;
  *
  */
 type TTransportFactory interface {
-  GetTransport(trans TTransport) TTransport;
+	GetTransport(trans TTransport) TTransport
 }
 
-type tTransportFactory struct {
-}
+type tTransportFactory struct{}
 
 /**
  * Return a wrapped instance of the base Transport.
@@ -40,9 +39,9 @@ type tTransportFactory struct {
  * @return Wrapped Transport
  */
 func (p *tTransportFactory) GetTransport(trans TTransport) TTransport {
-  return trans;
+	return trans
 }
 
 func NewTTransportFactory() TTransportFactory {
-  return &tTransportFactory{};
+	return &tTransportFactory{}
 }

@@ -17,14 +17,14 @@
  * under the License.
  */
 
-package transport_test;
+package transport_test
 
 import (
-  . "thrift/transport";
-  "testing";
+	. "thrift/transport"
+	"testing"
 )
 
 func TestMemoryBuffer(t *testing.T) {
-  trans := NewTMemoryBufferLen(1024)
-  TransportTest(t, trans, trans)
+	trans := NewTMemoryBufferLen(1024)
+	TransportTest(t, trans, trans)
 }

@@ -17,8 +17,8 @@
  * under the License.
  */
 
-package transport;
+package transport
 
 type TNonblockingTransport interface {
-  TTransport;
+	TTransport
 }

@@ -17,52 +17,48 @@
  * under the License.
  */
 
-package server;
+package server
 
 import (
- "thrift/transport";
- "thrift/protocol";
- "thrift/base";
- "os";
+	"thrift/transport"
+	"thrift/protocol"
+	"thrift/base"
+	"os"
 )
 
 type TServer interface {
-  /**
-   * Core processor
-   */
-  ProcessorFactory() base.TProcessorFactory;
-  /**
-   * Server transport
-   */
-  ServerTransport() transport.TServerTransport;
-  /**
-   * Input Transport Factory
-   */
-  InputTransportFactory() transport.TTransportFactory;
-  /**
-   * Output Transport Factory
-   */
-  OutputTransportFactory() transport.TTransportFactory;
-  /**
-   * Input Protocol Factory
-   */
-  InputProtocolFactory() protocol.TProtocolFactory;
-  /**
-   * Output Protocol Factory
-   */
-  OutputProtocolFactory() protocol.TProtocolFactory;
-  
-  /**
-   * The run method fires up the server and gets things going.
-   */
-  Serve() os.Error;
-  /**
-   * Stop the server. This is optional on a per-implementation basis. Not
-   * all servers are required to be cleanly stoppable.
-   */
-  Stop() os.Error;
+	/**
+	 * Core processor
+	 */
+	ProcessorFactory() base.TProcessorFactory
+	/**
+	 * Server transport
+	 */
+	ServerTransport() transport.TServerTransport
+	/**
+	 * Input Transport Factory
+	 */
+	InputTransportFactory() transport.TTransportFactory
+	/**
+	 * Output Transport Factory
+	 */
+	OutputTransportFactory() transport.TTransportFactory
+	/**
+	 * Input Protocol Factory
+	 */
+	InputProtocolFactory() protocol.TProtocolFactory
+	/**
+	 * Output Protocol Factory
+	 */
+	OutputProtocolFactory() protocol.TProtocolFactory
+
+	/**
+	 * The run method fires up the server and gets things going.
+	 */
+	Serve() os.Error
+	/**
+	 * Stop the server. This is optional on a per-implementation basis. Not
+	 * all servers are required to be cleanly stoppable.
+	 */
+	Stop() os.Error
 }
-
-
-
-

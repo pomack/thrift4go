@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package server_test;
+package server_test
 
 import (
-  "testing"
+	"testing"
 )
 
 func TestNothing(t *testing.T) {
-  
+
 }
