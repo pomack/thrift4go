@@ -1,5 +1,5 @@
 
-include $(GOROOT)/src/Make.$(GOARCH)
+include $(GOROOT)/src/Make.inc
 
 TARG=thrift/transport
 GOFILES=\

@@ -1,4 +1,6 @@
 
+include $(GOROOT)/src/Make.inc
+
 TARG=thrift/base
 GOFILES=\
         tbase.go\
@@ -8,5 +10,4 @@ GOFILES=\
 
 DIRS=\
 
-include $(GOROOT)/src/Make.$(GOARCH)
 include $(GOROOT)/src/Make.pkg
