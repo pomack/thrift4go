@@ -20,9 +20,9 @@
 package transport;
 
 import (
-  "bufio";
-  "io";
-  "os";
+  "bufio"
+  "io"
+  "os"
 )
 
 /**
@@ -164,7 +164,7 @@ func (p *TIOStreamTransport) Close() os.Error {
       e := c.Close();
       closedReader = true
       if e != nil {
-        LOGGER.Log("Error closing input stream.", e);
+        LOGGER.Print("Error closing input stream.", e);
       }
     }
     p.Reader = nil;
@@ -174,7 +174,7 @@ func (p *TIOStreamTransport) Close() os.Error {
     if ok {
       e := c.Close();
       if e != nil {
-        LOGGER.Log("Error closing output stream.", e);
+        LOGGER.Print("Error closing output stream.", e);
       }
     }
     p.Writer = nil;
@@ -203,12 +203,12 @@ func (p *TIOStreamTransport) ReadAll(buf []byte) (int, os.Error) {
  */
 func (p *TIOStreamTransport) Write(buf []byte) (int, os.Error) {
   if p.Writer == nil {
-    LOGGER.Log("Could not write to iostream as Writer is null\n");
+    LOGGER.Print("Could not write to iostream as Writer is null\n");
     return 0, NewTTransportException(NOT_OPEN, "Cannot write to null outputStream");
   }
   n, err := p.Writer.Write(buf);
   if n == 0 || err != nil {
-    LOGGER.Log("Error writing to iostream, only wrote ", n, " bytes: ", err.String(), "\n");
+    LOGGER.Print("Error writing to iostream, only wrote ", n, " bytes: ", err.String(), "\n");
   }
   return n, NewTTransportExceptionFromOsError(err);
 }

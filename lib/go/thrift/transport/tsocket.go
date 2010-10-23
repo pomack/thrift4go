@@ -20,9 +20,9 @@
 package transport;
 
 import (
-  "net";
-  "os";
-  "bytes";
+  "net"
+  "os"
+  "bytes"
 )
 
 /**
@@ -93,7 +93,7 @@ func (p *TSocket) SetTimeout(timeout int64) os.Error {
   p.timeout = timeout;
   err := p.conn.SetTimeout(timeout);
   if err != nil {
-    LOGGER.Log("Could not set socket timeout.", err);
+    LOGGER.Print("Could not set socket timeout.", err);
   }
   return err;
 }
@@ -135,7 +135,7 @@ func (p *TSocket) Open() os.Error {
   var err os.Error;
   p.conn, err = net.Dial(p.addr.Network(), "", p.addr.String());
   if err != nil {
-    LOGGER.Log("Could not open socket", err.String());
+    LOGGER.Print("Could not open socket", err.String());
     return NewTTransportException(NOT_OPEN, err.String());
   }
   if p.conn != nil {
@@ -152,7 +152,7 @@ func (p *TSocket) Close() os.Error {
   if p.conn != nil {
     e := p.conn.Close();
     if e != nil {
-      LOGGER.Log("Could not close socket.", e.String());
+      LOGGER.Print("Could not close socket.", e.String());
     }
     p.conn = nil;
   }
