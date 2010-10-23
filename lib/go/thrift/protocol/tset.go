@@ -33,7 +33,8 @@ type TSet interface {
   Add(data interface{})
   Remove(data interface{})
   Less(other interface{}) bool
-  Iter() <-chan interface{}
+  Front() *list.Element
+  Back() *list.Element
   Values() []interface{}
 }
 
@@ -53,6 +54,14 @@ func NewTSetDefault() TSet {
 
 func (p *tSet) ElemType() TType {
   return p.elemType
+}
+
+func (p *tSet) Front() *list.Element {
+  return p.l.Front()
+}
+
+func (p *tSet) Back() *list.Element {
+  return p.l.Back()
 }
 
 func (p *tSet) Len() int {
@@ -82,10 +91,6 @@ func (p *tSet) Remove(data interface{}) {
   if elem != nil {
     p.l.Remove(elem)
   }
-}
-
-func (p *tSet) Iter() <-chan interface{} {
-  return p.l.Iter()
 }
 
 func (p *tSet) Less(other interface{}) bool {
@@ -182,8 +187,8 @@ func (p *tSet) Values() []interface{} {
   size := p.l.Len()
   values := make([]interface{}, size, size)
   i := 0
-  for v := range p.l.Iter() {
-    values[i] = v
+  for v := p.l.Front(); v != nil; v = v.Next() {
+    values[i] = v.Value
     i++
   }
   return values

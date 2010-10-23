@@ -127,8 +127,8 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
     return nil, false
   }
   if key == nil {
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { return e.Value(), true }
     }
@@ -191,8 +191,8 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
     }
     return nil, false
   case STRUCT:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       structkey, ok := k.(TStruct)
@@ -206,8 +206,8 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
     }
     return nil, false
   case MAP:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       mapkey, ok := k.(TMap)
@@ -221,8 +221,8 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
     }
     return nil, false
   case SET:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       setkey, ok := k.(TSet)
@@ -236,8 +236,8 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
     }
     return nil, false
   case LIST:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       listkey, ok := k.(TList)
@@ -382,8 +382,8 @@ func (p *tMap) Contains(key interface{}) bool {
     _, ok := m[coercedKey.(string)]
     return ok
   case STRUCT:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       structkey, ok := k.(TStruct)
@@ -397,8 +397,8 @@ func (p *tMap) Contains(key interface{}) bool {
     }
     return false
   case MAP:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       mapkey, ok := k.(TMap)
@@ -411,8 +411,8 @@ func (p *tMap) Contains(key interface{}) bool {
     }
     return false
   case SET:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       setkey, ok := k.(TSet)
@@ -425,8 +425,8 @@ func (p *tMap) Contains(key interface{}) bool {
     }
     return false
   case LIST:
-    for elem := range p.l.Iter() {
-      e := elem.(TMapElem)
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      e := elem.Value.(TMapElem)
       k := e.Key()
       if k == nil { continue }
       listkey, ok := k.(TList)
@@ -485,18 +485,18 @@ func (p *tMap) iterate(c chan<- TMapElem) {
     }
     close(c)
   case STRUCT:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem)
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem)
     }
     close(c)
   case LIST:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem)
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem)
     }
     close(c)
   case SET:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem)
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem)
     }
     close(c)
   default:
@@ -552,18 +552,18 @@ func (p *tMap) iterateKeys(c chan<- interface{}) {
     }
     close(c)
   case STRUCT:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem).Key()
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem).Key()
     }
     close(c)
   case LIST:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem).Key()
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem).Key()
     }
     close(c)
   case SET:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem).Key()
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem).Key()
     }
     close(c)
   default:
@@ -618,18 +618,18 @@ func (p *tMap) iterateValues(c chan<- interface{}) {
     }
     close(c)
   case STRUCT:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem).Value()
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem).Value()
     }
     close(c)
   case LIST:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem).Value()
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem).Value()
     }
     close(c)
   case SET:
-    for v := range p.l.Iter() {
-      c <- v.(TMapElem).Value()
+    for v := p.l.Front(); v != nil; v = v.Next() {
+      c <- v.Value.(TMapElem).Value()
     }
     close(c)
   default:
