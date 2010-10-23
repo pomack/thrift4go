@@ -63,9 +63,9 @@ func init() {
 
 type HTTPEchoServer struct {}
 
-func (p *HTTPEchoServer) ServeHTTP(conn *http.Conn, req *http.Request) {
-  conn.WriteHeader(http.StatusOK)
-  io.Copy(conn, req.Body)
+func (p *HTTPEchoServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+  w.WriteHeader(http.StatusOK)
+  io.Copy(w, req.Body)
 }
 
 func HttpClientSetupForTest(t *testing.T) (net.Listener, net.Addr) {

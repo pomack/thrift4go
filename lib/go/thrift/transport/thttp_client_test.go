@@ -20,18 +20,18 @@
 package transport_test;
 
 import (
-  . "thrift/transport";
-  "testing";
-  "http";
-  "io";
-  "net";
+  . "thrift/transport"
+  "testing"
+  "http"
+  "io"
+  "net"
 )
 
 type HTTPEchoServer struct {}
 
-func (p *HTTPEchoServer) ServeHTTP(conn *http.Conn, req *http.Request) {
-  conn.WriteHeader(http.StatusOK)
-  io.Copy(conn, req.Body)
+func (p *HTTPEchoServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+  w.WriteHeader(http.StatusOK)
+  io.Copy(w, req.Body)
 }
 
 func TestHttpClient(t *testing.T) {
