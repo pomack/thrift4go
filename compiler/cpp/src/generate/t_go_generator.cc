@@ -162,18 +162,18 @@ class t_go_generator : public t_generator {
                                           std::string iter,
                                           std::string err="err");
 
-  void generate_go_docstring         (std::ofstream& out,
+  void generate_go_docstring             (std::ofstream& out,
                                           t_struct* tstruct);
 
-  void generate_go_docstring         (std::ofstream& out,
+  void generate_go_docstring             (std::ofstream& out,
                                           t_function* tfunction);
 
-  void generate_go_docstring         (std::ofstream& out,
+  void generate_go_docstring             (std::ofstream& out,
                                           t_doc*    tdoc,
                                           t_struct* tstruct,
                                           const char* subheader);
 
-  void generate_go_docstring         (std::ofstream& out,
+  void generate_go_docstring             (std::ofstream& out,
                                           t_doc* tdoc);
 
   /**
