@@ -18,7 +18,7 @@
  */
 
 
-package protocol
+package thrift
 
 type TContainer interface {
 	Len() int

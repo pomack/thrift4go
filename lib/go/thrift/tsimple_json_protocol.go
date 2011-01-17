@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package protocol
+package thrift
 
 import (
 	"bufio"
@@ -31,7 +31,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"thrift/transport"
 )
 
 /**
@@ -44,7 +43,7 @@ import (
  */
 type TSimpleJSONProtocol struct {
 	//TProtocolBase;
-	trans transport.TTransport
+	trans TTransport
 
 	_BASE_CONTEXT Context
 
@@ -67,14 +66,14 @@ type TSimpleJSONProtocol struct {
 	 * Current context that we are in
 	 */
 	readContext Context
-	writer      transport.TTransport
+	writer      TTransport
 	reader      *bufio.Reader
 }
 
 /**
  * Constructor
  */
-func NewTSimpleJSONProtocol(t transport.TTransport) *TSimpleJSONProtocol {
+func NewTSimpleJSONProtocol(t TTransport) *TSimpleJSONProtocol {
 	cxt := NewContextWriter(t)
 	cxt2 := NewContext()
 	l := list.New()
@@ -98,7 +97,7 @@ func NewTSimpleJSONProtocol(t transport.TTransport) *TSimpleJSONProtocol {
  */
 type TSimpleJSONProtocolFactory struct{}
 
-func (p *TSimpleJSONProtocolFactory) GetProtocol(trans transport.TTransport) TProtocol {
+func (p *TSimpleJSONProtocolFactory) GetProtocol(trans TTransport) TProtocol {
 	return NewTSimpleJSONProtocol(trans)
 }
 
@@ -1933,6 +1932,6 @@ func (p *TSimpleJSONProtocol) Skip(fieldType TType) (err TProtocolException) {
 	return SkipDefaultDepth(p, fieldType)
 }
 
-func (p *TSimpleJSONProtocol) Transport() transport.TTransport {
+func (p *TSimpleJSONProtocol) Transport() TTransport {
 	return p.trans
 }

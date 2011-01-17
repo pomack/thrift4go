@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package transport
+package thrift
 
 /**
  * Factory class used to create wrapped instance of Transports.

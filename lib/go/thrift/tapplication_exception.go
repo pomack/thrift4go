@@ -17,22 +17,20 @@
  * under the License.
  */
 
-package base
+package thrift
 
 import (
 	"os"
-	"thrift/protocol"
-	"thrift"
 )
 
 const (
-	UNKNOWN              = 0
-	UNKNOWN_METHOD       = 1
-	INVALID_MESSAGE_TYPE = 2
-	WRONG_METHOD_NAME    = 3
-	BAD_SEQUENCE_ID      = 4
-	MISSING_RESULT       = 5
-	INTERNAL_ERROR       = 6
+	UNKNOWN_APPLICATION_EXCEPTION  = 0
+	UNKNOWN_METHOD                 = 1
+	INVALID_MESSAGE_TYPE_EXCEPTION = 2
+	WRONG_METHOD_NAME              = 3
+	BAD_SEQUENCE_ID                = 4
+	MISSING_RESULT                 = 5
+	INTERNAL_ERROR                 = 6
 )
 
 
@@ -41,19 +39,19 @@ const (
  *
  */
 type TApplicationException interface {
-	thrift.TException
+	TException
 	TypeId() int32
-	Read(iprot protocol.TProtocol) (TApplicationException, os.Error)
-	Write(oprot protocol.TProtocol) os.Error
+	Read(iprot TProtocol) (TApplicationException, os.Error)
+	Write(oprot TProtocol) os.Error
 }
 
 type tApplicationException struct {
-	thrift.TException
+	TException
 	type_ int32
 }
 
 func NewTApplicationExceptionDefault() TApplicationException {
-	return NewTApplicationException(UNKNOWN, "UNKNOWN")
+	return NewTApplicationException(UNKNOWN_APPLICATION_EXCEPTION, "UNKNOWN")
 }
 
 func NewTApplicationExceptionType(type_ int32) TApplicationException {
@@ -61,63 +59,63 @@ func NewTApplicationExceptionType(type_ int32) TApplicationException {
 }
 
 func NewTApplicationException(type_ int32, message string) TApplicationException {
-	return &tApplicationException{TException: thrift.NewTException(message), type_: type_}
+	return &tApplicationException{TException: NewTException(message), type_: type_}
 }
 
 func NewTApplicationExceptionMessage(message string) TApplicationException {
-	return NewTApplicationException(UNKNOWN, message)
+	return NewTApplicationException(UNKNOWN_APPLICATION_EXCEPTION, message)
 }
 
 func (p *tApplicationException) TypeId() int32 {
 	return p.type_
 }
 
-func (p *tApplicationException) Read(iprot protocol.TProtocol) (error TApplicationException, err os.Error) {
+func (p *tApplicationException) Read(iprot TProtocol) (error TApplicationException, err os.Error) {
 	_, err = iprot.ReadStructBegin()
 	if err != nil {
 		return
 	}
 
 	message := ""
-	type_ := int32(UNKNOWN)
+	type_ := int32(UNKNOWN_APPLICATION_EXCEPTION)
 
 	for {
 		_, ttype, id, err := iprot.ReadFieldBegin()
 		if err != nil {
 			return
 		}
-		if ttype == protocol.STOP {
+		if ttype == STOP {
 			break
 		}
 		switch id {
 		case 1:
-			if ttype == protocol.STRING {
+			if ttype == STRING {
 				message, err = iprot.ReadString()
 				if err != nil {
 					return
 				}
 			} else {
-				err = protocol.SkipDefaultDepth(iprot, ttype)
+				err = SkipDefaultDepth(iprot, ttype)
 				if err != nil {
 					return
 				}
 			}
 			break
 		case 2:
-			if ttype == protocol.I32 {
+			if ttype == I32 {
 				type_, err = iprot.ReadI32()
 				if err != nil {
 					return
 				}
 			} else {
-				err = protocol.SkipDefaultDepth(iprot, ttype)
+				err = SkipDefaultDepth(iprot, ttype)
 				if err != nil {
 					return
 				}
 			}
 			break
 		default:
-			err = protocol.SkipDefaultDepth(iprot, ttype)
+			err = SkipDefaultDepth(iprot, ttype)
 			if err != nil {
 				return
 			}
@@ -133,10 +131,10 @@ func (p *tApplicationException) Read(iprot protocol.TProtocol) (error TApplicati
 	return
 }
 
-func (p *tApplicationException) Write(oprot protocol.TProtocol) (err os.Error) {
+func (p *tApplicationException) Write(oprot TProtocol) (err os.Error) {
 	err = oprot.WriteStructBegin("TApplicationException")
 	if len(p.String()) > 0 {
-		err = oprot.WriteFieldBegin("message", protocol.STRING, 1)
+		err = oprot.WriteFieldBegin("message", STRING, 1)
 		if err != nil {
 			return
 		}
@@ -149,7 +147,7 @@ func (p *tApplicationException) Write(oprot protocol.TProtocol) (err os.Error) {
 			return
 		}
 	}
-	err = oprot.WriteFieldBegin("type", protocol.I32, 2)
+	err = oprot.WriteFieldBegin("type", I32, 2)
 	if err != nil {
 		return
 	}

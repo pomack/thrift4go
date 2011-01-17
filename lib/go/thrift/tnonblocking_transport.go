@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package transport
+package thrift
 
 type TNonblockingTransport interface {
 	TTransport

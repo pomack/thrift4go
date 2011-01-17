@@ -17,12 +17,9 @@
  * under the License.
  */
 
-package server
+package thrift
 
 import (
-	"thrift/base"
-	"thrift/protocol"
-	"thrift/transport"
 	"os"
 )
 
@@ -34,30 +31,30 @@ import (
 type TSimpleServer struct {
 	stopped bool
 
-	processorFactory       base.TProcessorFactory
-	serverTransport        transport.TServerTransport
-	inputTransportFactory  transport.TTransportFactory
-	outputTransportFactory transport.TTransportFactory
-	inputProtocolFactory   protocol.TProtocolFactory
-	outputProtocolFactory  protocol.TProtocolFactory
+	processorFactory       TProcessorFactory
+	serverTransport        TServerTransport
+	inputTransportFactory  TTransportFactory
+	outputTransportFactory TTransportFactory
+	inputProtocolFactory   TProtocolFactory
+	outputProtocolFactory  TProtocolFactory
 
 	seqId int32
 }
 
-func NewTSimpleServer2(processor base.TProcessor, serverTransport transport.TServerTransport) *TSimpleServer {
-	return NewTSimpleServerFactory2(base.NewTProcessorFactory(processor), serverTransport)
+func NewTSimpleServer2(processor TProcessor, serverTransport TServerTransport) *TSimpleServer {
+	return NewTSimpleServerFactory2(NewTProcessorFactory(processor), serverTransport)
 }
 
-func NewTSimpleServer4(processor base.TProcessor, serverTransport transport.TServerTransport, transportFactory transport.TTransportFactory, protocolFactory protocol.TProtocolFactory) *TSimpleServer {
-	return NewTSimpleServerFactory4(base.NewTProcessorFactory(processor),
+func NewTSimpleServer4(processor TProcessor, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TSimpleServer {
+	return NewTSimpleServerFactory4(NewTProcessorFactory(processor),
 		serverTransport,
 		transportFactory,
 		protocolFactory,
 	)
 }
 
-func NewTSimpleServer6(processor base.TProcessor, serverTransport transport.TServerTransport, inputTransportFactory transport.TTransportFactory, outputTransportFactory transport.TTransportFactory, inputProtocolFactory protocol.TProtocolFactory, outputProtocolFactory protocol.TProtocolFactory) *TSimpleServer {
-	return NewTSimpleServerFactory6(base.NewTProcessorFactory(processor),
+func NewTSimpleServer6(processor TProcessor, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TSimpleServer {
+	return NewTSimpleServerFactory6(NewTProcessorFactory(processor),
 		serverTransport,
 		inputTransportFactory,
 		outputTransportFactory,
@@ -66,17 +63,17 @@ func NewTSimpleServer6(processor base.TProcessor, serverTransport transport.TSer
 	)
 }
 
-func NewTSimpleServerFactory2(processorFactory base.TProcessorFactory, serverTransport transport.TServerTransport) *TSimpleServer {
+func NewTSimpleServerFactory2(processorFactory TProcessorFactory, serverTransport TServerTransport) *TSimpleServer {
 	return NewTSimpleServerFactory6(processorFactory,
 		serverTransport,
-		transport.NewTTransportFactory(),
-		transport.NewTTransportFactory(),
-		protocol.NewTBinaryProtocolFactoryDefault(),
-		protocol.NewTBinaryProtocolFactoryDefault(),
+		NewTTransportFactory(),
+		NewTTransportFactory(),
+		NewTBinaryProtocolFactoryDefault(),
+		NewTBinaryProtocolFactoryDefault(),
 	)
 }
 
-func NewTSimpleServerFactory4(processorFactory base.TProcessorFactory, serverTransport transport.TServerTransport, transportFactory transport.TTransportFactory, protocolFactory protocol.TProtocolFactory) *TSimpleServer {
+func NewTSimpleServerFactory4(processorFactory TProcessorFactory, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TSimpleServer {
 	return NewTSimpleServerFactory6(processorFactory,
 		serverTransport,
 		transportFactory,
@@ -86,7 +83,7 @@ func NewTSimpleServerFactory4(processorFactory base.TProcessorFactory, serverTra
 	)
 }
 
-func NewTSimpleServerFactory6(processorFactory base.TProcessorFactory, serverTransport transport.TServerTransport, inputTransportFactory transport.TTransportFactory, outputTransportFactory transport.TTransportFactory, inputProtocolFactory protocol.TProtocolFactory, outputProtocolFactory protocol.TProtocolFactory) *TSimpleServer {
+func NewTSimpleServerFactory6(processorFactory TProcessorFactory, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TSimpleServer {
 	return &TSimpleServer{processorFactory: processorFactory,
 		serverTransport:        serverTransport,
 		inputTransportFactory:  inputTransportFactory,
@@ -96,27 +93,27 @@ func NewTSimpleServerFactory6(processorFactory base.TProcessorFactory, serverTra
 	}
 }
 
-func (p *TSimpleServer) ProcessorFactory() base.TProcessorFactory {
+func (p *TSimpleServer) ProcessorFactory() TProcessorFactory {
 	return p.processorFactory
 }
 
-func (p *TSimpleServer) ServerTransport() transport.TServerTransport {
+func (p *TSimpleServer) ServerTransport() TServerTransport {
 	return p.serverTransport
 }
 
-func (p *TSimpleServer) InputTransportFactory() transport.TTransportFactory {
+func (p *TSimpleServer) InputTransportFactory() TTransportFactory {
 	return p.inputTransportFactory
 }
 
-func (p *TSimpleServer) OutputTransportFactory() transport.TTransportFactory {
+func (p *TSimpleServer) OutputTransportFactory() TTransportFactory {
 	return p.outputTransportFactory
 }
 
-func (p *TSimpleServer) InputProtocolFactory() protocol.TProtocolFactory {
+func (p *TSimpleServer) InputProtocolFactory() TProtocolFactory {
 	return p.inputProtocolFactory
 }
 
-func (p *TSimpleServer) OutputProtocolFactory() protocol.TProtocolFactory {
+func (p *TSimpleServer) OutputProtocolFactory() TProtocolFactory {
 	return p.outputProtocolFactory
 }
 
@@ -144,7 +141,7 @@ func (p *TSimpleServer) Stop() os.Error {
 	return nil
 }
 
-func (p *TSimpleServer) processRequest(client transport.TTransport) {
+func (p *TSimpleServer) processRequest(client TTransport) {
 	processor := p.processorFactory.GetProcessor(client)
 	inputTransport := p.inputTransportFactory.GetTransport(client)
 	outputTransport := p.outputTransportFactory.GetTransport(client)

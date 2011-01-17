@@ -17,12 +17,7 @@
  * under the License.
  */
 
-package base
-
-import (
-	"thrift/protocol"
-	"thrift"
-)
+package thrift
 
 /**
  * Generic base interface for generated Thrift objects.
@@ -31,25 +26,25 @@ import (
 type TBase interface {
 
 	/**
-	 * Reads the TObject from the given input protocol.
+	 * Reads the TObject from the given input protocol
 	 *
 	 * @param iprot Input protocol
 	 */
-	Read(iprot protocol.TProtocol) (err thrift.TException)
+	Read(iprot TProtocol) (err TException)
 
 	/**
 	 * Writes the objects out to the protocol
 	 *
 	 * @param oprot Output protocol
 	 */
-	Write(oprot protocol.TProtocol) (err thrift.TException)
+	Write(oprot TProtocol) (err TException)
 
 	/**
 	 * Check if a field is currently set or unset.
 	 *
 	 * @param field
 	 */
-	IsSet(field protocol.TField) bool
+	IsSet(field TField) bool
 
 	/**
 	 * Get a field's value by field variable. Primitive types will be wrapped in 
@@ -57,7 +52,7 @@ type TBase interface {
 	 *
 	 * @param field
 	 */
-	FieldValue(field protocol.TField) interface{}
+	FieldValue(field TField) interface{}
 
 	/**
 	 * Set a field's value by field variable. Primitive types must be "boxed" in
@@ -65,7 +60,7 @@ type TBase interface {
 	 *
 	 * @param field
 	 */
-	SetFieldValue(field protocol.TField, value interface{})
+	SetFieldValue(field TField, value interface{})
 
 	DeepCopy() TBase
 }

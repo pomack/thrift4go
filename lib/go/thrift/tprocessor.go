@@ -17,12 +17,7 @@
  * under the License.
  */
 
-package base
-
-import (
-	"thrift/protocol"
-	"thrift"
-)
+package thrift
 
 /**
  * A processor is a generic object which operates upon an input stream and
@@ -30,5 +25,5 @@ import (
  *
  */
 type TProcessor interface {
-	Process(in, out protocol.TProtocol, seqid int32) (bool, thrift.TException)
+	Process(in, out TProtocol, seqid int32) (bool, TException)
 }

@@ -17,12 +17,9 @@
  * under the License.
  */
 
-package server
+package thrift
 
 import (
-	"thrift/transport"
-	"thrift/protocol"
-	"thrift/base"
 	"os"
 )
 
@@ -30,27 +27,27 @@ type TServer interface {
 	/**
 	 * Core processor
 	 */
-	ProcessorFactory() base.TProcessorFactory
+	ProcessorFactory() TProcessorFactory
 	/**
 	 * Server transport
 	 */
-	ServerTransport() transport.TServerTransport
+	ServerTransport() TServerTransport
 	/**
 	 * Input Transport Factory
 	 */
-	InputTransportFactory() transport.TTransportFactory
+	InputTransportFactory() TTransportFactory
 	/**
 	 * Output Transport Factory
 	 */
-	OutputTransportFactory() transport.TTransportFactory
+	OutputTransportFactory() TTransportFactory
 	/**
 	 * Input Protocol Factory
 	 */
-	InputProtocolFactory() protocol.TProtocolFactory
+	InputProtocolFactory() TProtocolFactory
 	/**
 	 * Output Protocol Factory
 	 */
-	OutputProtocolFactory() protocol.TProtocolFactory
+	OutputProtocolFactory() TProtocolFactory
 
 	/**
 	 * The run method fires up the server and gets things going.

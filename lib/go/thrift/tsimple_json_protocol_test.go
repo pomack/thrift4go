@@ -17,11 +17,10 @@
  * under the License.
  */
 
-package protocol_test
+package thrift_test
 
 import (
-	. "thrift/protocol"
-	"thrift/transport"
+	. "thrift"
 	"encoding/base64"
 	"fmt"
 	"json"
@@ -33,7 +32,7 @@ import (
 
 func TestWriteSimpleJSONProtocolBool(t *testing.T) {
 	thetype := "boolean"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	for _, value := range BOOL_VALUES {
 		if e := p.WriteBool(value); e != nil {
@@ -58,7 +57,7 @@ func TestWriteSimpleJSONProtocolBool(t *testing.T) {
 func TestReadSimpleJSONProtocolBool(t *testing.T) {
 	thetype := "boolean"
 	for _, value := range BOOL_VALUES {
-		trans := transport.NewTMemoryBuffer()
+		trans := NewTMemoryBuffer()
 		p := NewTSimpleJSONProtocol(trans)
 		if value {
 			trans.Write(JSON_TRUE)
@@ -84,7 +83,7 @@ func TestReadSimpleJSONProtocolBool(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolByte(t *testing.T) {
 	thetype := "byte"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	for _, value := range BYTE_VALUES {
 		if e := p.WriteByte(value); e != nil {
@@ -109,7 +108,7 @@ func TestWriteSimpleJSONProtocolByte(t *testing.T) {
 func TestReadSimpleJSONProtocolByte(t *testing.T) {
 	thetype := "byte"
 	for _, value := range BYTE_VALUES {
-		trans := transport.NewTMemoryBuffer()
+		trans := NewTMemoryBuffer()
 		p := NewTSimpleJSONProtocol(trans)
 		trans.WriteString(strconv.Itoa(int(value)))
 		trans.Flush()
@@ -131,7 +130,7 @@ func TestReadSimpleJSONProtocolByte(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolI16(t *testing.T) {
 	thetype := "int16"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	for _, value := range INT16_VALUES {
 		if e := p.WriteI16(value); e != nil {
@@ -156,7 +155,7 @@ func TestWriteSimpleJSONProtocolI16(t *testing.T) {
 func TestReadSimpleJSONProtocolI16(t *testing.T) {
 	thetype := "int16"
 	for _, value := range INT16_VALUES {
-		trans := transport.NewTMemoryBuffer()
+		trans := NewTMemoryBuffer()
 		p := NewTSimpleJSONProtocol(trans)
 		trans.WriteString(strconv.Itoa(int(value)))
 		trans.Flush()
@@ -178,7 +177,7 @@ func TestReadSimpleJSONProtocolI16(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolI32(t *testing.T) {
 	thetype := "int32"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	for _, value := range INT32_VALUES {
 		if e := p.WriteI32(value); e != nil {
@@ -203,7 +202,7 @@ func TestWriteSimpleJSONProtocolI32(t *testing.T) {
 func TestReadSimpleJSONProtocolI32(t *testing.T) {
 	thetype := "int32"
 	for _, value := range INT32_VALUES {
-		trans := transport.NewTMemoryBuffer()
+		trans := NewTMemoryBuffer()
 		p := NewTSimpleJSONProtocol(trans)
 		trans.WriteString(strconv.Itoa(int(value)))
 		trans.Flush()
@@ -225,7 +224,7 @@ func TestReadSimpleJSONProtocolI32(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolI64(t *testing.T) {
 	thetype := "int64"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	for _, value := range INT64_VALUES {
 		if e := p.WriteI64(value); e != nil {
@@ -250,7 +249,7 @@ func TestWriteSimpleJSONProtocolI64(t *testing.T) {
 func TestReadSimpleJSONProtocolI64(t *testing.T) {
 	thetype := "int64"
 	for _, value := range INT64_VALUES {
-		trans := transport.NewTMemoryBuffer()
+		trans := NewTMemoryBuffer()
 		p := NewTSimpleJSONProtocol(trans)
 		trans.WriteString(strconv.Itoa64(value))
 		trans.Flush()
@@ -272,7 +271,7 @@ func TestReadSimpleJSONProtocolI64(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolDouble(t *testing.T) {
 	thetype := "double"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	for _, value := range DOUBLE_VALUES {
 		if e := p.WriteDouble(value); e != nil {
@@ -311,7 +310,7 @@ func TestWriteSimpleJSONProtocolDouble(t *testing.T) {
 func TestReadSimpleJSONProtocolDouble(t *testing.T) {
 	thetype := "double"
 	for _, value := range DOUBLE_VALUES {
-		trans := transport.NewTMemoryBuffer()
+		trans := NewTMemoryBuffer()
 		p := NewTSimpleJSONProtocol(trans)
 		n := NewNumericFromDouble(value)
 		trans.WriteString(n.String())
@@ -348,7 +347,7 @@ func TestReadSimpleJSONProtocolDouble(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolString(t *testing.T) {
 	thetype := "string"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	for _, value := range STRING_VALUES {
 		if e := p.WriteString(value); e != nil {
@@ -373,7 +372,7 @@ func TestWriteSimpleJSONProtocolString(t *testing.T) {
 func TestReadSimpleJSONProtocolString(t *testing.T) {
 	thetype := "string"
 	for _, value := range STRING_VALUES {
-		trans := transport.NewTMemoryBuffer()
+		trans := NewTMemoryBuffer()
 		p := NewTSimpleJSONProtocol(trans)
 		trans.WriteString(JsonQuote(value))
 		trans.Flush()
@@ -396,11 +395,11 @@ func TestReadSimpleJSONProtocolString(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolBinary(t *testing.T) {
 	thetype := "binary"
-	value := bdata
-	b64value := make([]byte, base64.StdEncoding.EncodedLen(len(bdata)))
+	value := protocol_bdata
+	b64value := make([]byte, base64.StdEncoding.EncodedLen(len(protocol_bdata)))
 	base64.StdEncoding.Encode(b64value, value)
 	b64String := string(b64value)
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	if e := p.WriteBinary(value); e != nil {
 		t.Fatalf("Unable to write %s value %v due to error: %s", thetype, value, e.String())
@@ -421,11 +420,11 @@ func TestWriteSimpleJSONProtocolBinary(t *testing.T) {
 
 func TestReadSimpleJSONProtocolBinary(t *testing.T) {
 	thetype := "binary"
-	value := bdata
-	b64value := make([]byte, base64.StdEncoding.EncodedLen(len(bdata)))
+	value := protocol_bdata
+	b64value := make([]byte, base64.StdEncoding.EncodedLen(len(protocol_bdata)))
 	base64.StdEncoding.Encode(b64value, value)
 	b64String := string(b64value)
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	trans.WriteString(JsonQuote(b64String))
 	trans.Flush()
@@ -452,7 +451,7 @@ func TestReadSimpleJSONProtocolBinary(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolList(t *testing.T) {
 	thetype := "list"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	p.WriteListBegin(TType(DOUBLE), len(DOUBLE_VALUES))
 	for _, value := range DOUBLE_VALUES {
@@ -497,7 +496,7 @@ func TestWriteSimpleJSONProtocolList(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolSet(t *testing.T) {
 	thetype := "set"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	p.WriteSetBegin(TType(DOUBLE), len(DOUBLE_VALUES))
 	for _, value := range DOUBLE_VALUES {
@@ -542,7 +541,7 @@ func TestWriteSimpleJSONProtocolSet(t *testing.T) {
 
 func TestWriteSimpleJSONProtocolMap(t *testing.T) {
 	thetype := "map"
-	trans := transport.NewTMemoryBuffer()
+	trans := NewTMemoryBuffer()
 	p := NewTSimpleJSONProtocol(trans)
 	p.WriteMapBegin(TType(I32), TType(DOUBLE), len(DOUBLE_VALUES))
 	for k, value := range DOUBLE_VALUES {

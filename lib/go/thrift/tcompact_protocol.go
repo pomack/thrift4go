@@ -17,11 +17,9 @@
  * under the License.
  */
 
-package protocol
+package thrift
 
 import (
-	"thrift"
-	"thrift/transport"
 	"container/vector"
 	"encoding/binary"
 	"fmt"
@@ -83,12 +81,12 @@ func NewTCompactProtocolFactory() *TCompactProtocolFactory {
 	return &TCompactProtocolFactory{}
 }
 
-func (p *TCompactProtocolFactory) GetProtocol(trans transport.TTransport) TProtocol {
+func (p *TCompactProtocolFactory) GetProtocol(trans TTransport) TProtocol {
 	return NewTCompactProtocol(trans)
 }
 
 type TCompactProtocol struct {
-	trans transport.TTransport
+	trans TTransport
 
 	/** 
 	 * Used to keep track of the last field for the current and previous structs,
@@ -116,7 +114,7 @@ type TCompactProtocol struct {
  *
  * @param transport the TTransport object to read from or write to.
  */
-func NewTCompactProtocol(trans transport.TTransport) *TCompactProtocol {
+func NewTCompactProtocol(trans TTransport) *TCompactProtocol {
 	return &TCompactProtocol{trans: trans, lastField: &vector.IntVector{}}
 }
 
@@ -621,7 +619,7 @@ func (p *TCompactProtocol) Skip(fieldType TType) (err TProtocolException) {
 	return SkipDefaultDepth(p, fieldType)
 }
 
-func (p *TCompactProtocol) Transport() transport.TTransport {
+func (p *TCompactProtocol) Transport() TTransport {
 	return p.trans
 }
 
@@ -847,7 +845,7 @@ func (p *TCompactProtocol) getTType(t TCompactType) (TType, os.Error) {
 	case COMPACT_STRUCT:
 		return STRUCT, nil
 	}
-	return STOP, thrift.NewTException("don't know what type: " + string(t&0x0f))
+	return STOP, NewTException("don't know what type: " + string(t&0x0f))
 }
 
 /**

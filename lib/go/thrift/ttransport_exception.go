@@ -17,10 +17,9 @@
  * under the License.
  */
 
-package transport
+package thrift
 
 import (
-	"thrift"
 	"os"
 )
 
@@ -29,16 +28,16 @@ import (
  *
  */
 type TTransportException interface {
-	thrift.TException
+	TException
 	TypeId() int
 }
 
 const (
-	UNKNOWN      = 0
-	NOT_OPEN     = 1
-	ALREADY_OPEN = 2
-	TIMED_OUT    = 3
-	END_OF_FILE  = 4
+	UNKNOWN_TRANSPORT_EXCEPTION = 0
+	NOT_OPEN                    = 1
+	ALREADY_OPEN                = 2
+	TIMED_OUT                   = 3
+	END_OF_FILE                 = 4
 )
 
 type tTransportException struct {
@@ -55,7 +54,7 @@ func (p *tTransportException) String() string {
 }
 
 func NewTTransportExceptionDefault() TTransportException {
-	return NewTTransportExceptionDefaultType(UNKNOWN)
+	return NewTTransportExceptionDefaultType(UNKNOWN_TRANSPORT_EXCEPTION)
 }
 
 func NewTTransportExceptionDefaultType(t int) TTransportException {
@@ -63,7 +62,7 @@ func NewTTransportExceptionDefaultType(t int) TTransportException {
 }
 
 func NewTTransportExceptionDefaultString(m string) TTransportException {
-	return NewTTransportException(UNKNOWN, m)
+	return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, m)
 }
 
 func NewTTransportException(t int, m string) TTransportException {

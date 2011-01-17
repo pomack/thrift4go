@@ -17,11 +17,10 @@
  * under the License.
  */
 
-package protocol_test
+package thrift_test
 
 import (
-	. "thrift/protocol"
-	//"thrift/transport";
+  . "thrift"
 	"testing"
 	//"bytes";
 )

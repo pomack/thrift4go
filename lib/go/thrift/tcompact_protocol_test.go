@@ -17,11 +17,10 @@
  * under the License.
  */
 
-package protocol_test
+package thrift_test
 
 import (
-	. "thrift/protocol"
-	//"thrift/transport";
+  . "thrift"
 	"testing"
 	//"bytes";
 )
@@ -29,10 +28,10 @@ import (
 func TestReadWriteCompactProtocol(t *testing.T) {
 	ReadWriteProtocolTest(t, NewTCompactProtocolFactory())
 	/*
-	  transports := []transport.TTransport{
-	    transport.NewTMemoryBuffer(), 
-	    transport.NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 16384))),
-	    transport.NewTFramedTransport(transport.NewTMemoryBuffer()),
+	  transports := []TTransport{
+	    NewTMemoryBuffer(), 
+	    NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 16384))),
+	    NewTFramedTransport(NewTMemoryBuffer()),
 	  }
 	  for _, trans := range transports {
 	    p := NewTCompactProtocol(trans);

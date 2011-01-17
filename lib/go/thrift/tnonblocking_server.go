@@ -17,12 +17,9 @@
  * under the License.
  */
 
-package server
+package thrift
 
 import (
-	"thrift/base"
-	"thrift/protocol"
-	"thrift/transport"
 	"os"
 )
 
@@ -41,31 +38,31 @@ type TNonblockingServer struct {
 	/** Flag for stopping the server */
 	stopped bool
 
-	processorFactory       base.TProcessorFactory
-	serverTransport        transport.TServerTransport
-	inputTransportFactory  transport.TTransportFactory
-	outputTransportFactory transport.TTransportFactory
-	inputProtocolFactory   protocol.TProtocolFactory
-	outputProtocolFactory  protocol.TProtocolFactory
+	processorFactory       TProcessorFactory
+	serverTransport        TServerTransport
+	inputTransportFactory  TTransportFactory
+	outputTransportFactory TTransportFactory
+	inputProtocolFactory   TProtocolFactory
+	outputProtocolFactory  TProtocolFactory
 
 	seqId int32
 }
 
 
-func NewTNonblockingServer2(processor base.TProcessor, serverTransport transport.TServerTransport) *TNonblockingServer {
-	return NewTNonblockingServerFactory2(base.NewTProcessorFactory(processor), serverTransport)
+func NewTNonblockingServer2(processor TProcessor, serverTransport TServerTransport) *TNonblockingServer {
+	return NewTNonblockingServerFactory2(NewTProcessorFactory(processor), serverTransport)
 }
 
-func NewTNonblockingServer4(processor base.TProcessor, serverTransport transport.TServerTransport, transportFactory transport.TTransportFactory, protocolFactory protocol.TProtocolFactory) *TNonblockingServer {
-	return NewTNonblockingServerFactory4(base.NewTProcessorFactory(processor),
+func NewTNonblockingServer4(processor TProcessor, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TNonblockingServer {
+	return NewTNonblockingServerFactory4(NewTProcessorFactory(processor),
 		serverTransport,
 		transportFactory,
 		protocolFactory,
 	)
 }
 
-func NewTNonblockingServer6(processor base.TProcessor, serverTransport transport.TServerTransport, inputTransportFactory transport.TTransportFactory, outputTransportFactory transport.TTransportFactory, inputProtocolFactory protocol.TProtocolFactory, outputProtocolFactory protocol.TProtocolFactory) *TNonblockingServer {
-	return NewTNonblockingServerFactory6(base.NewTProcessorFactory(processor),
+func NewTNonblockingServer6(processor TProcessor, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TNonblockingServer {
+	return NewTNonblockingServerFactory6(NewTProcessorFactory(processor),
 		serverTransport,
 		inputTransportFactory,
 		outputTransportFactory,
@@ -74,17 +71,17 @@ func NewTNonblockingServer6(processor base.TProcessor, serverTransport transport
 	)
 }
 
-func NewTNonblockingServerFactory2(processorFactory base.TProcessorFactory, serverTransport transport.TServerTransport) *TNonblockingServer {
+func NewTNonblockingServerFactory2(processorFactory TProcessorFactory, serverTransport TServerTransport) *TNonblockingServer {
 	return NewTNonblockingServerFactory6(processorFactory,
 		serverTransport,
-		transport.NewTTransportFactory(),
-		transport.NewTTransportFactory(),
-		protocol.NewTBinaryProtocolFactoryDefault(),
-		protocol.NewTBinaryProtocolFactoryDefault(),
+		NewTTransportFactory(),
+		NewTTransportFactory(),
+		NewTBinaryProtocolFactoryDefault(),
+		NewTBinaryProtocolFactoryDefault(),
 	)
 }
 
-func NewTNonblockingServerFactory4(processorFactory base.TProcessorFactory, serverTransport transport.TServerTransport, transportFactory transport.TTransportFactory, protocolFactory protocol.TProtocolFactory) *TNonblockingServer {
+func NewTNonblockingServerFactory4(processorFactory TProcessorFactory, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TNonblockingServer {
 	return NewTNonblockingServerFactory6(processorFactory,
 		serverTransport,
 		transportFactory,
@@ -94,7 +91,7 @@ func NewTNonblockingServerFactory4(processorFactory base.TProcessorFactory, serv
 	)
 }
 
-func NewTNonblockingServerFactory6(processorFactory base.TProcessorFactory, serverTransport transport.TServerTransport, inputTransportFactory transport.TTransportFactory, outputTransportFactory transport.TTransportFactory, inputProtocolFactory protocol.TProtocolFactory, outputProtocolFactory protocol.TProtocolFactory) *TNonblockingServer {
+func NewTNonblockingServerFactory6(processorFactory TProcessorFactory, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TNonblockingServer {
 	return &TNonblockingServer{processorFactory: processorFactory,
 		serverTransport:        serverTransport,
 		inputTransportFactory:  inputTransportFactory,
@@ -104,27 +101,27 @@ func NewTNonblockingServerFactory6(processorFactory base.TProcessorFactory, serv
 	}
 }
 
-func (p *TNonblockingServer) ProcessorFactory() base.TProcessorFactory {
+func (p *TNonblockingServer) ProcessorFactory() TProcessorFactory {
 	return p.processorFactory
 }
 
-func (p *TNonblockingServer) ServerTransport() transport.TServerTransport {
+func (p *TNonblockingServer) ServerTransport() TServerTransport {
 	return p.serverTransport
 }
 
-func (p *TNonblockingServer) InputTransportFactory() transport.TTransportFactory {
+func (p *TNonblockingServer) InputTransportFactory() TTransportFactory {
 	return p.inputTransportFactory
 }
 
-func (p *TNonblockingServer) OutputTransportFactory() transport.TTransportFactory {
+func (p *TNonblockingServer) OutputTransportFactory() TTransportFactory {
 	return p.outputTransportFactory
 }
 
-func (p *TNonblockingServer) InputProtocolFactory() protocol.TProtocolFactory {
+func (p *TNonblockingServer) InputProtocolFactory() TProtocolFactory {
 	return p.inputProtocolFactory
 }
 
-func (p *TNonblockingServer) OutputProtocolFactory() protocol.TProtocolFactory {
+func (p *TNonblockingServer) OutputProtocolFactory() TProtocolFactory {
 	return p.outputProtocolFactory
 }
 
@@ -156,7 +153,7 @@ func (p *TNonblockingServer) IsStopped() bool {
 	return p.stopped
 }
 
-func (p *TNonblockingServer) processRequest(client transport.TTransport) {
+func (p *TNonblockingServer) processRequest(client TTransport) {
 	processor := p.processorFactory.GetProcessor(client)
 	inputTransport := p.inputTransportFactory.GetTransport(client)
 	outputTransport := p.outputTransportFactory.GetTransport(client)

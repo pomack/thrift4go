@@ -18,7 +18,7 @@
  */
 
 
-package protocol
+package thrift
 
 func CompareInt(i, j int) int {
 	if i > j {

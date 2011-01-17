@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package protocol
+package thrift
 
 import (
 	"container/list"

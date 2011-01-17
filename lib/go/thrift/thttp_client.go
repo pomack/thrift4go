@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package transport
+package thrift
 
 import (
 	"bytes"
@@ -139,7 +139,7 @@ func (p *THttpClient) Flush() os.Error {
 	}
 	if response.StatusCode != http.StatusOK {
 		// TODO(pomack) log bad response
-		return NewTTransportException(UNKNOWN, "HTTP Response code: "+string(response.StatusCode))
+		return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "HTTP Response code: "+string(response.StatusCode))
 	}
 	p.response = response
 	return nil

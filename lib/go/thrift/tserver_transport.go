@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package transport
+package thrift
 
 /**
  * Server transport. Object which provides client transports.

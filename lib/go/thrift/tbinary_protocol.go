@@ -17,10 +17,9 @@
  * under the License.
  */
 
-package protocol
+package thrift
 
 import (
-	"thrift/transport"
 	"encoding/binary"
 	"math"
 	"strings"
@@ -29,7 +28,7 @@ import (
 
 type TBinaryProtocol struct {
 	//TProtocolBase;
-	trans            transport.TTransport
+	trans            TTransport
 	_StrictRead      bool
 	_StrictWrite     bool
 	_ReadLength      int
@@ -41,11 +40,11 @@ type TBinaryProtocolFactory struct {
 	_StrictWrite bool
 }
 
-func NewTBinaryProtocolTransport(t transport.TTransport) *TBinaryProtocol {
+func NewTBinaryProtocolTransport(t TTransport) *TBinaryProtocol {
 	return NewTBinaryProtocol(t, false, true)
 }
 
-func NewTBinaryProtocol(t transport.TTransport, strictRead, strictWrite bool) *TBinaryProtocol {
+func NewTBinaryProtocol(t TTransport, strictRead, strictWrite bool) *TBinaryProtocol {
 	//return &TBinaryProtocol{TProtocolBase:TProtocolBase{trans:t}, _StrictRead:strictRead, _StrictWrite:strictWrite, _ReadLength:0, _CheckReadLength:false};
 	return &TBinaryProtocol{trans: t, _StrictRead: strictRead, _StrictWrite: strictWrite, _ReadLength: 0, _CheckReadLength: false}
 }
@@ -58,7 +57,7 @@ func NewTBinaryProtocolFactory(strictRead, strictWrite bool) *TBinaryProtocolFac
 	return &TBinaryProtocolFactory{_StrictRead: strictRead, _StrictWrite: strictWrite}
 }
 
-func (p *TBinaryProtocolFactory) GetProtocol(t transport.TTransport) TProtocol {
+func (p *TBinaryProtocolFactory) GetProtocol(t TTransport) TProtocol {
 	return NewTBinaryProtocol(t, p._StrictRead, p._StrictWrite)
 }
 
@@ -451,7 +450,7 @@ func (p *TBinaryProtocol) Skip(fieldType TType) (err TProtocolException) {
 	return SkipDefaultDepth(p, fieldType)
 }
 
-func (p *TBinaryProtocol) Transport() transport.TTransport {
+func (p *TBinaryProtocol) Transport() TTransport {
 	return p.trans
 }
 
@@ -473,7 +472,7 @@ func (p *TBinaryProtocol) checkReadLength(length int) TProtocolException {
 	if p._CheckReadLength {
 		p._ReadLength = p._ReadLength - length
 		if p._ReadLength < 0 {
-			return NewTProtocolException(UNKNOWN, "Message length exceeded: "+string(length))
+			return NewTProtocolException(UNKNOWN_PROTOCOL_EXCEPTION, "Message length exceeded: "+string(length))
 		}
 	}
 	return nil

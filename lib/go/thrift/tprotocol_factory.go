@@ -17,16 +17,12 @@
  * under the License.
  */
 
-package protocol
-
-import (
-	"thrift/transport"
-)
+package thrift
 
 /**
  * Factory interface for constructing protocol instances.
  *
  */
 type TProtocolFactory interface {
-	GetProtocol(trans transport.TTransport) TProtocol
+	GetProtocol(trans TTransport) TProtocol
 }

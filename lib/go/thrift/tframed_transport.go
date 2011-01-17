@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package transport
+package thrift
 
 import (
 	"encoding/binary"
@@ -118,7 +118,7 @@ func (p *TFramedTransport) readFrame() (int, os.Error) {
 	size := int(binary.BigEndian.Uint32(buf))
 	if size < 0 {
 		// TODO(pomack) log error
-		return 0, NewTTransportException(UNKNOWN, "Read a negative frame size ("+string(size)+")")
+		return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "Read a negative frame size ("+string(size)+")")
 	}
 	if size == 0 {
 		return 0, nil

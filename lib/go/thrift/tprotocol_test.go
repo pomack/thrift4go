@@ -17,42 +17,39 @@
  * under the License.
  */
 
-package protocol_test
+package thrift_test
 
 import (
-	. "thrift/protocol"
-	"thrift/transport"
+	. "thrift"
 	"testing"
 	"http"
 	"math"
 	"net"
 	"io"
-	"os"
-	"strconv"
 	"bytes"
 )
 
-const N = 155
+const PROTOCOL_BINARY_DATA_SIZE = 155
 
 var (
-	data          string // test data for writing
-	bdata         []byte // test data for writing; same as data
-	BOOL_VALUES   []bool
-	BYTE_VALUES   []byte
-	INT16_VALUES  []int16
-	INT32_VALUES  []int32
-	INT64_VALUES  []int64
-	DOUBLE_VALUES []float64
-	STRING_VALUES []string
+	data           string // test data for writing
+	protocol_bdata []byte // test data for writing; same as data
+	BOOL_VALUES    []bool
+	BYTE_VALUES    []byte
+	INT16_VALUES   []int16
+	INT32_VALUES   []int32
+	INT64_VALUES   []int64
+	DOUBLE_VALUES  []float64
+	STRING_VALUES  []string
 )
 
 
 func init() {
-	bdata = make([]byte, N)
-	for i := 0; i < N; i++ {
-		bdata[i] = byte((i + 'a') % 255)
+	protocol_bdata = make([]byte, PROTOCOL_BINARY_DATA_SIZE)
+	for i := 0; i < PROTOCOL_BINARY_DATA_SIZE; i++ {
+		protocol_bdata[i] = byte((i + 'a') % 255)
 	}
-	data = string(bdata)
+	data = string(protocol_bdata)
 	BOOL_VALUES = []bool{false, true, false, false, true}
 	BYTE_VALUES = []byte{117, 0, 1, 32, 127, 128, 255}
 	INT16_VALUES = []int16{459, 0, 1, -1, -128, 127, 32767, -32768}
@@ -83,73 +80,60 @@ func HttpClientSetupForTest(t *testing.T) (net.Listener, net.Addr) {
 }
 
 
-func FindAvailableTCPServerPort(startPort int) (net.Addr, os.Error) {
-	for i := startPort; i < 65535; i++ {
-		s := "127.0.0.1:" + strconv.Itoa(i)
-		l, err := net.Listen("tcp", s)
-		if err == nil {
-			l.Close()
-			return net.ResolveTCPAddr(s)
-		}
-	}
-	return nil, NewTProtocolException(UNKNOWN, "Could not find available server port")
-}
-
-
-func ReadWriteProtocolTest(t *testing.T, protocol TProtocolFactory) {
+func ReadWriteProtocolTest(t *testing.T, protocolFactory TProtocolFactory) {
 	buf := bytes.NewBuffer(make([]byte, 0, 1024))
 	l, addr := HttpClientSetupForTest(t)
-	transports := []transport.TTransportFactory{
-		transport.NewTMemoryBufferTransportFactory(1024),
-		transport.NewTIOStreamTransportFactory(buf, buf, true),
-		transport.NewTFramedTransportFactory(transport.NewTMemoryBufferTransportFactory(1024)),
-		transport.NewTHttpPostClientTransportFactory("http://" + addr.String()),
+	transports := []TTransportFactory{
+		NewTMemoryBufferTransportFactory(1024),
+		NewTIOStreamTransportFactory(buf, buf, true),
+		NewTFramedTransportFactory(NewTMemoryBufferTransportFactory(1024)),
+		NewTHttpPostClientTransportFactory("http://" + addr.String()),
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteBool(t, p, trans)
 		trans.Close()
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteByte(t, p, trans)
 		trans.Close()
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteI16(t, p, trans)
 		trans.Close()
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteI32(t, p, trans)
 		trans.Close()
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteI64(t, p, trans)
 		trans.Close()
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteDouble(t, p, trans)
 		trans.Close()
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteString(t, p, trans)
 		trans.Close()
 	}
 	for _, tf := range transports {
 		trans := tf.GetTransport(nil)
-		p := protocol.GetProtocol(trans)
+		p := protocolFactory.GetProtocol(trans)
 		ReadWriteBinary(t, p, trans)
 		trans.Close()
 	}
@@ -158,7 +142,7 @@ func ReadWriteProtocolTest(t *testing.T, protocol TProtocolFactory) {
 	// buffer read and buffer write when using the same bufio for both
 	//for _, tf := range transports {
 	//  trans := tf.GetTransport(nil)
-	//  p := protocol.GetProtocol(trans);
+	//  p := GetProtocol(trans);
 	//  ReadWriteI64(t, p, trans);
 	//  ReadWriteDouble(t, p, trans);
 	//  ReadWriteBinary(t, p, trans);
@@ -169,7 +153,7 @@ func ReadWriteProtocolTest(t *testing.T, protocol TProtocolFactory) {
 	l.Close()
 }
 
-func ReadWriteBool(t *testing.T, p TProtocol, trans transport.TTransport) {
+func ReadWriteBool(t *testing.T, p TProtocol, trans TTransport) {
 	err := p.WriteBool(true)
 	if err != nil {
 		t.Errorf("%s: %T %T %q Error writing bool: %q", "ReadWriteBool", p, trans, err, true)
@@ -232,7 +216,7 @@ func ReadWriteBool(t *testing.T, p TProtocol, trans transport.TTransport) {
 	}
 }
 
-func ReadWriteByte(t *testing.T, p TProtocol, trans transport.TTransport) {
+func ReadWriteByte(t *testing.T, p TProtocol, trans TTransport) {
 	thetype := TType(BYTE)
 	thelen := len(BYTE_VALUES)
 	err := p.WriteListBegin(thetype, thelen)
@@ -281,7 +265,7 @@ func ReadWriteByte(t *testing.T, p TProtocol, trans transport.TTransport) {
 	}
 }
 
-func ReadWriteI16(t *testing.T, p TProtocol, trans transport.TTransport) {
+func ReadWriteI16(t *testing.T, p TProtocol, trans TTransport) {
 	thetype := TType(I16)
 	thelen := len(INT16_VALUES)
 	p.WriteListBegin(thetype, thelen)
@@ -318,7 +302,7 @@ func ReadWriteI16(t *testing.T, p TProtocol, trans transport.TTransport) {
 	}
 }
 
-func ReadWriteI32(t *testing.T, p TProtocol, trans transport.TTransport) {
+func ReadWriteI32(t *testing.T, p TProtocol, trans TTransport) {
 	thetype := TType(I32)
 	thelen := len(INT32_VALUES)
 	p.WriteListBegin(thetype, thelen)
@@ -354,7 +338,7 @@ func ReadWriteI32(t *testing.T, p TProtocol, trans transport.TTransport) {
 	}
 }
 
-func ReadWriteI64(t *testing.T, p TProtocol, trans transport.TTransport) {
+func ReadWriteI64(t *testing.T, p TProtocol, trans TTransport) {
 	thetype := TType(I64)
 	thelen := len(INT64_VALUES)
 	p.WriteListBegin(thetype, thelen)
@@ -390,7 +374,7 @@ func ReadWriteI64(t *testing.T, p TProtocol, trans transport.TTransport) {
 	}
 }
 
-func ReadWriteDouble(t *testing.T, p TProtocol, trans transport.TTransport) {
+func ReadWriteDouble(t *testing.T, p TProtocol, trans TTransport) {
 	thetype := TType(DOUBLE)
 	thelen := len(DOUBLE_VALUES)
 	p.WriteListBegin(thetype, thelen)
@@ -400,7 +384,7 @@ func ReadWriteDouble(t *testing.T, p TProtocol, trans transport.TTransport) {
 	p.WriteListEnd()
 	p.Flush()
 	wrotebuffer := ""
-	if memtrans, ok := trans.(*transport.TMemoryBuffer); ok {
+	if memtrans, ok := trans.(*TMemoryBuffer); ok {
 		wrotebuffer = memtrans.String()
 	}
 	thetype2, thelen2, err := p.ReadListBegin()
@@ -434,7 +418,7 @@ func ReadWriteDouble(t *testing.T, p TProtocol, trans transport.TTransport) {
 	}
 }
 
-func ReadWriteString(t *testing.T, p TProtocol, trans transport.TTransport) {
+func ReadWriteString(t *testing.T, p TProtocol, trans TTransport) {
 	thetype := TType(STRING)
 	thelen := len(STRING_VALUES)
 	p.WriteListBegin(thetype, thelen)
@@ -471,8 +455,8 @@ func ReadWriteString(t *testing.T, p TProtocol, trans transport.TTransport) {
 }
 
 
-func ReadWriteBinary(t *testing.T, p TProtocol, trans transport.TTransport) {
-	v := bdata
+func ReadWriteBinary(t *testing.T, p TProtocol, trans TTransport) {
+	v := protocol_bdata
 	p.WriteBinary(v)
 	p.Flush()
 	value, err := p.ReadBinary()

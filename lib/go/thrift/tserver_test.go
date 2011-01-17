@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package server_test
+package thrift_test
 
 import (
 	"testing"

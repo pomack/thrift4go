@@ -17,19 +17,19 @@
  * under the License.
  */
 
-package base_test
+package thrift_test
 
 import (
-	. "thrift/base"
+	. "thrift"
 	"testing"
 )
 
 func TestTApplicationException(t *testing.T) {
-	exc := NewTApplicationException(UNKNOWN, "")
+	exc := NewTApplicationException(UNKNOWN_APPLICATION_EXCEPTION, "")
 	if exc.String() != "" {
 		t.Fatalf("Expected empty string for exception but found '%s'", exc.String())
 	}
-	if exc.TypeId() != UNKNOWN {
+	if exc.TypeId() != UNKNOWN_APPLICATION_EXCEPTION {
 		t.Fatalf("Expected type UNKNOWN for exception but found '%s'", exc.TypeId())
 	}
 	exc = NewTApplicationException(WRONG_METHOD_NAME, "junk_method")

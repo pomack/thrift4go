@@ -17,22 +17,14 @@
  * under the License.
  */
 
-package transport_test
+package thrift_test
 
 import (
-	. "thrift/transport"
+	. "thrift"
 	"testing"
 	"http"
-	"io"
 	"net"
 )
-
-type HTTPEchoServer struct{}
-
-func (p *HTTPEchoServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	io.Copy(w, req.Body)
-}
 
 func TestHttpClient(t *testing.T) {
 	addr, err := FindAvailableTCPServerPort(40000)

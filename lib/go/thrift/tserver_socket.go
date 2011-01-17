@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package transport
+package thrift
 
 import (
 	"net"
@@ -131,7 +131,7 @@ func (p *TServerSocket) Open() os.Error {
  * Perform a nonblocking read into buffer.
  */
 func (p *TServerSocket) Read(buf []byte) (int, os.Error) {
-	return 0, NewTTransportException(UNKNOWN, "TServerSocket.Read([]byte) is not implemented")
+	return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TServerSocket.Read([]byte) is not implemented")
 }
 
 func (p *TServerSocket) ReadAll(buf []byte) (int, os.Error) {
@@ -142,14 +142,14 @@ func (p *TServerSocket) ReadAll(buf []byte) (int, os.Error) {
  * Perform a nonblocking write of the data in buffer;
  */
 func (p *TServerSocket) Write(buf []byte) (int, os.Error) {
-	return 0, NewTTransportException(UNKNOWN, "TServerSocket.Write([]byte) is not implemented")
+	return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TServerSocket.Write([]byte) is not implemented")
 }
 
 /**
  * Flushes the underlying output stream if not null.
  */
 func (p *TServerSocket) Flush() os.Error {
-	return NewTTransportException(UNKNOWN, "TServerSocket.Flush() is not implemented")
+	return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TServerSocket.Flush() is not implemented")
 }
 
 func (p *TServerSocket) Addr() net.Addr {

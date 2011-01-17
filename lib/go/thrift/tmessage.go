@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package protocol
+package thrift
 
 /**
  * Helper class that encapsulates struct metadata.

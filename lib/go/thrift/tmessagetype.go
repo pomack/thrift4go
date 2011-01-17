@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package protocol
+package thrift
 
 /**
  * Message type constants in the Thrift protocol.
@@ -26,7 +26,7 @@ package protocol
 type TMessageType int32
 
 const (
-	INVALID_MESSAGE_TYPE TMessageType = 0
+	INVALID_TMESSAGE_TYPE TMessageType = 0
 	CALL                 TMessageType = 1
 	REPLY                TMessageType = 2
 	EXCEPTION            TMessageType = 3

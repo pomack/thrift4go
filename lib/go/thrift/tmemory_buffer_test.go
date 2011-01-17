@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package transport_test
+package thrift_test
 
 import (
-	. "thrift/transport"
+	. "thrift"
 	"testing"
 )
 
