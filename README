@@ -4,10 +4,12 @@ Currently generates code for the following protocols:
 1) Binary Protocol (with test cases)
 2) Fast Binary Protocol (with test cases)
 3) Services (compiles, but never tested)
-4) A (custom) simple JSON Protocol
+4) A (custom) simple JSON Protocol (with test cases)
 
 Tested on Mac OS X 10.6 (Snow Leopard)
 
-Requires modifications to Go's src/pkg/bufio/bufio.go and src/pkg/bufio/bufio_test.go
-bufio.go does not natively support incrementally reading and writing from the same buffer, which is necessary in the testcases provided.
-The modifications are in the golang-src-modifications directory
+To install in your Go Repository do:
+goinstall github.com/pomack/thrift4go/lib/go/thrift
+goinstall -a -log
+
+
