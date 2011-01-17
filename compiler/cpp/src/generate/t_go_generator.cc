@@ -391,8 +391,8 @@ string t_go_generator::go_imports() {
   return
     string("import (\n"
            "        \"thrift\"\n"
-//           "        \"strings\";\n"
-           "        \"fmt\";\n"
+//           "        \"strings\"\n"
+           "        \"fmt\"\n"
            ")\n\n");
 }
 
@@ -1111,7 +1111,6 @@ void t_go_generator::generate_service(t_service* tservice) {
   f_service_ <<
                 "import (" << endl <<
     indent() << "        \"os\"" << endl <<
-    indent() << "        \"thrift\"" << endl <<
     indent() << ")" << endl << endl <<
     render_fastbinary_includes();
 
