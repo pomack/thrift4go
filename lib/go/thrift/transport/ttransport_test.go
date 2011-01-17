@@ -87,9 +87,13 @@ func TransportTest(t *testing.T, writeTrans TTransport, readTrans TTransport) {
 		t.Errorf("Transport %T returned %s for Peek()", readTrans, b)
 	}
 	buf = make([]byte, N)
-	n, err = readTrans.Read(buf)
-	if err != nil {
-		t.Errorf("Transport %T cannot read binary data 2 of length %d: %s", readTrans, N, err)
+	read := 1
+	for n = 0; n < N && read != 0; {
+	  read, err = readTrans.Read(buf[n:])
+  	if err != nil {
+  		t.Errorf("Transport %T cannot read binary data 2 of total length %d from offset %d: %s", readTrans, N, n, err)
+  	}
+  	n += read
 	}
 	if n != N {
 		t.Errorf("Transport %T read only %d instead of %d bytes of binary data 2", readTrans, n, N)
