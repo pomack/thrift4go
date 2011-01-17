@@ -1,5 +1,1 @@
 thrift/.install:
-thrift/transport.install:
-thrift/protocol.install: thrift/transport.install
-thrift/base.install: thrift/protocol.install thrift/transport.install
-thrift/server.install: thrift/base.install thrift/protocol.install thrift/transport.install

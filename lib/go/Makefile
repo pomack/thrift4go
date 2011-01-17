@@ -3,16 +3,6 @@ all: install
 
 DIRS=\
      thrift/\
-     thrift/transport\
-     thrift/protocol\
-     thrift/base\
-     thrift/server\
-
-TEST=\
-    thrift/transport\
-    thrift/protocol\
-    thrift/base\
-    thrift/server\
 
 TEST=\
 	$(filter-out $(NOTEST),$(DIRS))
