@@ -300,7 +300,7 @@ void t_go_generator::init_generator() {
     endl <<
     "include $(GOROOT)/src/Make.inc" << endl << endl <<
     "all: install" << endl << endl <<
-    "TARG=" << target << endl << endl <<
+    "TARG=thriftlib/" << target << endl << endl <<
     "DIRS=\\" << endl;
   for (sv_iter = services.begin(); sv_iter != services.end(); ++sv_iter) {
     f_init << "  " << (*sv_iter)->get_name() << "\\" << endl;
@@ -326,11 +326,11 @@ void t_go_generator::init_generator() {
       endl <<
       "include $(GOROOT)/src/Make.inc" << endl << endl <<
       "all: install" << endl << endl <<
-      "TARG=" << target << "Remote" << endl << endl <<
+      "TARG=" << target << "-remote" << endl << endl <<
       "DIRS=\\" << endl << endl <<
       "GOFILES=\\" << endl <<
       "  " << (*sv_iter)->get_name() << "-remote.go\\" << endl << endl <<
-      "include $(GOROOT)/src/Make.pkg" << endl << endl;
+      "include $(GOROOT)/src/Make.cmd" << endl << endl;
     f_init.close();
   }
 
@@ -1461,7 +1461,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
 
   f_remote <<
     go_autogen_comment() <<
-    indent() << "package " << service_name_ << "Remote" << endl << endl <<
+    indent() << "package main" << endl << endl <<
     indent() << "import (" << endl <<
     indent() << "        \"flag\"" << endl <<
     indent() << "        \"fmt\"" << endl <<
@@ -1470,7 +1470,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "        \"os\"" << endl <<
     indent() << "        \"strconv\"" << endl <<
     indent() << "        \"thrift\"" << endl <<
-    indent() << "        \"" << service_module << "\"" << endl <<
+    indent() << "        \"thriftlib/" << service_module << "\"" << endl <<
     indent() << ")" << endl <<
     indent() << endl <<
     indent() << "func Usage() {" << endl <<
