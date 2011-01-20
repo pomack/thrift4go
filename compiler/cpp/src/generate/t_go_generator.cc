@@ -326,7 +326,7 @@ void t_go_generator::init_generator() {
       endl <<
       "include $(GOROOT)/src/Make.inc" << endl << endl <<
       "all: install" << endl << endl <<
-      "TARG=" << target << "-remote" << endl << endl <<
+      "TARG=" << publicize((*sv_iter)->get_name()) << "-remote" << endl << endl <<
       "DIRS=\\" << endl << endl <<
       "GOFILES=\\" << endl <<
       "  " << (*sv_iter)->get_name() << "-remote.go\\" << endl << endl <<
@@ -1377,6 +1377,11 @@ void t_go_generator::generate_service_client(t_service* tservice) {
         f_service_ <<
           "value " << type_to_go_type((*f_iter)->get_returntype()) << ", ";
       }
+      t_struct* exceptions = (*f_iter)->get_xceptions();
+      string errs = argument_list(exceptions);
+      if(errs.size()) {
+        f_service_ << errs << ", ";
+      }
       f_service_ << 
         "err os.Error) {" << endl;
       indent_up();
@@ -1384,17 +1389,19 @@ void t_go_generator::generate_service_client(t_service* tservice) {
       // TODO(mcslee): Validate message reply here, seq ids etc.
       
       string result(tmp("result"));
+      string error(tmp("error"));
+      string error2(tmp("error"));
       
       f_service_ <<
         indent() << "_, mTypeId, _, err := p.iprot.ReadMessageBegin()" << endl <<
         indent() << "if err != nil { return }" << endl <<
         indent() << "if mTypeId == thrift.EXCEPTION {" << endl <<
-        indent() << "  error := thrift.NewTApplicationExceptionDefault()" << endl <<
-        indent() << "  error, err := error.Read(p.iprot)" << endl <<
+        indent() << "  " << error << " := thrift.NewTApplicationExceptionDefault()" << endl <<
+        indent() << "  " << error2 << ", err := " << error << ".Read(p.iprot)" << endl <<
         indent() << "  if err != nil { return }" << endl <<
         indent() << "  err = p.iprot.ReadMessageEnd()" << endl <<
         indent() << "  if err != nil { return }" << endl <<
-        indent() << "  err = error" << endl <<
+        indent() << "  err = " << error2 << endl <<
         indent() << "  return" << endl <<
         indent() << "}" << endl <<
         indent() << result << " := New" << publicize(resultname) << "()" << endl <<
@@ -1406,29 +1413,19 @@ void t_go_generator::generate_service_client(t_service* tservice) {
         f_service_ <<
           indent() << "value = " << result << ".Success" << endl;
       }
-      f_service_ <<
-        indent() << "return" << endl;
       
-      /*
       t_struct* xs = (*f_iter)->get_xceptions();
       const std::vector<t_field*>& xceptions = xs->get_members();
       vector<t_field*>::const_iterator x_iter;
       for (x_iter = xceptions.begin(); x_iter != xceptions.end(); ++x_iter) {
         f_service_ <<
-          indent() << "if result." << (*x_iter)->get_name() << " != nil {" << endl <<
-          indent() << "  return d.errback(result." << (*x_iter)->get_name() << ")" << endl <<
+          indent() << "if " << result << "." << publicize((*x_iter)->get_name()) << " != nil {" << endl <<
+          indent() << "  " << (*x_iter)->get_name() << " = " << result << "." << publicize((*x_iter)->get_name()) << endl <<
           indent() << "}" << endl;
       }
-
-      // Careful, only return _result if not a void function
-      if ((*f_iter)->get_returntype()->is_void()) {
-        f_service_ <<
-          indent() << "return d.callback(nil)" << endl;
-      } else {
-        f_service_ <<
-          indent() << "return d.errback(thrift.NewTApplicationException(thrift.TApplicationException.MISSING_RESULT, \"" << (*f_iter)->get_name() << " failed: unknown result\"))" << endl;
-      }
-      */
+      
+      f_service_ <<
+        indent() << "return" << endl;
       // Close function
       indent_down();
       f_service_ <<
@@ -1874,10 +1871,18 @@ void t_go_generator::generate_process_function(t_service* tservice,
     indent() << "iprot.ReadMessageEnd()" << endl <<
     indent() << "result := New" << resultname << "()" << endl <<
     indent();
-  if (!tfunction->is_oneway() && !tfunction->get_returntype()->is_void()) {
-    f_service_ <<
-      indent() << "result.Success, ";
+  if (!tfunction->is_oneway()) {
+    if(!tfunction->get_returntype()->is_void()) {
+      f_service_ << "result.Success, ";
+    }
+    t_struct* exceptions = tfunction->get_xceptions();
+    const vector<t_field*>& fields = exceptions->get_members();
+    vector<t_field*>::const_iterator f_iter;
+    for (f_iter = fields.begin(); f_iter != fields.end(); ++f_iter) {
+      f_service_ << "result." << publicize((*f_iter)->get_name()) << ", ";
+    }
   }
+  
   
   // Generate the function call
   t_struct* arg_struct = tfunction->get_arglist();
@@ -2584,22 +2589,20 @@ string t_go_generator::function_signature_if(t_function* tfunction,
   string signature = publicize(prefix + tfunction->get_name()) + "(";
   signature += argument_list(tfunction->get_arglist()) + ") (";
   t_type* ret = tfunction->get_returntype();
-  //t_struct* exceptions = tfunction->get_xceptions();
-  //string errs = argument_list(exceptions);
+  t_struct* exceptions = tfunction->get_xceptions();
+  string errs = argument_list(exceptions);
   string retval(tmp("retval"));
   if(!ret->is_void()) {
     signature += retval + " " + type_to_go_type(ret);
-    if(addOsError) {// || errs.size()==0) {
+    if(addOsError || errs.size()==0) {
       signature += ", ";
     }
   }
-  /*
   if(errs.size()>0) {
     signature += errs;
     if(addOsError)
       signature += ", ";
   }
-  */
   if(addOsError) {
     signature += "err os.Error";
   }
