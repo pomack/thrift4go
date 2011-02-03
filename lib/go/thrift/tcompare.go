@@ -83,7 +83,7 @@ func CompareString(i, j string) int {
 	return 0
 }
 
-func CompareFloat(i, j float) int {
+func CompareFloat(i, j float32) int {
 	if i > j {
 		return 1
 	}

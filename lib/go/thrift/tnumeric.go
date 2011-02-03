@@ -33,7 +33,6 @@ type Numeric interface {
 	Int() int
 	Float64() float64
 	Float32() float32
-	Float() float
 	String() string
 	isNull() bool
 }
@@ -147,10 +146,6 @@ func (p *numeric) Float64() float64 {
 
 func (p *numeric) Float32() float32 {
 	return float32(p.dValue)
-}
-
-func (p *numeric) Float() float {
-	return float(p.dValue)
 }
 
 func (p *numeric) String() string {

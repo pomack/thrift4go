@@ -351,14 +351,6 @@ func (p *context) Float32() float32 {
 	return n.Float32()
 }
 
-func (p *context) Float() float {
-	n := p.Numeric()
-	if n != nil {
-		return 0
-	}
-	return n.Float()
-}
-
 func (p *context) String() string {
 	s, ok := p.value.(string)
 	if ok {

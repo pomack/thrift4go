@@ -231,9 +231,6 @@ func (p TType) Coerce(other interface{}) TType {
 	if b, ok := other.(uint64); ok {
 		return TType(byte(b))
 	}
-	if b, ok := other.(float); ok {
-		return TType(byte(b))
-	}
 	if b, ok := other.(float32); ok {
 		return TType(byte(int(b)))
 	}
@@ -473,7 +470,7 @@ func TypeFromValue(data interface{}) TType {
 	switch t.Kind() {
 	case reflect.Bool:
 		return BOOL
-	case reflect.Float, reflect.Float32, reflect.Float64:
+	case reflect.Float32, reflect.Float64:
 		return DOUBLE
 	case reflect.Int:
 		return I32
@@ -584,9 +581,6 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		if b, ok := data.(uint64); ok {
 			return b != 0, true
 		}
-		if b, ok := data.(float); ok {
-			return b != 0.0, true
-		}
 		if b, ok := data.(float32); ok {
 			return b != 0.0, true
 		}
@@ -646,9 +640,6 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		if b, ok := data.(uint64); ok {
 			return byte(b), true
 		}
-		if b, ok := data.(float); ok {
-			return byte(int(b)), true
-		}
 		if b, ok := data.(float32); ok {
 			return byte(int(b)), true
 		}
@@ -666,9 +657,6 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		}
 		return byte(0), false
 	case DOUBLE:
-		if b, ok := data.(float); ok {
-			return float64(b), true
-		}
 		if b, ok := data.(float32); ok {
 			return float64(b), true
 		}
@@ -770,9 +758,6 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		if b, ok := data.(uint64); ok {
 			return int16(b), true
 		}
-		if b, ok := data.(float); ok {
-			return int16(int(b)), true
-		}
 		if b, ok := data.(float32); ok {
 			return int16(int(b)), true
 		}
@@ -832,9 +817,6 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		if b, ok := data.(uint64); ok {
 			return int32(b), true
 		}
-		if b, ok := data.(float); ok {
-			return int32(int(b)), true
-		}
 		if b, ok := data.(float32); ok {
 			return int32(int(b)), true
 		}
@@ -892,9 +874,6 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 			return int64(b), true
 		}
 		if b, ok := data.(uint64); ok {
-			return int64(b), true
-		}
-		if b, ok := data.(float); ok {
 			return int64(b), true
 		}
 		if b, ok := data.(float32); ok {
@@ -964,9 +943,6 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		}
 		if b, ok := data.(uint64); ok {
 			return string(b), true
-		}
-		if b, ok := data.(float); ok {
-			return strconv.Ftoa(b, 'g', -1), true
 		}
 		if b, ok := data.(float32); ok {
 			return strconv.Ftoa32(b, 'g', -1), true
