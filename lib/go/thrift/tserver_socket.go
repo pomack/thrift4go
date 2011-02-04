@@ -86,16 +86,23 @@ func NewTServerSocketAddrTimeout(addr net.Addr, nsecClientTimeout int64) (*TServ
 	return s, nil
 }
 
-func (p *TServerSocket) Listen() TTransportException {
-	if p.conn != nil {
-		p.conn.SetTimeout(p.nsecClientTimeout)
-	}
+func (p *TServerSocket) Listen() (err os.Error) {
+  if p.listener == nil {
+    if p.listener, err = net.Listen("tcp", p.addr.String()); err != nil {
+      return err
+    }
+  }
 	return nil
 }
 
-func (p *TServerSocket) Accept() (*TSocket, TTransportException) {
+func (p *TServerSocket) Accept() (TTransport, os.Error) {
 	if p.listener == nil {
-		return nil, NewTTransportException(NOT_OPEN, "No underlying server socket")
+	  if err := p.Listen(); err != nil {
+	    return nil, NewTTransportExceptionFromOsError(err)
+	  }
+	  if p.listener == nil {
+		  return nil, NewTTransportException(NOT_OPEN, "No underlying server socket")
+	  }
 	}
 	conn, err := p.listener.Accept()
 	if err != nil {
@@ -181,7 +188,7 @@ func (p *TServerSocket) Close() (err os.Error) {
 	return nil
 }
 
-func (p *TServerSocket) Interrupt() TTransportException {
+func (p *TServerSocket) Interrupt() os.Error {
 	// TODO(pomack) fix Interrupt as it is probably not right
 	return NewTTransportExceptionFromOsError(p.Close())
 }

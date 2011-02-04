@@ -68,6 +68,10 @@ func NewTNonblockingServerSocketAddr(addr net.Addr) (*TNonblockingServerSocket, 
 	return s, nil
 }
 
+func (p *TNonblockingServerSocket) Listen() os.Error {
+  return p.Open()
+}
+
 /**
  * Sets the socket timeout
  *
@@ -129,7 +133,7 @@ func (p *TNonblockingServerSocket) Addr() net.Addr {
 	return p.addr
 }
 
-func (p *TNonblockingServerSocket) Accept() (*TSocket, TTransportException) {
+func (p *TNonblockingServerSocket) Accept() (TTransport, os.Error) {
 	if !p.IsOpen() {
 		return nil, NewTTransportException(NOT_OPEN, "No underlying server socket")
 	}
