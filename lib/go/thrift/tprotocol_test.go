@@ -27,6 +27,7 @@ import (
 	"net"
 	"io"
 	"bytes"
+	"fmt"
 )
 
 const PROTOCOL_BINARY_DATA_SIZE = 155
@@ -137,6 +138,12 @@ func ReadWriteProtocolTest(t *testing.T, protocolFactory TProtocolFactory) {
 		ReadWriteBinary(t, p, trans)
 		trans.Close()
 	}
+  for _, tf := range transports {
+  	trans := tf.GetTransport(nil)
+  	p := protocolFactory.GetProtocol(trans)
+  	ReadWriteWork(t, p, trans)
+  	trans.Close()
+  }
 
 	// this test doesn't work in all cases due to EOF issues between
 	// buffer read and buffer write when using the same bufio for both
@@ -149,22 +156,14 @@ func ReadWriteProtocolTest(t *testing.T, protocolFactory TProtocolFactory) {
 	//  ReadWriteByte(t, p, trans);
 	//  trans.Close()
 	//}
-
+  
 	l.Close()
 }
 
 func ReadWriteBool(t *testing.T, p TProtocol, trans TTransport) {
-	err := p.WriteBool(true)
-	if err != nil {
-		t.Errorf("%s: %T %T %q Error writing bool: %q", "ReadWriteBool", p, trans, err, true)
-	}
-	err = p.WriteBool(false)
-	if err != nil {
-		t.Errorf("%s: %T %T %q Error writing bool: %q", "ReadWriteBool", p, trans, err, false)
-	}
 	thetype := TType(BOOL)
 	thelen := len(BOOL_VALUES)
-	err = p.WriteListBegin(thetype, thelen)
+	err := p.WriteListBegin(thetype, thelen)
 	if err != nil {
 		t.Errorf("%s: %T %T %q Error writing list begin: %q", "ReadWriteBool", p, trans, err, thetype)
 	}
@@ -179,15 +178,6 @@ func ReadWriteBool(t *testing.T, p TProtocol, trans TTransport) {
 		t.Errorf("%s: %T %T %q Error writing list end: %q", "ReadWriteBool", p, trans, err, BOOL_VALUES)
 	}
 	p.Flush()
-	for _, v := range []bool{true, false} {
-		value, err := p.ReadBool()
-		if err != nil {
-			t.Errorf("%s: %T %T %q Error reading bool: %q", "ReadWriteBool", p, trans, err, v)
-		}
-		if value != v {
-			t.Errorf("%s: %T %T %d != %d", "ReadWriteBool", p, trans, v, value)
-		}
-	}
 	thetype2, thelen2, err := p.ReadListBegin()
 	if err != nil {
 		t.Errorf("%s: %T %T %q Error reading list: %q", "ReadWriteBool", p, trans, err, BOOL_VALUES)
@@ -391,14 +381,11 @@ func ReadWriteDouble(t *testing.T, p TProtocol, trans TTransport) {
 	if err != nil {
 		t.Errorf("%s: %T %T %q Error reading list: %q, wrote: %v", "ReadWriteDouble", p, trans, err, DOUBLE_VALUES, wrotebuffer)
 	}
-	_, ok := p.(*TSimpleJSONProtocol)
-	if !ok {
-		if thetype != thetype2 {
-			t.Errorf("%s: %T %T type %s != type %s", "ReadWriteDouble", p, trans, thetype, thetype2)
-		}
-		if thelen != thelen2 {
-			t.Errorf("%s: %T %T len %s != len %s", "ReadWriteDouble", p, trans, thelen, thelen2)
-		}
+	if thetype != thetype2 {
+		t.Errorf("%s: %T %T type %s != type %s", "ReadWriteDouble", p, trans, thetype, thetype2)
+	}
+	if thelen != thelen2 {
+		t.Errorf("%s: %T %T len %s != len %s", "ReadWriteDouble", p, trans, thelen, thelen2)
 	}
 	for k, v := range DOUBLE_VALUES {
 		value, err := p.ReadDouble()
@@ -413,6 +400,7 @@ func ReadWriteDouble(t *testing.T, p TProtocol, trans TTransport) {
 			t.Errorf("%s: %T %T %v != %q", "ReadWriteDouble", p, trans, v, value)
 		}
 	}
+	err = p.ReadListEnd()
 	if err != nil {
 		t.Errorf("%s: %T %T Unable to read list end: %q", "ReadWriteDouble", p, trans, err)
 	}
@@ -472,4 +460,363 @@ func ReadWriteBinary(t *testing.T, p TProtocol, trans TTransport) {
 			}
 		}
 	}
+}
+
+
+
+func ReadWriteWork(t *testing.T, p TProtocol, trans TTransport) {
+	thetype := "struct"
+	orig := NewWork()
+	orig.Num1 = 25
+	orig.Num2 = 102
+	orig.Op = ADD
+	orig.Comment = "Add: 25 + 102"
+	return
+	if e := orig.Write(p); e != nil {
+	 	t.Fatalf("Unable to write %s value %#v due to error: %s", thetype, orig, e.String())
+	}
+	read := NewWork()
+	e := read.Read(p)
+	if e != nil {
+	 	t.Fatalf("Unable to read %s due to error: %s", thetype, e.String())
+	}
+	if !orig.Equals(read) {
+	  t.Fatalf("Original Write != Read: %#v != %#v ", orig, read)
+	}
+}
+
+
+/**
+ *You can define enums, which are just 32 bit integers. Values are optional
+ *and start at 1 if not supplied, C style again.
+ */
+type Operation int
+const (
+  ADD Operation = 1
+  SUBTRACT Operation = 2
+  MULTIPLY Operation = 3
+  DIVIDE Operation = 4
+)
+func (p Operation) String() string {
+  switch p {
+  case ADD: return "ADD"
+  case SUBTRACT: return "SUBTRACT"
+  case MULTIPLY: return "MULTIPLY"
+  case DIVIDE: return "DIVIDE"
+  }
+  return ""
+}
+
+func FromOperationString(s string) Operation {
+  switch s {
+  case "ADD": return ADD
+  case "SUBTRACT": return SUBTRACT
+  case "MULTIPLY": return MULTIPLY
+  case "DIVIDE": return DIVIDE
+  }
+  return Operation(-10000)
+}
+
+func (p Operation) Value() int {
+  return int(p)
+}
+
+func (p Operation) IsEnum() bool {
+  return true
+}
+
+/**
+ *Thrift lets you do typedefs to get pretty names for your types. Standard
+ *C style here.
+ */
+type MyInteger int32
+
+const INT32CONSTANT = 9853
+var MAPCONSTANT  TMap
+/**
+ * Structs are the basic complex data structures. They are comprised of fields
+ * which each have an integer identifier, a type, a symbolic name, and an
+ * optional default value.
+ * 
+ * Fields can be declared "optional", which ensures they will not be included
+ * in the serialized output if they aren't set.  Note that this requires some
+ * manual management in some languages.
+ * 
+ * Attributes:
+ *  - Num1
+ *  - Num2
+ *  - Op
+ *  - Comment
+ */
+type Work struct {
+  TStruct
+  _ interface{} "num1"; // nil # 0
+  Num1 int32 "num1"; // 1
+  Num2 int32 "num2"; // 2
+  Op Operation "op"; // 3
+  Comment string "comment"; // 4
+}
+
+func NewWork() *Work {
+  output := &Work{
+    TStruct:NewTStruct("Work", []TField{
+    NewTField("num1", I32, 1),
+    NewTField("num2", I32, 2),
+    NewTField("op", I32, 3),
+    NewTField("comment", STRING, 4),
+    }),
+  }
+  {
+    output.Num1 = 0
+  }
+  return output
+}
+
+func (p *Work) Read(iprot TProtocol) (err TProtocolException) {
+  _, err = iprot.ReadStructBegin()
+  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  for {
+    fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if fieldId < 0 {
+      fieldId = int16(p.FieldIdFromFieldName(fieldName))
+    } else if fieldName == "" {
+      fieldName = p.FieldNameFromFieldId(int(fieldId))
+    }
+    if fieldTypeId == GENERIC {
+      fieldTypeId = p.FieldFromFieldId(int(fieldId)).TypeId()
+    }
+    if err != nil {
+      return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+    }
+    if fieldTypeId == STOP { break; }
+    if fieldId == 1 || fieldName == "num1" {
+      if fieldTypeId == I32 {
+        err = p.ReadField1(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField1(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else if fieldId == 2 || fieldName == "num2" {
+      if fieldTypeId == I32 {
+        err = p.ReadField2(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField2(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else if fieldId == 3 || fieldName == "op" {
+      if fieldTypeId == I32 {
+        err = p.ReadField3(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField3(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else if fieldId == 4 || fieldName == "comment" {
+      if fieldTypeId == STRING {
+        err = p.ReadField4(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField4(iprot)
+        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else {
+      err = iprot.Skip(fieldTypeId)
+      if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+    }
+    err = iprot.ReadFieldEnd()
+    if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+  }
+  err = iprot.ReadStructEnd()
+  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  return err
+}
+
+func (p *Work) ReadField1(iprot TProtocol) (err TProtocolException) {
+  v4, err5 := iprot.ReadI32()
+  if err5 != nil { return NewTProtocolExceptionReadField(1, "num1", p.ThriftName(), err5); }
+  p.Num1 = v4
+  return err
+}
+
+func (p *Work) ReadFieldNum1(iprot TProtocol) (TProtocolException) {
+  return p.ReadField1(iprot)
+}
+
+func (p *Work) ReadField2(iprot TProtocol) (err TProtocolException) {
+  v6, err7 := iprot.ReadI32()
+  if err7 != nil { return NewTProtocolExceptionReadField(2, "num2", p.ThriftName(), err7); }
+  p.Num2 = v6
+  return err
+}
+
+func (p *Work) ReadFieldNum2(iprot TProtocol) (TProtocolException) {
+  return p.ReadField2(iprot)
+}
+
+func (p *Work) ReadField3(iprot TProtocol) (err TProtocolException) {
+  v8, err9 := iprot.ReadI32()
+  if err9 != nil { return NewTProtocolExceptionReadField(3, "op", p.ThriftName(), err9); }
+  p.Op = Operation(v8)
+  return err
+}
+
+func (p *Work) ReadFieldOp(iprot TProtocol) (TProtocolException) {
+  return p.ReadField3(iprot)
+}
+
+func (p *Work) ReadField4(iprot TProtocol) (err TProtocolException) {
+  v10, err11 := iprot.ReadString()
+  if err11 != nil { return NewTProtocolExceptionReadField(4, "comment", p.ThriftName(), err11); }
+  p.Comment = v10
+  return err
+}
+
+func (p *Work) ReadFieldComment(iprot TProtocol) (TProtocolException) {
+  return p.ReadField4(iprot)
+}
+
+func (p *Work) Write(oprot TProtocol) (err TProtocolException) {
+  err = oprot.WriteStructBegin("Work")
+  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  err = p.WriteField1(oprot)
+  if err != nil { return err }
+  err = p.WriteField2(oprot)
+  if err != nil { return err }
+  err = p.WriteField3(oprot)
+  if err != nil { return err }
+  err = p.WriteField4(oprot)
+  if err != nil { return err }
+  err = oprot.WriteFieldStop()
+  if err != nil { return NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
+  err = oprot.WriteStructEnd()
+  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  return err
+}
+
+func (p *Work) WriteField1(oprot TProtocol) (err TProtocolException) {
+  err = oprot.WriteFieldBegin("num1", I32, 1)
+  if err != nil { return NewTProtocolExceptionWriteField(1, "num1", p.ThriftName(), err); }
+  err = oprot.WriteI32(int32(p.Num1))
+  if err != nil { return NewTProtocolExceptionWriteField(1, "num1", p.ThriftName(), err); }
+  err = oprot.WriteFieldEnd()
+  if err != nil { return NewTProtocolExceptionWriteField(1, "num1", p.ThriftName(), err); }
+  return err
+}
+
+func (p *Work) WriteFieldNum1(oprot TProtocol) (TProtocolException) {
+  return p.WriteField1(oprot)
+}
+
+func (p *Work) WriteField2(oprot TProtocol) (err TProtocolException) {
+  err = oprot.WriteFieldBegin("num2", I32, 2)
+  if err != nil { return NewTProtocolExceptionWriteField(2, "num2", p.ThriftName(), err); }
+  err = oprot.WriteI32(int32(p.Num2))
+  if err != nil { return NewTProtocolExceptionWriteField(2, "num2", p.ThriftName(), err); }
+  err = oprot.WriteFieldEnd()
+  if err != nil { return NewTProtocolExceptionWriteField(2, "num2", p.ThriftName(), err); }
+  return err
+}
+
+func (p *Work) WriteFieldNum2(oprot TProtocol) (TProtocolException) {
+  return p.WriteField2(oprot)
+}
+
+func (p *Work) WriteField3(oprot TProtocol) (err TProtocolException) {
+  err = oprot.WriteFieldBegin("op", I32, 3)
+  if err != nil { return NewTProtocolExceptionWriteField(3, "op", p.ThriftName(), err); }
+  err = oprot.WriteI32(int32(p.Op))
+  if err != nil { return NewTProtocolExceptionWriteField(3, "op", p.ThriftName(), err); }
+  err = oprot.WriteFieldEnd()
+  if err != nil { return NewTProtocolExceptionWriteField(3, "op", p.ThriftName(), err); }
+  return err
+}
+
+func (p *Work) WriteFieldOp(oprot TProtocol) (TProtocolException) {
+  return p.WriteField3(oprot)
+}
+
+func (p *Work) WriteField4(oprot TProtocol) (err TProtocolException) {
+  err = oprot.WriteFieldBegin("comment", STRING, 4)
+  if err != nil { return NewTProtocolExceptionWriteField(4, "comment", p.ThriftName(), err); }
+  err = oprot.WriteString(string(p.Comment))
+  if err != nil { return NewTProtocolExceptionWriteField(4, "comment", p.ThriftName(), err); }
+  err = oprot.WriteFieldEnd()
+  if err != nil { return NewTProtocolExceptionWriteField(4, "comment", p.ThriftName(), err); }
+  return err
+}
+
+func (p *Work) WriteFieldComment(oprot TProtocol) (TProtocolException) {
+  return p.WriteField4(oprot)
+}
+
+func (p *Work) TStructName() string {
+  return "Work"
+}
+
+func (p *Work) ThriftName() string {
+  return "Work"
+}
+
+func (p *Work) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("Work(%+v)", *p)
+}
+
+func (p *Work) CompareTo(other interface{}) (int, bool) {
+  if other == nil { return 1, true }
+  data, ok := other.(Work)
+  if !ok { return 0, false }
+  if p.Num1 != data.Num1 {
+    if p.Num1 < data.Num1 { return -1, true }
+    return 1, true
+  }
+  if p.Num2 != data.Num2 {
+    if p.Num2 < data.Num2 { return -1, true }
+    return 1, true
+  }
+  if p.Op != data.Op {
+    if p.Op < data.Op { return -1, true }
+    return 1, true
+  }
+  if p.Comment != data.Comment {
+    if p.Comment < data.Comment { return -1, true }
+    return 1, true
+  }
+  return 0, true
+}
+
+func (p *Work) AttributeByFieldId(id int) interface{} {
+  switch id {
+  default: return nil
+  case 1: return p.Num1
+  case 2: return p.Num2
+  case 3: return p.Op
+  case 4: return p.Comment
+  }
+  return nil
+}
+
+func (p *Work) TStructFields() TFieldContainer {
+  return NewTFieldContainer([]TField{
+    NewTField("num1", I32, 1),
+    NewTField("num2", I32, 2),
+    NewTField("op", I32, 3),
+    NewTField("comment", STRING, 4),
+    })
 }

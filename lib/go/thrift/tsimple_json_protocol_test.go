@@ -470,8 +470,17 @@ func TestWriteSimpleJSONProtocolList(t *testing.T) {
 		t.Fatalf("Unable to decode %s, wrote: %s", thetype, str)
 	}
 	l := *str1
+	if len(l) < 2 {
+	  t.Fatalf("List must be at least of length two to include metadata")
+	}
+	if int(l[0].(float64)) != DOUBLE {
+	  t.Fatal("Invalid type for list, expected: ", DOUBLE, ", but was: ", l[0])
+	}
+  if int(l[1].(float64)) != len(DOUBLE_VALUES) {
+    t.Fatal("Invalid length for list, expected: ", len(DOUBLE_VALUES), ", but was: ", l[1])
+  }
 	for k, value := range DOUBLE_VALUES {
-		s := l[k]
+		s := l[k+2]
 		if math.IsInf(value, 1) {
 			if s.(string) != JSON_INFINITY {
 				t.Fatalf("Bad value for %s at index %v %v, wrote: %q, expected: %q, originally wrote: %q", thetype, k, value, s, JsonQuote(JSON_INFINITY), str)
@@ -515,8 +524,17 @@ func TestWriteSimpleJSONProtocolSet(t *testing.T) {
 		t.Fatalf("Unable to decode %s, wrote: %s", thetype, str)
 	}
 	l := *str1
+	if len(l) < 2 {
+	  t.Fatalf("Set must be at least of length two to include metadata")
+	}
+	if int(l[0].(float64)) != DOUBLE {
+	  t.Fatal("Invalid type for set, expected: ", DOUBLE, ", but was: ", l[0])
+	}
+  if int(l[1].(float64)) != len(DOUBLE_VALUES) {
+    t.Fatal("Invalid length for set, expected: ", len(DOUBLE_VALUES), ", but was: ", l[1])
+  }
 	for k, value := range DOUBLE_VALUES {
-		s := l[k]
+		s := l[k+2]
 		if math.IsInf(value, 1) {
 			if s.(string) != JSON_INFINITY {
 				t.Fatalf("Bad value for %s at index %v %v, wrote: %q, expected: %q, originally wrote: %q", thetype, k, value, s, JsonQuote(JSON_INFINITY), str)
@@ -557,23 +575,36 @@ func TestWriteSimpleJSONProtocolMap(t *testing.T) {
 		t.Fatalf("Unable to write %s due to error flushing: %s", thetype, e.String())
 	}
 	str := trans.String()
-	if str[0] != '{' || str[len(str)-1] != '}' {
+	if str[0] != '[' || str[len(str)-1] != ']' {
 		t.Fatalf("Bad value for %s, wrote: %q, in go: %q", thetype, str, DOUBLE_VALUES)
 	}
 	l := strings.Split(str[1:len(str)-1], ",", -1)
+	if len(l) < 3 {
+	  t.Fatal("Expected list of at least length 3 for map for metadata, but was of length ", len(l))
+	}
+	expectedKeyType, _ := strconv.Atoi(l[0])
+	expectedValueType, _ := strconv.Atoi(l[1])
+	expectedSize, _ := strconv.Atoi(l[2])
+	if expectedKeyType != I32 {
+	  t.Fatal("Expected map key type ", I32, ", but was ", l[0])
+	}
+	if expectedValueType != DOUBLE {
+	  t.Fatal("Expected map value type ", DOUBLE, ", but was ", l[1])
+	}
+  if expectedSize != len(DOUBLE_VALUES) {
+    t.Fatal("Expected map size of ", len(DOUBLE_VALUES), ", but was ", l[2])
+  }
 	for k, value := range DOUBLE_VALUES {
-		strkv := strings.Split(l[k], ":", 2)
-		if len(strkv) != 2 {
-			t.Fatalf("Bad key-value pair for %s index %v, wrote: %v, expected: %v", thetype, k, strkv, string(k)+":"+strconv.Ftoa64(value, 'g', 10))
-		}
-		ik, err := strconv.Atoi(strkv[0][1 : len(strkv[0])-1])
+	  strk := l[k*2 + 3]
+	  strv := l[k*2 + 4]
+		ik, err := strconv.Atoi(strk)
 		if err != nil {
-			t.Fatalf("Bad value for %s index %v, wrote: %v, expected: %v, error: %s", thetype, k, strkv[0], string(k), err.String())
+			t.Fatalf("Bad value for %s index %v, wrote: %v, expected: %v, error: %s", thetype, k, strk, string(k), err.String())
 		}
 		if ik != k {
-			t.Fatalf("Bad value for %s index %v, wrote: %v, expected: %v", thetype, k, strkv[0], k)
+			t.Fatalf("Bad value for %s index %v, wrote: %v, expected: %v", thetype, k, strk, k)
 		}
-		s := strkv[1]
+		s := strv
 		if math.IsInf(value, 1) {
 			if s != JsonQuote(JSON_INFINITY) {
 				t.Fatalf("Bad value for %s at index %v %v, wrote: %v, expected: %v", thetype, k, value, s, JsonQuote(JSON_INFINITY))
@@ -599,6 +630,32 @@ func TestWriteSimpleJSONProtocolMap(t *testing.T) {
 		trans.Reset()
 	}
 	trans.Close()
+}
+
+
+
+func TestReadWriteSimpleJSONStruct(t *testing.T) {
+	thetype := "struct"
+	trans := NewTMemoryBuffer()
+	p := NewTSimpleJSONProtocol(trans)
+	orig := NewWork()
+	orig.Num1 = 25
+	orig.Num2 = 102
+	orig.Op = ADD
+	orig.Comment = "Add: 25 + 102"
+	if e := orig.Write(p); e != nil {
+	 	t.Fatalf("Unable to write %s value %#v due to error: %s", thetype, orig, e.String())
+	}
+	t.Log("Memory buffer contents: ", trans.String())
+	read := NewWork()
+	e := read.Read(p)
+	t.Logf("Read %s value: %#v", thetype, read)
+	if e != nil {
+	 	t.Fatalf("Unable to read %s due to error: %s", thetype, e.String())
+	}
+	if !orig.Equals(read) {
+	  t.Fatalf("Original Write != Read: %#v != %#v ", orig, read)
+	}
 }
 
 func TestReadWriteSimpleJSONProtocol(t *testing.T) {
