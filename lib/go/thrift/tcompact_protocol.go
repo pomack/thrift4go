@@ -171,7 +171,7 @@ func (p *TCompactProtocol) WriteStructEnd() TProtocolException {
 func (p *TCompactProtocol) WriteFieldBegin(name string, typeId TType, id int16) TProtocolException {
 	if typeId == BOOL {
 		// we want to possibly include the value, so we'll wait.
-		p.booleanField = NewTField(name, typeId, id)
+		p.booleanField = NewTField(name, typeId, int(id))
 		return nil
 	}
 	_, err := p.writeFieldBeginInternal(name, typeId, id, 0xFF)
@@ -271,7 +271,7 @@ func (p *TCompactProtocol) WriteBool(value bool) TProtocolException {
 	}
 	if p.booleanField != nil {
 		// we haven't written the field header yet
-		_, err := p.writeFieldBeginInternal(p.booleanField.Name(), p.booleanField.TypeId(), p.booleanField.Id(), v)
+		_, err := p.writeFieldBeginInternal(p.booleanField.Name(), p.booleanField.TypeId(), int16(p.booleanField.Id()), v)
 		p.booleanField = nil
 		return NewTProtocolExceptionFromOsError(err)
 	}
