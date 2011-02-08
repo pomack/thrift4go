@@ -21,7 +21,8 @@
 package thrift
 
 import (
-	"reflect"
+	"container/list"
+	"container/vector"
 	"strconv"
 )
 
@@ -49,6 +50,7 @@ const (
 	ENUM   = 16
 	UTF8   = 16
 	UTF16  = 17
+	GENERIC = 127
 )
 
 func (p TType) String() string {
@@ -83,6 +85,8 @@ func (p TType) String() string {
 		return "ENUM"
 	case UTF16:
 		return "UTF16"
+	case GENERIC:
+	  return "GENERIC"
 	}
 	return "Unknown"
 }
@@ -201,42 +205,34 @@ func (p TType) Coerce(other interface{}) TType {
 	if other == nil {
 		return TType(STOP)
 	}
-	if b, ok := other.(TType); ok {
+	switch b := other.(type) {
+  default:
+		return TType(STOP)
+	case nil:
+		return TType(STOP)
+	case TType:
 		return b
-	}
-	if b, ok := other.(byte); ok {
-		return TType(b)
-	}
-	if b, ok := other.(int); ok {
+	case byte:
+	  return TType(b)
+	case int:
+	  return TType(byte(b))
+	case int8:
 		return TType(byte(b))
-	}
-	if b, ok := other.(int8); ok {
+	case int32:
 		return TType(byte(b))
-	}
-	if b, ok := other.(int32); ok {
+	case int64:
 		return TType(byte(b))
-	}
-	if b, ok := other.(int64); ok {
+	case uint:
 		return TType(byte(b))
-	}
-	if b, ok := other.(uint); ok {
+	case uint32:
 		return TType(byte(b))
-	}
-	if b, ok := other.(uint8); ok {
+	case uint64:
 		return TType(byte(b))
-	}
-	if b, ok := other.(uint32); ok {
-		return TType(byte(b))
-	}
-	if b, ok := other.(uint64); ok {
-		return TType(byte(b))
-	}
-	if b, ok := other.(float32); ok {
-		return TType(byte(int(b)))
-	}
-	if b, ok := other.(float64); ok {
-		return TType(byte(int(b)))
-	}
+	case float32:
+	  return TType(byte(int(b)))
+	case float64:
+	  return TType(byte(int(b)))
+  }
 	return TType(STOP)
 }
 
@@ -371,8 +367,8 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
 			return cmp, ok
 		}
 		for field := range si.TStructFields().Iter() {
-			a := si.GetAttributeByFieldId(field.Id())
-			b := sj.GetAttributeByFieldId(field.Id())
+			a := si.AttributeFromFieldId(field.Id())
+			b := sj.AttributeFromFieldId(field.Id())
 			if cmp, ok := field.TypeId().Compare(a, b); !ok || cmp != 0 {
 				return cmp, ok
 			}
@@ -463,42 +459,35 @@ type Enumer interface {
 }
 
 func TypeFromValue(data interface{}) TType {
-	if data == nil {
-		return VOID
-	}
-	t := reflect.Typeof(data)
-	switch t.Kind() {
-	case reflect.Bool:
+	switch i := data.(type) {
+	default:
+	  return STOP
+	case nil:
+	  return VOID
+	case bool:
 		return BOOL
-	case reflect.Float32, reflect.Float64:
+	case float32, float64:
 		return DOUBLE
-	case reflect.Int:
+	case int, int32:
 		return I32
-	case reflect.Int8:
+	case byte:
 		return BYTE
-	case reflect.Int16:
+	case int8:
+	  return I08
+	case int16:
 		return I16
-	case reflect.Int32:
-		return I32
-	case reflect.Int64:
+	case int64:
 		return I64
-	case reflect.String:
+	case string:
 		return STRING
-	case reflect.Map:
-		return MAP
-	case reflect.Array, reflect.Slice:
-		return LIST
-	case reflect.Struct, reflect.Interface:
-		if _, ok := data.(TMap); ok {
-			return MAP
-		}
-		if _, ok := data.(TSet); ok {
-			return SET
-		}
-		if _, ok := data.(TList); ok {
-			return LIST
-		}
+	case TStruct:
 		return STRUCT
+	case TMap:
+	  return MAP
+	case TSet:
+	  return SET
+	case []interface{}, *list.List, *vector.Vector, TList:
+		return LIST
 	}
 	return STOP
 }
@@ -542,61 +531,49 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 	case VOID:
 		return nil, true
 	case BOOL:
-		if b, ok := data.(bool); ok {
-			return b, true
-		}
-		if b, ok := data.(Numeric); ok {
-			return bool(b.Int() != 0), true
-		}
-		if b, ok := data.(int); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(byte); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(int8); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(int16); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(int32); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(int64); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(uint); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(uint8); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(uint16); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(uint32); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(uint64); ok {
-			return b != 0, true
-		}
-		if b, ok := data.(float32); ok {
-			return b != 0.0, true
-		}
-		if b, ok := data.(float64); ok {
-			return b != 0.0, true
-		}
-		if b, ok := data.(Stringer); ok {
-			data = b.String()
-		}
-		if b, ok := data.(string); ok {
-			if b == "false" || b == "0" || len(b) == 0 {
-				return false, true
-			}
-			return true, true
-		}
-		return false, false
+	  switch b := data.(type) {
+	  default:
+  		return false, false
+    case bool:
+      return b, true
+    case Numeric:
+      return bool(b.Int() != 0), true
+    case int:
+      return b != 0, true
+    case byte:
+      return b != 0, true
+    case int8:
+      return b != 0, true
+    case int16:
+      return b != 0, true
+    case int32:
+      return b != 0, true
+    case int64:
+      return b != 0, true
+    case uint:
+      return b != 0, true
+    case uint16:
+      return b != 0, true
+    case uint32:
+      return b != 0, true
+    case uint64:
+      return b != 0, true
+    case float32:
+      return b != 0, true
+    case float64:
+      return b != 0, true
+    case Stringer:
+      v := b.String()
+  		if v == "false" || v == "0" || len(v) == 0 {
+  			return false, true
+  		}
+  		return true, true
+    case string:
+  		if b == "false" || b == "0" || len(b) == 0 {
+  			return false, true
+  		}
+  		return true, true
+	  }
 	case BYTE:
 		if b, ok := data.(byte); ok {
 			return b, true
