@@ -20,11 +20,11 @@
 package thrift_test
 
 import (
-	. "thrift"
-	"testing"
+  . "thrift"
+  "testing"
 )
 
 func TestFramedTransport(t *testing.T) {
-	trans := NewTFramedTransport(NewTMemoryBuffer())
-	TransportTest(t, trans, trans)
+  trans := NewTFramedTransport(NewTMemoryBuffer())
+  TransportTest(t, trans, trans)
 }

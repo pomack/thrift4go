@@ -25,5 +25,5 @@ package thrift
  *
  */
 type TProcessor interface {
-	Process(in, out TProtocol, seqid int32) (bool, TException)
+  Process(in, out TProtocol, seqid int32) (bool, TException)
 }

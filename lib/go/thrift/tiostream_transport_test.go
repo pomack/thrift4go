@@ -20,12 +20,12 @@
 package thrift_test
 
 import (
-	. "thrift"
-	"testing"
-	"bytes"
+  . "thrift"
+  "testing"
+  "bytes"
 )
 
 func TestIOStreamTransport(t *testing.T) {
-	trans := NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 1024)))
-	TransportTest(t, trans, trans)
+  trans := NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 1024)))
+  TransportTest(t, trans, trans)
 }

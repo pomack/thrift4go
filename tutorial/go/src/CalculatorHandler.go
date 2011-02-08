@@ -1,4 +1,4 @@
-package main;
+package main
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -32,7 +32,7 @@ type CalculatorHandler struct {
 }
 
 func NewCalculatorHandler() *CalculatorHandler {
-  return &CalculatorHandler{log:make(map[int]*shared.SharedStruct)}
+  return &CalculatorHandler{log: make(map[int]*shared.SharedStruct)}
 }
 
 func (p *CalculatorHandler) Ping() (err os.Error) {
@@ -47,7 +47,7 @@ func (p *CalculatorHandler) Add(num1 int32, num2 int32) (retval17 int32, err os.
 
 func (p *CalculatorHandler) Calculate(logid int32, w *tutorial.Work) (val int32, ouch *tutorial.InvalidOperation, err os.Error) {
   fmt.Print("calculate(", logid, ", {", w.Op, ",", w.Num1, ",", w.Num2, "})\n")
-  switch(w.Op) {
+  switch w.Op {
   case tutorial.ADD:
     val = w.Num1 + w.Num2
     break
@@ -77,12 +77,12 @@ func (p *CalculatorHandler) Calculate(logid int32, w *tutorial.Work) (val int32,
   entry.Value = strconv.Itoa(int(val))
   k := int(logid)
   /*
-  oldvalue, exists := p.log[k]
-  if exists {
-    fmt.Print("Replacing ", oldvalue, " with ", entry, " for key ", k, "\n")
-  } else {
-    fmt.Print("Adding ", entry, " for key ", k, "\n")
-  }
+    oldvalue, exists := p.log[k]
+    if exists {
+      fmt.Print("Replacing ", oldvalue, " with ", entry, " for key ", k, "\n")
+    } else {
+      fmt.Print("Adding ", entry, " for key ", k, "\n")
+    }
   */
   p.log[k] = entry, true
   return val, ouch, err
@@ -98,4 +98,3 @@ func (p *CalculatorHandler) Zip() (err os.Error) {
   fmt.Print("zip()\n")
   return nil
 }
-

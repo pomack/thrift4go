@@ -134,9 +134,9 @@ type TFieldContainer interface {
 }
 
 type tFieldContainer struct {
-  fields   []TField
+  fields         []TField
   nameToFieldMap map[string]TField
-  idToFieldMap map[int]TField
+  idToFieldMap   map[int]TField
 }
 
 func NewTFieldContainer(fields []TField) TFieldContainer {
@@ -152,9 +152,9 @@ func NewTFieldContainer(fields []TField) TFieldContainer {
   }
   sort.Sort(tFieldArray(sortedFields))
   return &tFieldContainer{
-    fields: fields,
+    fields:         fields,
     nameToFieldMap: nameToFieldMap,
-    idToFieldMap: idToFieldMap,
+    idToFieldMap:   idToFieldMap,
   }
 }
 

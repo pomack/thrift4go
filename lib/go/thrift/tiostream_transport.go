@@ -20,9 +20,9 @@
 package thrift
 
 import (
-	"bufio"
-	"io"
-	"os"
+  "bufio"
+  "io"
+  "os"
 )
 
 /**
@@ -33,53 +33,53 @@ import (
  *
  */
 type TIOStreamTransport struct {
-	Reader       io.Reader
-	Writer       io.Writer
-	IsReadWriter bool
+  Reader       io.Reader
+  Writer       io.Writer
+  IsReadWriter bool
 }
 
 type TIOStreamTransportFactory struct {
-	Reader       io.Reader
-	Writer       io.Writer
-	IsReadWriter bool
+  Reader       io.Reader
+  Writer       io.Writer
+  IsReadWriter bool
 }
 
 func (p *TIOStreamTransportFactory) GetTransport(trans TTransport) TTransport {
-	if trans != nil {
-		t, ok := trans.(*TIOStreamTransport)
-		if ok {
-			if t.IsReadWriter {
-				return NewTIOStreamTransportRW(t.Reader.(io.ReadWriter))
-			}
-			if t.Reader != nil && t.Writer != nil {
-				return NewTIOStreamTransportRAndW(t.Reader, t.Writer)
-			}
-			if t.Reader != nil && t.Writer == nil {
-				return NewTIOStreamTransportR(t.Reader)
-			}
-			if t.Reader == nil && t.Writer != nil {
-				return NewTIOStreamTransportW(t.Writer)
-			}
-			return NewTIOStreamTransportDefault()
-		}
-	}
-	if p.IsReadWriter {
-		return NewTIOStreamTransportRW(p.Reader.(io.ReadWriter))
-	}
-	if p.Reader != nil && p.Writer != nil {
-		return NewTIOStreamTransportRAndW(p.Reader, p.Writer)
-	}
-	if p.Reader != nil && p.Writer == nil {
-		return NewTIOStreamTransportR(p.Reader)
-	}
-	if p.Reader == nil && p.Writer != nil {
-		return NewTIOStreamTransportW(p.Writer)
-	}
-	return NewTIOStreamTransportDefault()
+  if trans != nil {
+    t, ok := trans.(*TIOStreamTransport)
+    if ok {
+      if t.IsReadWriter {
+        return NewTIOStreamTransportRW(t.Reader.(io.ReadWriter))
+      }
+      if t.Reader != nil && t.Writer != nil {
+        return NewTIOStreamTransportRAndW(t.Reader, t.Writer)
+      }
+      if t.Reader != nil && t.Writer == nil {
+        return NewTIOStreamTransportR(t.Reader)
+      }
+      if t.Reader == nil && t.Writer != nil {
+        return NewTIOStreamTransportW(t.Writer)
+      }
+      return NewTIOStreamTransportDefault()
+    }
+  }
+  if p.IsReadWriter {
+    return NewTIOStreamTransportRW(p.Reader.(io.ReadWriter))
+  }
+  if p.Reader != nil && p.Writer != nil {
+    return NewTIOStreamTransportRAndW(p.Reader, p.Writer)
+  }
+  if p.Reader != nil && p.Writer == nil {
+    return NewTIOStreamTransportR(p.Reader)
+  }
+  if p.Reader == nil && p.Writer != nil {
+    return NewTIOStreamTransportW(p.Writer)
+  }
+  return NewTIOStreamTransportDefault()
 }
 
 func NewTIOStreamTransportFactory(reader io.Reader, writer io.Writer, isReadWriter bool) *TIOStreamTransportFactory {
-	return &TIOStreamTransportFactory{Reader: reader, Writer: writer, IsReadWriter: isReadWriter}
+  return &TIOStreamTransportFactory{Reader: reader, Writer: writer, IsReadWriter: isReadWriter}
 }
 
 
@@ -88,7 +88,7 @@ func NewTIOStreamTransportFactory(reader io.Reader, writer io.Writer, isReadWrit
  * streams in the open method.
  */
 func NewTIOStreamTransportDefault() *TIOStreamTransport {
-	return &TIOStreamTransport{}
+  return &TIOStreamTransport{}
 }
 
 /**
@@ -97,7 +97,7 @@ func NewTIOStreamTransportDefault() *TIOStreamTransport {
  * @param is Input stream to read from
  */
 func NewTIOStreamTransportR(r io.Reader) *TIOStreamTransport {
-	return &TIOStreamTransport{Reader: bufio.NewReader(r)}
+  return &TIOStreamTransport{Reader: bufio.NewReader(r)}
 }
 
 /**
@@ -106,7 +106,7 @@ func NewTIOStreamTransportR(r io.Reader) *TIOStreamTransport {
  * @param os Output stream to read from
  */
 func NewTIOStreamTransportW(w io.Writer) *TIOStreamTransport {
-	return &TIOStreamTransport{Writer: bufio.NewWriter(w)}
+  return &TIOStreamTransport{Writer: bufio.NewWriter(w)}
 }
 
 /**
@@ -116,7 +116,7 @@ func NewTIOStreamTransportW(w io.Writer) *TIOStreamTransport {
  * @param os Output stream to read from
  */
 func NewTIOStreamTransportRAndW(r io.Reader, w io.Writer) *TIOStreamTransport {
-	return &TIOStreamTransport{Reader: bufio.NewReader(r), Writer: bufio.NewWriter(w)}
+  return &TIOStreamTransport{Reader: bufio.NewReader(r), Writer: bufio.NewWriter(w)}
 }
 
 /**
@@ -126,10 +126,10 @@ func NewTIOStreamTransportRAndW(r io.Reader, w io.Writer) *TIOStreamTransport {
  * @param os Output stream to read from
  */
 func NewTIOStreamTransportRW(rw io.ReadWriter) *TIOStreamTransport {
-	// bufio has a bug where once a Reader hits EOF, a new Write never brings the reader out of EOF
-	// even if reader and writer use the same underlier
-	//bufrw := bufio.NewReadWriter(bufio.NewReader(rw), bufio.NewWriter(rw));
-	return &TIOStreamTransport{Reader: rw, Writer: rw, IsReadWriter: true}
+  // bufio has a bug where once a Reader hits EOF, a new Write never brings the reader out of EOF
+  // even if reader and writer use the same underlier
+  //bufrw := bufio.NewReadWriter(bufio.NewReader(rw), bufio.NewWriter(rw));
+  return &TIOStreamTransport{Reader: rw, Writer: rw, IsReadWriter: true}
 }
 
 /**
@@ -139,62 +139,62 @@ func NewTIOStreamTransportRW(rw io.ReadWriter) *TIOStreamTransport {
  * @return true
  */
 func (p *TIOStreamTransport) IsOpen() bool {
-	return true
+  return true
 }
 
 /**
  * The streams must already be open. This method does nothing.
  */
 func (p *TIOStreamTransport) Open() os.Error {
-	return nil
+  return nil
 }
 
 func (p *TIOStreamTransport) Peek() bool {
-	return p.IsOpen()
+  return p.IsOpen()
 }
 
 /**
  * Closes both the input and output streams.
  */
 func (p *TIOStreamTransport) Close() os.Error {
-	closedReader := false
-	if p.Reader != nil {
-		c, ok := p.Reader.(io.Closer)
-		if ok {
-			e := c.Close()
-			closedReader = true
-			if e != nil {
-				LOGGER.Print("Error closing input stream.", e)
-			}
-		}
-		p.Reader = nil
-	}
-	if p.Writer != nil && (!closedReader || !p.IsReadWriter) {
-		c, ok := p.Writer.(io.Closer)
-		if ok {
-			e := c.Close()
-			if e != nil {
-				LOGGER.Print("Error closing output stream.", e)
-			}
-		}
-		p.Writer = nil
-	}
-	return nil
+  closedReader := false
+  if p.Reader != nil {
+    c, ok := p.Reader.(io.Closer)
+    if ok {
+      e := c.Close()
+      closedReader = true
+      if e != nil {
+        LOGGER.Print("Error closing input stream.", e)
+      }
+    }
+    p.Reader = nil
+  }
+  if p.Writer != nil && (!closedReader || !p.IsReadWriter) {
+    c, ok := p.Writer.(io.Closer)
+    if ok {
+      e := c.Close()
+      if e != nil {
+        LOGGER.Print("Error closing output stream.", e)
+      }
+    }
+    p.Writer = nil
+  }
+  return nil
 }
 
 /**
  * Reads from the underlying input stream if not null.
  */
 func (p *TIOStreamTransport) Read(buf []byte) (int, os.Error) {
-	if p.Reader == nil {
-		return 0, NewTTransportException(NOT_OPEN, "Cannot read from null inputStream")
-	}
-	n, err := p.Reader.Read(buf)
-	return n, NewTTransportExceptionFromOsError(err)
+  if p.Reader == nil {
+    return 0, NewTTransportException(NOT_OPEN, "Cannot read from null inputStream")
+  }
+  n, err := p.Reader.Read(buf)
+  return n, NewTTransportExceptionFromOsError(err)
 }
 
 func (p *TIOStreamTransport) ReadAll(buf []byte) (int, os.Error) {
-	return ReadAllTransport(p, buf)
+  return ReadAllTransport(p, buf)
 }
 
 
@@ -202,30 +202,30 @@ func (p *TIOStreamTransport) ReadAll(buf []byte) (int, os.Error) {
  * Writes to the underlying output stream if not null.
  */
 func (p *TIOStreamTransport) Write(buf []byte) (int, os.Error) {
-	if p.Writer == nil {
-		LOGGER.Print("Could not write to iostream as Writer is null\n")
-		return 0, NewTTransportException(NOT_OPEN, "Cannot write to null outputStream")
-	}
-	n, err := p.Writer.Write(buf)
-	if n == 0 || err != nil {
-		LOGGER.Print("Error writing to iostream, only wrote ", n, " bytes: ", err.String(), "\n")
-	}
-	return n, NewTTransportExceptionFromOsError(err)
+  if p.Writer == nil {
+    LOGGER.Print("Could not write to iostream as Writer is null\n")
+    return 0, NewTTransportException(NOT_OPEN, "Cannot write to null outputStream")
+  }
+  n, err := p.Writer.Write(buf)
+  if n == 0 || err != nil {
+    LOGGER.Print("Error writing to iostream, only wrote ", n, " bytes: ", err.String(), "\n")
+  }
+  return n, NewTTransportExceptionFromOsError(err)
 }
 
 /**
  * Flushes the underlying output stream if not null.
  */
 func (p *TIOStreamTransport) Flush() os.Error {
-	if p.Writer == nil {
-		return NewTTransportException(NOT_OPEN, "Cannot flush null outputStream")
-	}
-	f, ok := p.Writer.(Flusher)
-	if ok {
-		err := f.Flush()
-		if err != nil {
-			return NewTTransportExceptionFromOsError(err)
-		}
-	}
-	return nil
+  if p.Writer == nil {
+    return NewTTransportException(NOT_OPEN, "Cannot flush null outputStream")
+  }
+  f, ok := p.Writer.(Flusher)
+  if ok {
+    err := f.Flush()
+    if err != nil {
+      return NewTTransportExceptionFromOsError(err)
+    }
+  }
+  return nil
 }

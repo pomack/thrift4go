@@ -20,42 +20,42 @@
 package thrift
 
 import (
-	"os"
+  "os"
 )
 
 type TServer interface {
-	/**
-	 * Core processor
-	 */
-	ProcessorFactory() TProcessorFactory
-	/**
-	 * Server transport
-	 */
-	ServerTransport() TServerTransport
-	/**
-	 * Input Transport Factory
-	 */
-	InputTransportFactory() TTransportFactory
-	/**
-	 * Output Transport Factory
-	 */
-	OutputTransportFactory() TTransportFactory
-	/**
-	 * Input Protocol Factory
-	 */
-	InputProtocolFactory() TProtocolFactory
-	/**
-	 * Output Protocol Factory
-	 */
-	OutputProtocolFactory() TProtocolFactory
+  /**
+   * Core processor
+   */
+  ProcessorFactory() TProcessorFactory
+  /**
+   * Server transport
+   */
+  ServerTransport() TServerTransport
+  /**
+   * Input Transport Factory
+   */
+  InputTransportFactory() TTransportFactory
+  /**
+   * Output Transport Factory
+   */
+  OutputTransportFactory() TTransportFactory
+  /**
+   * Input Protocol Factory
+   */
+  InputProtocolFactory() TProtocolFactory
+  /**
+   * Output Protocol Factory
+   */
+  OutputProtocolFactory() TProtocolFactory
 
-	/**
-	 * The run method fires up the server and gets things going.
-	 */
-	Serve() os.Error
-	/**
-	 * Stop the server. This is optional on a per-implementation basis. Not
-	 * all servers are required to be cleanly stoppable.
-	 */
-	Stop() os.Error
+  /**
+   * The run method fires up the server and gets things going.
+   */
+  Serve() os.Error
+  /**
+   * Stop the server. This is optional on a per-implementation basis. Not
+   * all servers are required to be cleanly stoppable.
+   */
+  Stop() os.Error
 }

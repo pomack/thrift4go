@@ -21,107 +21,107 @@
 package thrift
 
 func CompareInt(i, j int) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareInt16(i, j int16) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareInt32(i, j int32) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareInt64(i, j int32) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareStringArray(i, j []string) int {
-	if cmp := CompareInt(len(i), len(j)); cmp != 0 {
-		return cmp
-	}
-	size := len(i)
-	for k := 0; k < size; k++ {
-		if cmp := CompareString(i[k], j[k]); cmp != 0 {
-			return cmp
-		}
-	}
-	return 0
+  if cmp := CompareInt(len(i), len(j)); cmp != 0 {
+    return cmp
+  }
+  size := len(i)
+  for k := 0; k < size; k++ {
+    if cmp := CompareString(i[k], j[k]); cmp != 0 {
+      return cmp
+    }
+  }
+  return 0
 }
 
 func CompareString(i, j string) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareFloat(i, j float32) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareDouble(i, j float64) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareByte(i, j byte) int {
-	if i > j {
-		return 1
-	}
-	if i < j {
-		return -1
-	}
-	return 0
+  if i > j {
+    return 1
+  }
+  if i < j {
+    return -1
+  }
+  return 0
 }
 
 func CompareBool(i, j bool) int {
-	if i {
-		if j {
-			return 0
-		}
-		return 1
-	}
-	if j {
-		return -1
-	}
-	return 0
+  if i {
+    if j {
+      return 0
+    }
+    return 1
+  }
+  if j {
+    return -1
+  }
+  return 0
 }

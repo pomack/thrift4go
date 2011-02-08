@@ -20,7 +20,7 @@
 package thrift
 
 import (
-	"os"
+  "os"
 )
 
 /**
@@ -29,28 +29,28 @@ import (
  */
 
 type TException interface {
-	String() string
+  String() string
 }
 
 type tException struct {
-	message string
+  message string
 }
 
 func (p *tException) String() string {
-	return p.message
+  return p.message
 }
 
 func NewTException(m string) TException {
-	return &tException{message: m}
+  return &tException{message: m}
 }
 
 func NewTExceptionFromOsError(e os.Error) TException {
-	if e == nil {
-		return nil
-	}
-	t, ok := e.(TException)
-	if ok {
-		return t
-	}
-	return NewTException(e.String())
+  if e == nil {
+    return nil
+  }
+  t, ok := e.(TException)
+  if ok {
+    return t
+  }
+  return NewTException(e.String())
 }

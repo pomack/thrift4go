@@ -1,4 +1,4 @@
-package main;
+package main
 
 
 /*
@@ -30,14 +30,14 @@ import (
 
 
 type GoServer struct {
-  handler tutorial.ICalculator
+  handler   tutorial.ICalculator
   processor *tutorial.CalculatorProcessor
 }
 
 func NewGoServer() *GoServer {
   handler := NewCalculatorHandler()
   processor := tutorial.NewCalculatorProcessor(handler)
-  return &GoServer{handler:handler, processor:processor}
+  return &GoServer{handler: handler, processor: processor}
 }
 
 func Simple(processor *tutorial.CalculatorProcessor, transportFactory thrift.TTransportFactory, protocolFactory thrift.TProtocolFactory, ch chan int) {
@@ -54,7 +54,7 @@ func Simple(processor *tutorial.CalculatorProcessor, transportFactory thrift.TTr
   server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
   // Use this for a multithreaded server
   // TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
-  
+
   fmt.Print("Starting the simple server... on ", addr, "\n")
   for {
     err = server.Serve()
@@ -81,5 +81,5 @@ func RunServer(transportFactory thrift.TTransportFactory, protocolFactory thrift
   ch := make(chan int)
   go Simple(server.processor, transportFactory, protocolFactory, ch)
   //go Secure(server.processor)
-  _ = <- ch
+  _ = <-ch
 }

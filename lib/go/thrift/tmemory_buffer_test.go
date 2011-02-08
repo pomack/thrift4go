@@ -20,11 +20,11 @@
 package thrift_test
 
 import (
-	. "thrift"
-	"testing"
+  . "thrift"
+  "testing"
 )
 
 func TestMemoryBuffer(t *testing.T) {
-	trans := NewTMemoryBufferLen(1024)
-	TransportTest(t, trans, trans)
+  trans := NewTMemoryBufferLen(1024)
+  TransportTest(t, trans, trans)
 }
