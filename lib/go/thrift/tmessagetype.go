@@ -27,8 +27,8 @@ type TMessageType int32
 
 const (
 	INVALID_TMESSAGE_TYPE TMessageType = 0
-	CALL                 TMessageType = 1
-	REPLY                TMessageType = 2
-	EXCEPTION            TMessageType = 3
-	ONEWAY               TMessageType = 4
+	CALL                  TMessageType = 1
+	REPLY                 TMessageType = 2
+	EXCEPTION             TMessageType = 3
+	ONEWAY                TMessageType = 4
 )
