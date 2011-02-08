@@ -24,25 +24,31 @@ package thrift
  *
  */
 type TStruct interface {
-	TContainer
+	TFieldContainer
 	TStructName() string
 	TStructFields() TFieldContainer
 	String() string
-	GetAttribute(field string) interface{}
-	GetAttributeByFieldId(field int16) interface{}
+	AttributeFromFieldId(fieldId int) interface{}
+	AttributeFromFieldName(fieldName string) interface{}
 }
 
 type tStruct struct {
+	TFieldContainer
 	name   string
-	fields TFieldContainer
 }
 
 func NewTStructEmpty(name string) TStruct {
-	return &tStruct{name: name, fields: NewTFieldContainer(make([]TField, 0, 0))}
+	return &tStruct{
+	  name: name, 
+	  TFieldContainer: NewTFieldContainer(make([]TField, 0, 0)),
+	}
 }
 
 func NewTStruct(name string, fields []TField) TStruct {
-	return &tStruct{name: name, fields: NewTFieldContainer(fields)}
+	return &tStruct{
+	  name: name,
+	  TFieldContainer: NewTFieldContainer(fields),
+	}
 }
 
 func (p *tStruct) TStructName() string {
@@ -50,19 +56,11 @@ func (p *tStruct) TStructName() string {
 }
 
 func (p *tStruct) TStructFields() TFieldContainer {
-	return p.fields
+	return p.TFieldContainer
 }
 
 func (p *tStruct) String() string {
 	return p.name
-}
-
-func (p *tStruct) Len() int {
-	return p.fields.Len()
-}
-
-func (p *tStruct) Contains(data interface{}) bool {
-	return p.fields.Contains(data)
 }
 
 func (p *tStruct) Equals(other interface{}) bool {
@@ -74,13 +72,14 @@ func (p *tStruct) CompareTo(other interface{}) (int, bool) {
 	return TType(STRUCT).Compare(p, other)
 }
 
-func (p *tStruct) GetAttribute(field string) interface{} {
-	return nil
+func (p *tStruct) AttributeFromFieldId(fieldId int) interface{} {
+  return nil
 }
 
-func (p *tStruct) GetAttributeByFieldId(id int16) interface{} {
-	return nil
+func (p *tStruct) AttributeFromFieldName(fieldName string) interface{} {
+  return p.AttributeFromFieldId(p.FieldIdFromFieldName(fieldName))
 }
+
 
 var ANONYMOUS_STRUCT TStruct
 
