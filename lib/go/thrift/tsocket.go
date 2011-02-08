@@ -42,7 +42,7 @@ type TSocket struct {
 	/**
 	 * Socket timeout in nanoseconds
 	 */
-	timeout int64
+	nsecTimeout int64
 }
 
 /**
@@ -56,7 +56,7 @@ func NewTSocketConn(connection net.Conn) (*TSocket, TTransportException) {
 	if address == nil {
 		address = connection.LocalAddr()
 	}
-	p := &TSocket{conn: connection, addr: address, timeout: 0, writeBuffer: bytes.NewBuffer(make([]byte, 0, 4096))}
+	p := &TSocket{conn: connection, addr: address, nsecTimeout: 0, writeBuffer: bytes.NewBuffer(make([]byte, 0, 4096))}
 	return p, nil
 }
 
@@ -77,25 +77,27 @@ func NewTSocketAddr(address net.Addr) *TSocket {
  *
  * @param host    Remote host
  * @param port    Remote port
- * @param timeout Socket timeout
+ * @param nsecTimeout Socket timeout
  */
-func NewTSocket(address net.Addr, timeout int64) *TSocket {
-	sock := &TSocket{addr: address, timeout: timeout, writeBuffer: bytes.NewBuffer(make([]byte, 0, 4096))}
+func NewTSocket(address net.Addr, nsecTimeout int64) *TSocket {
+	sock := &TSocket{addr: address, nsecTimeout: nsecTimeout, writeBuffer: bytes.NewBuffer(make([]byte, 0, 4096))}
 	return sock
 }
 
 /**
  * Sets the socket timeout
  *
- * @param timeout Milliseconds timeout
+ * @param timeout Nanoseconds timeout
  */
-func (p *TSocket) SetTimeout(timeout int64) os.Error {
-	p.timeout = timeout
-	err := p.conn.SetTimeout(timeout)
-	if err != nil {
-		LOGGER.Print("Could not set socket timeout.", err)
+func (p *TSocket) SetTimeout(nsecTimeout int64) os.Error {
+	p.nsecTimeout = nsecTimeout
+	if p.IsOpen() {
+  	if err := p.conn.SetTimeout(nsecTimeout); err != nil {
+  		LOGGER.Print("Could not set socket timeout.", err)
+  		return err
+  	}
 	}
-	return err
+	return nil
 }
 
 /**
@@ -131,15 +133,13 @@ func (p *TSocket) Open() os.Error {
 	if len(p.addr.String()) == 0 {
 		return NewTTransportException(NOT_OPEN, "Cannot open bad address.")
 	}
-
-	var err os.Error
-	p.conn, err = net.Dial(p.addr.Network(), "", p.addr.String())
-	if err != nil {
+  var err os.Error
+	if p.conn, err = net.Dial(p.addr.Network(), "", p.addr.String()); err != nil {
 		LOGGER.Print("Could not open socket", err.String())
 		return NewTTransportException(NOT_OPEN, err.String())
 	}
 	if p.conn != nil {
-		p.conn.SetTimeout(p.timeout)
+		p.conn.SetTimeout(p.nsecTimeout)
 	}
 	return nil
 }
@@ -150,9 +150,10 @@ func (p *TSocket) Open() os.Error {
 func (p *TSocket) Close() os.Error {
 	// Close the socket
 	if p.conn != nil {
-		e := p.conn.Close()
-		if e != nil {
-			LOGGER.Print("Could not close socket.", e.String())
+		err := p.conn.Close()
+		if err != nil {
+			LOGGER.Print("Could not close socket. ", err.String())
+			return err
 		}
 		p.conn = nil
 	}

@@ -50,7 +50,7 @@ func TestNonblockingTransportServerToClient(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unable to accept client connection from server: %s", err)
 	}
-	s.SetTimeout(10)
+	//s.SetTimeout(10)
 	TransportTest(t, NewTFramedTransport(s), NewTFramedTransport(trans2))
 	trans1.Close()
 }
@@ -82,7 +82,7 @@ func TestNonblockingTransportClientToServer(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unable to accept client connection from server: %s", err)
 	}
-	s.SetTimeout(10)
+	//s.SetTimeout(10)
 	TransportTest(t, NewTFramedTransport(trans2), NewTFramedTransport(s))
 	trans1.Close()
 }
