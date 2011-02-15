@@ -360,7 +360,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
   case STRUCT:
     si := ci.(TStruct)
     sj := cj.(TStruct)
-    if cmp := CompareString(si.TStructName(), sj.TStructName()); cmp != 0 {
+    if cmp := CompareString(si.ThriftName(), sj.ThriftName()); cmp != 0 {
       return cmp, true
     }
     if cmp, ok := si.TStructFields().CompareTo(sj.TStructFields()); !ok || cmp != 0 {

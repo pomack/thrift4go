@@ -26,6 +26,7 @@ package thrift
 type TStruct interface {
   TFieldContainer
   TStructName() string
+  ThriftName() string
   TStructFields() TFieldContainer
   String() string
   AttributeFromFieldId(fieldId int) interface{}
@@ -52,6 +53,10 @@ func NewTStruct(name string, fields []TField) TStruct {
 }
 
 func (p *tStruct) TStructName() string {
+  return p.name
+}
+
+func (p *tStruct) ThriftName() string {
   return p.name
 }
 
