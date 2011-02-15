@@ -713,7 +713,9 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
     for (m_iter = sorted_members.begin(); m_iter != sorted_members.end(); ++m_iter) {
 
       for (; sorted_keys_pos != (*m_iter)->get_key(); sorted_keys_pos++) {
-        indent(out) << "_ interface{} \"" << escape_string((*m_iter)->get_name()) << "\"; // nil # " << sorted_keys_pos << endl;
+        if (sorted_keys_pos != 0) {
+          indent(out) << "_ interface{} \"" << escape_string((*m_iter)->get_name()) << "\"; // nil # " << sorted_keys_pos << endl;
+        }
       }
       t_type* fieldType = (*m_iter)->get_type();
       string goType(type_to_go_type(fieldType));
@@ -800,17 +802,25 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
   if(members.size() <= 0) {
     out <<
       indent() << "func (p *" << tstruct_name << ") CompareTo(other interface{}) (int, bool) {" << endl <<
-      indent() << "  if other == nil { return 1, true }" << endl <<
-      indent() << "  _, ok := other.(" << tstruct_name << ")" << endl <<
-      indent() << "  if !ok { return 0, false }" << endl <<
+      indent() << "  if other == nil {" << endl <<
+      indent() << "    return 1, true" << endl <<
+      indent() << "  }" << endl <<
+      indent() << "  _, ok := other.(*" << tstruct_name << ")" << endl <<
+      indent() << "  if !ok {" << endl <<
+      indent() << "    return 0, false" << endl <<
+      indent() << "  }" << endl <<
       indent() << "  return 0, true" << endl <<
       indent() << "}" << endl << endl;
   } else {
     out <<
       indent() << "func (p *" << tstruct_name << ") CompareTo(other interface{}) (int, bool) {" << endl <<
-      indent() << "  if other == nil { return 1, true }" << endl <<
-      indent() << "  data, ok := other.(" << tstruct_name << ")" << endl <<
-      indent() << "  if !ok { return 0, false }" << endl;
+      indent() << "  if other == nil {" << endl <<
+      indent() << "    return 1, true" << endl <<
+      indent() << "  }" << endl <<
+      indent() << "  data, ok := other.(*" << tstruct_name << ")" << endl <<
+      indent() << "  if !ok {" << endl <<
+      indent() << "    return 0, false" << endl <<
+      indent() << "  }" << endl;
     indent_up();
     for(m_iter = members.begin(); m_iter != members.end(); ++m_iter) {
       t_type* orig_type = (*m_iter)->get_type();
@@ -819,17 +829,23 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
       if(type->is_base_type() || type->is_enum()) {
         if(type->is_bool()) {
           out <<
-            indent() << "if cmp := thrift.CompareBool(p." << field_name << ", data." << field_name << "); cmp != 0 { return cmp, true }" << endl;
+            indent() << "if cmp := thrift.CompareBool(p." << field_name << ", data." << field_name << "); cmp != 0 {" << endl <<
+            indent() << "  return cmp, true" << endl <<
+            indent() << "}" << endl;
         } else {
           out <<
             indent() << "if p." << field_name << " != data." << field_name << " {" << endl <<
-            indent() << "  if p." << field_name << " < data." << field_name << " { return -1, true }" << endl <<
+            indent() << "  if p." << field_name << " < data." << field_name << " {" << endl <<
+            indent() << "    return -1, true" << endl <<
+            indent() << "  }" << endl <<
             indent() << "  return 1, true" << endl <<
             indent() << "}" << endl;
         }
       } else if(type->is_container() || type->is_struct() || type->is_xception()) {
         out <<
-          indent() << "if cmp, ok := p." << field_name << ".CompareTo(data." << field_name << "); !ok || cmp != 0 { return cmp, ok}" << endl;
+          indent() << "if cmp, ok := p." << field_name << ".CompareTo(data." << field_name << "); !ok || cmp != 0 {" << endl <<
+          indent() << "  return cmp, ok" << endl <<
+          indent() << "}" << endl;
       } else {
         throw "INVALID TYPE IN generate_go_struct_definition: " + type->get_name();
       }
@@ -1519,7 +1535,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "flag.Usage = Usage" << endl <<
     indent() << "flag.StringVar(&host, \"h\", \"localhost\", \"Specify host and port\")" << endl <<
     indent() << "flag.IntVar(&port, \"p\", 9090, \"Specify port\")" << endl <<
-    indent() << "flag.StringVar(&protocol, \"P\", \"binary\", \"Specify the protocol (binary, compact, simplejson)\")" << endl <<
+    indent() << "flag.StringVar(&protocol, \"P\", \"binary\", \"Specify the protocol (binary, compact, simplejson, json)\")" << endl <<
     indent() << "flag.StringVar(&urlString, \"u\", \"\", \"Specify the url\")" << endl <<
     indent() << "flag.BoolVar(&framed, \"framed\", false, \"Use framed transport\")" << endl <<
     indent() << "flag.BoolVar(&useHttp, \"http\", false, \"Use http\")" << endl <<
@@ -1575,11 +1591,14 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "case \"simplejson\":" << endl <<
     indent() << "  protocolFactory = thrift.NewTSimpleJSONProtocolFactory()" << endl <<
     indent() << "  break" << endl <<
+    indent() << "case \"json\":" << endl <<
+    indent() << "  protocolFactory = thrift.NewTJSONProtocolFactory()" << endl <<
+    indent() << "  break" << endl <<
     indent() << "case \"binary\", \"\":" << endl <<
     indent() << "  protocolFactory = thrift.NewTBinaryProtocolFactoryDefault()" << endl <<
     indent() << "  break" << endl <<
     indent() << "default:" << endl <<
-    indent() << "  fmt.Fprint(os.Stderr, \"Invalid protocol specified\", protocol, \"\\n\")" << endl <<
+    indent() << "  fmt.Fprint(os.Stderr, \"Invalid protocol specified: \", protocol, \"\\n\")" << endl <<
     indent() << "  Usage()" << endl <<
     indent() << "  os.Exit(1)" << endl <<
     indent() << "}" << endl <<
