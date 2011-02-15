@@ -15,6 +15,7 @@ GOFILES=\
         thttp_client.go\
         tiostream_transport.go\
         tlist.go\
+        tjson_protocol.go\
         tmap.go\
         tmemory_buffer.go\
         tmessage.go\
