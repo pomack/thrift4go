@@ -13,10 +13,11 @@ To install in your Go Repository do:
 goinstall github.com/pomack/thrift4go/lib/go/thrift
 goinstall -a -log
 
-3 files for thrift compiler (last tested on February 17, 2010):
+4 files for thrift compiler (last tested on February 17, 2010):
 1) configure.ac
-2) compiler/cpp/Makefile.am
-3) compiler/cpp/src/generate/t_go_generator.cc
+2) lib/Makefile.am
+3) compiler/cpp/Makefile.am
+4) compiler/cpp/src/generate/t_go_generator.cc
 
 A tutorial has been created in the thrift4go/tutorial/go/src directory
 To use this tutorial, run
