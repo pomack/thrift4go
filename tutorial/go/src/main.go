@@ -1,4 +1,4 @@
-package main;
+package main
 
 
 /*
@@ -43,7 +43,7 @@ func main() {
   var framed bool
   var useHttp bool
   var help bool
-  
+
   flag.BoolVar(&client, "client", false, "Run client")
   flag.BoolVar(&server, "server", false, "Run server")
   flag.StringVar(&protocol, "P", "binary", "Specify the protocol (binary, compact, simplejson)")
@@ -74,10 +74,10 @@ func main() {
   if framed {
     transportFactory = thrift.NewTFramedTransportFactory(transportFactory)
   }
-  
-  if(client) {
+
+  if client {
     RunClient(transportFactory, protocolFactory)
-  } else if(server) {
+  } else if server {
     RunServer(transportFactory, protocolFactory)
   } else {
     flag.Usage()
