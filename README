@@ -5,7 +5,7 @@ Currently generates code for the following protocols:
 2) Fast Binary Protocol (with test cases)
 3) Standard Thrift JSON Protocol (with test cases)
 4) A (custom) simple JSON Protocol (with test cases)
-5) Services (compiles and runs but never tested against other languages) 
+5) Services (compiles and runs against Java, assumed to work elsewhere) 
 
 Tested on Mac OS X 10.6 (Snow Leopard)
 
@@ -13,7 +13,7 @@ To install in your Go Repository do:
 goinstall github.com/pomack/thrift4go/lib/go/thrift
 goinstall -a -log
 
-3 files for thrift compiler (last tested on January 17, 2010):
+3 files for thrift compiler (last tested on February 17, 2010):
 1) configure.ac
 2) compiler/cpp/Makefile.am
 3) compiler/cpp/src/generate/t_go_generator.cc
