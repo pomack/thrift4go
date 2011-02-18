@@ -151,7 +151,6 @@ func ReadWriteProtocolTest(t *testing.T, protocolFactory TProtocolFactory) {
     ReadWriteCalculate(t, p, trans)
     trans.Close()
   }
-  
 
   // this test doesn't work in all cases due to EOF issues between
   // buffer read and buffer write when using the same bufio for both
@@ -502,7 +501,7 @@ func ReadWriteCalculate(t *testing.T, p TProtocol, trans TTransport) {
   w.Num2 = 102
   w.Op = ADD
   w.Comment = "Add: 25 + 102"
-  
+
   args31 := NewCalculateArgs()
   args31.Logid = logid
   args31.W = w
@@ -512,7 +511,7 @@ func ReadWriteCalculate(t *testing.T, p TProtocol, trans TTransport) {
   }
   p.WriteMessageEnd()
   p.Transport().Flush()
-  
+
   name, ttype, seqid, err1 := p.ReadMessageBegin()
   if err1 != nil {
     t.Fatalf("%s: %T %T Unable to read message begin: %s", messageName, p, trans, err1.String())
@@ -996,31 +995,30 @@ type ICalculator interface {
 }
 
 type CalculatorClient struct {
-  Transport TTransport
+  Transport       TTransport
   ProtocolFactory TProtocolFactory
-  InputProtocol TProtocol
-  OutputProtocol TProtocol
-  SeqId int32
+  InputProtocol   TProtocol
+  OutputProtocol  TProtocol
+  SeqId           int32
 }
 
 func NewCalculatorClientFactory(t TTransport, f TProtocolFactory) *CalculatorClient {
   return &CalculatorClient{Transport: t,
     ProtocolFactory: f,
-    InputProtocol: f.GetProtocol(t),
-    OutputProtocol: f.GetProtocol(t),
-    SeqId: 0,
+    InputProtocol:   f.GetProtocol(t),
+    OutputProtocol:  f.GetProtocol(t),
+    SeqId:           0,
   }
 }
 
 func NewCalculatorClientProtocol(t TTransport, iprot TProtocol, oprot TProtocol) *CalculatorClient {
   return &CalculatorClient{Transport: t,
     ProtocolFactory: nil,
-    InputProtocol: iprot,
-    OutputProtocol: oprot,
-    SeqId: 0,
+    InputProtocol:   iprot,
+    OutputProtocol:  oprot,
+    SeqId:           0,
   }
 }
-
 
 
 /**
@@ -1030,11 +1028,13 @@ func NewCalculatorClientProtocol(t TTransport, iprot TProtocol, oprot TProtocol)
  */
 func (p *CalculatorClient) Calculate(logid int32, w *Work) (retval30 int32, ouch *InvalidOperation, err os.Error) {
   err = p.SendCalculate(logid, w)
-  if err != nil { return }
+  if err != nil {
+    return
+  }
   return p.RecvCalculate()
 }
 
-func (p *CalculatorClient) SendCalculate(logid int32, w *Work)(err os.Error) {
+func (p *CalculatorClient) SendCalculate(logid int32, w *Work) (err os.Error) {
   oprot := p.OutputProtocol
   if oprot != nil {
     oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1091,16 +1091,16 @@ func (p *CalculatorClient) RecvCalculate() (value int32, ouch *InvalidOperation,
  */
 type CalculateArgs struct {
   TStruct
-  _ interface{} "logid"; // nil # 0
-  Logid int32 "logid"; // 1
-  W *Work "w"; // 2
+  _     interface{} "logid" // nil # 0
+  Logid int32       "logid" // 1
+  W     *Work       "w"     // 2
 }
 
 func NewCalculateArgs() *CalculateArgs {
   output := &CalculateArgs{
-    TStruct:NewTStruct("calculate_args", []TField{
-    NewTField("logid", I32, 1),
-    NewTField("w", STRUCT, 2),
+    TStruct: NewTStruct("calculate_args", []TField{
+      NewTField("logid", I32, 1),
+      NewTField("w", STRUCT, 2),
     }),
   }
   {
@@ -1110,7 +1110,9 @@ func NewCalculateArgs() *CalculateArgs {
 
 func (p *CalculateArgs) Read(iprot TProtocol) (err TProtocolException) {
   _, err = iprot.ReadStructBegin()
-  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+  }
   for {
     fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
     if fieldId < 0 {
@@ -1124,104 +1126,150 @@ func (p *CalculateArgs) Read(iprot TProtocol) (err TProtocolException) {
     if err != nil {
       return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
     }
-    if fieldTypeId == STOP { break; }
+    if fieldTypeId == STOP {
+      break
+    }
     if fieldId == 1 || fieldName == "logid" {
       if fieldTypeId == I32 {
         err = p.ReadField1(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else if fieldTypeId == VOID {
         err = iprot.Skip(fieldTypeId)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else {
         err = p.ReadField1(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       }
     } else if fieldId == 2 || fieldName == "w" {
       if fieldTypeId == STRUCT {
         err = p.ReadField2(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else if fieldTypeId == VOID {
         err = iprot.Skip(fieldTypeId)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else {
         err = p.ReadField2(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       }
     } else {
       err = iprot.Skip(fieldTypeId)
-      if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      if err != nil {
+        return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+      }
     }
     err = iprot.ReadFieldEnd()
-    if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+    if err != nil {
+      return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+    }
   }
   err = iprot.ReadStructEnd()
-  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+  }
   return err
 }
 
 func (p *CalculateArgs) ReadField1(iprot TProtocol) (err TProtocolException) {
   v47, err48 := iprot.ReadI32()
-  if err48 != nil { return NewTProtocolExceptionReadField(1, "logid", p.ThriftName(), err48); }
+  if err48 != nil {
+    return NewTProtocolExceptionReadField(1, "logid", p.ThriftName(), err48)
+  }
   p.Logid = v47
   return err
 }
 
-func (p *CalculateArgs) ReadFieldLogid(iprot TProtocol) (TProtocolException) {
+func (p *CalculateArgs) ReadFieldLogid(iprot TProtocol) TProtocolException {
   return p.ReadField1(iprot)
 }
 
 func (p *CalculateArgs) ReadField2(iprot TProtocol) (err TProtocolException) {
   p.W = NewWork()
   err51 := p.W.Read(iprot)
-  if err51 != nil { return NewTProtocolExceptionReadStruct("p.WWork", err51); }
+  if err51 != nil {
+    return NewTProtocolExceptionReadStruct("p.WWork", err51)
+  }
   return err
 }
 
-func (p *CalculateArgs) ReadFieldW(iprot TProtocol) (TProtocolException) {
+func (p *CalculateArgs) ReadFieldW(iprot TProtocol) TProtocolException {
   return p.ReadField2(iprot)
 }
 
 func (p *CalculateArgs) Write(oprot TProtocol) (err TProtocolException) {
   err = oprot.WriteStructBegin("calculate_args")
-  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+  }
   err = p.WriteField1(oprot)
-  if err != nil { return err }
+  if err != nil {
+    return err
+  }
   err = p.WriteField2(oprot)
-  if err != nil { return err }
+  if err != nil {
+    return err
+  }
   err = oprot.WriteFieldStop()
-  if err != nil { return NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err)
+  }
   err = oprot.WriteStructEnd()
-  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+  }
   return err
 }
 
 func (p *CalculateArgs) WriteField1(oprot TProtocol) (err TProtocolException) {
   err = oprot.WriteFieldBegin("logid", I32, 1)
-  if err != nil { return NewTProtocolExceptionWriteField(1, "logid", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(1, "logid", p.ThriftName(), err)
+  }
   err = oprot.WriteI32(int32(p.Logid))
-  if err != nil { return NewTProtocolExceptionWriteField(1, "logid", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(1, "logid", p.ThriftName(), err)
+  }
   err = oprot.WriteFieldEnd()
-  if err != nil { return NewTProtocolExceptionWriteField(1, "logid", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(1, "logid", p.ThriftName(), err)
+  }
   return err
 }
 
-func (p *CalculateArgs) WriteFieldLogid(oprot TProtocol) (TProtocolException) {
+func (p *CalculateArgs) WriteFieldLogid(oprot TProtocol) TProtocolException {
   return p.WriteField1(oprot)
 }
 
 func (p *CalculateArgs) WriteField2(oprot TProtocol) (err TProtocolException) {
   if p.W != nil {
     err = oprot.WriteFieldBegin("w", STRUCT, 2)
-    if err != nil { return NewTProtocolExceptionWriteField(2, "w", p.ThriftName(), err); }
+    if err != nil {
+      return NewTProtocolExceptionWriteField(2, "w", p.ThriftName(), err)
+    }
     err = p.W.Write(oprot)
-    if err != nil { return NewTProtocolExceptionWriteStruct("Work", err); }
+    if err != nil {
+      return NewTProtocolExceptionWriteStruct("Work", err)
+    }
     err = oprot.WriteFieldEnd()
-    if err != nil { return NewTProtocolExceptionWriteField(2, "w", p.ThriftName(), err); }
+    if err != nil {
+      return NewTProtocolExceptionWriteField(2, "w", p.ThriftName(), err)
+    }
   }
   return err
 }
 
-func (p *CalculateArgs) WriteFieldW(oprot TProtocol) (TProtocolException) {
+func (p *CalculateArgs) WriteFieldW(oprot TProtocol) TProtocolException {
   return p.WriteField2(oprot)
 }
 
@@ -1262,9 +1310,12 @@ func (p *CalculateArgs) CompareTo(other interface{}) (int, bool) {
 
 func (p *CalculateArgs) AttributeByFieldId(id int) interface{} {
   switch id {
-  default: return nil
-  case 1: return p.Logid
-  case 2: return p.W
+  default:
+    return nil
+  case 1:
+    return p.Logid
+  case 2:
+    return p.W
   }
   return nil
 }
@@ -1273,7 +1324,7 @@ func (p *CalculateArgs) TStructFields() TFieldContainer {
   return NewTFieldContainer([]TField{
     NewTField("logid", I32, 1),
     NewTField("w", STRUCT, 2),
-    })
+  })
 }
 
 /**
@@ -1283,15 +1334,15 @@ func (p *CalculateArgs) TStructFields() TFieldContainer {
  */
 type CalculateResult struct {
   TStruct
-  Success int32 "success"; // 0
-  Ouch *InvalidOperation "ouch"; // 1
+  Success int32             "success" // 0
+  Ouch    *InvalidOperation "ouch"    // 1
 }
 
 func NewCalculateResult() *CalculateResult {
   output := &CalculateResult{
-    TStruct:NewTStruct("calculate_result", []TField{
-    NewTField("success", I32, 0),
-    NewTField("ouch", STRUCT, 1),
+    TStruct: NewTStruct("calculate_result", []TField{
+      NewTField("success", I32, 0),
+      NewTField("ouch", STRUCT, 1),
     }),
   }
   {
@@ -1301,7 +1352,9 @@ func NewCalculateResult() *CalculateResult {
 
 func (p *CalculateResult) Read(iprot TProtocol) (err TProtocolException) {
   _, err = iprot.ReadStructBegin()
-  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+  }
   for {
     fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
     if fieldId < 0 {
@@ -1315,104 +1368,150 @@ func (p *CalculateResult) Read(iprot TProtocol) (err TProtocolException) {
     if err != nil {
       return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
     }
-    if fieldTypeId == STOP { break; }
+    if fieldTypeId == STOP {
+      break
+    }
     if fieldId == 0 || fieldName == "success" {
       if fieldTypeId == I32 {
         err = p.ReadField0(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else if fieldTypeId == VOID {
         err = iprot.Skip(fieldTypeId)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else {
         err = p.ReadField0(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       }
     } else if fieldId == 1 || fieldName == "ouch" {
       if fieldTypeId == STRUCT {
         err = p.ReadField1(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else if fieldTypeId == VOID {
         err = iprot.Skip(fieldTypeId)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else {
         err = p.ReadField1(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       }
     } else {
       err = iprot.Skip(fieldTypeId)
-      if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      if err != nil {
+        return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+      }
     }
     err = iprot.ReadFieldEnd()
-    if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+    if err != nil {
+      return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+    }
   }
   err = iprot.ReadStructEnd()
-  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+  }
   return err
 }
 
 func (p *CalculateResult) ReadField0(iprot TProtocol) (err TProtocolException) {
   v52, err53 := iprot.ReadI32()
-  if err53 != nil { return NewTProtocolExceptionReadField(0, "success", p.ThriftName(), err53); }
+  if err53 != nil {
+    return NewTProtocolExceptionReadField(0, "success", p.ThriftName(), err53)
+  }
   p.Success = v52
   return err
 }
 
-func (p *CalculateResult) ReadFieldSuccess(iprot TProtocol) (TProtocolException) {
+func (p *CalculateResult) ReadFieldSuccess(iprot TProtocol) TProtocolException {
   return p.ReadField0(iprot)
 }
 
 func (p *CalculateResult) ReadField1(iprot TProtocol) (err TProtocolException) {
   p.Ouch = NewInvalidOperation()
   err56 := p.Ouch.Read(iprot)
-  if err56 != nil { return NewTProtocolExceptionReadStruct("p.OuchInvalidOperation", err56); }
+  if err56 != nil {
+    return NewTProtocolExceptionReadStruct("p.OuchInvalidOperation", err56)
+  }
   return err
 }
 
-func (p *CalculateResult) ReadFieldOuch(iprot TProtocol) (TProtocolException) {
+func (p *CalculateResult) ReadFieldOuch(iprot TProtocol) TProtocolException {
   return p.ReadField1(iprot)
 }
 
 func (p *CalculateResult) Write(oprot TProtocol) (err TProtocolException) {
   err = oprot.WriteStructBegin("calculate_result")
-  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+  }
   err = p.WriteField0(oprot)
-  if err != nil { return err }
+  if err != nil {
+    return err
+  }
   err = p.WriteField1(oprot)
-  if err != nil { return err }
+  if err != nil {
+    return err
+  }
   err = oprot.WriteFieldStop()
-  if err != nil { return NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err)
+  }
   err = oprot.WriteStructEnd()
-  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+  }
   return err
 }
 
 func (p *CalculateResult) WriteField0(oprot TProtocol) (err TProtocolException) {
   err = oprot.WriteFieldBegin("success", I32, 0)
-  if err != nil { return NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err)
+  }
   err = oprot.WriteI32(int32(p.Success))
-  if err != nil { return NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err)
+  }
   err = oprot.WriteFieldEnd()
-  if err != nil { return NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err)
+  }
   return err
 }
 
-func (p *CalculateResult) WriteFieldSuccess(oprot TProtocol) (TProtocolException) {
+func (p *CalculateResult) WriteFieldSuccess(oprot TProtocol) TProtocolException {
   return p.WriteField0(oprot)
 }
 
 func (p *CalculateResult) WriteField1(oprot TProtocol) (err TProtocolException) {
   if p.Ouch != nil {
     err = oprot.WriteFieldBegin("ouch", STRUCT, 1)
-    if err != nil { return NewTProtocolExceptionWriteField(1, "ouch", p.ThriftName(), err); }
+    if err != nil {
+      return NewTProtocolExceptionWriteField(1, "ouch", p.ThriftName(), err)
+    }
     err = p.Ouch.Write(oprot)
-    if err != nil { return NewTProtocolExceptionWriteStruct("InvalidOperation", err); }
+    if err != nil {
+      return NewTProtocolExceptionWriteStruct("InvalidOperation", err)
+    }
     err = oprot.WriteFieldEnd()
-    if err != nil { return NewTProtocolExceptionWriteField(1, "ouch", p.ThriftName(), err); }
+    if err != nil {
+      return NewTProtocolExceptionWriteField(1, "ouch", p.ThriftName(), err)
+    }
   }
   return err
 }
 
-func (p *CalculateResult) WriteFieldOuch(oprot TProtocol) (TProtocolException) {
+func (p *CalculateResult) WriteFieldOuch(oprot TProtocol) TProtocolException {
   return p.WriteField1(oprot)
 }
 
@@ -1453,9 +1552,12 @@ func (p *CalculateResult) CompareTo(other interface{}) (int, bool) {
 
 func (p *CalculateResult) AttributeByFieldId(id int) interface{} {
   switch id {
-  default: return nil
-  case 0: return p.Success
-  case 1: return p.Ouch
+  default:
+    return nil
+  case 0:
+    return p.Success
+  case 1:
+    return p.Ouch
   }
   return nil
 }
@@ -1464,10 +1566,8 @@ func (p *CalculateResult) TStructFields() TFieldContainer {
   return NewTFieldContainer([]TField{
     NewTField("success", I32, 0),
     NewTField("ouch", STRUCT, 1),
-    })
+  })
 }
-
-
 
 
 /**
@@ -1479,16 +1579,16 @@ func (p *CalculateResult) TStructFields() TFieldContainer {
  */
 type InvalidOperation struct {
   TStruct
-  _ interface{} "what"; // nil # 0
-  What int32 "what"; // 1
-  Why string "why"; // 2
+  _    interface{} "what" // nil # 0
+  What int32       "what" // 1
+  Why  string      "why"  // 2
 }
 
 func NewInvalidOperation() *InvalidOperation {
   output := &InvalidOperation{
-    TStruct:NewTStruct("InvalidOperation", []TField{
-    NewTField("what", I32, 1),
-    NewTField("why", STRING, 2),
+    TStruct: NewTStruct("InvalidOperation", []TField{
+      NewTField("what", I32, 1),
+      NewTField("why", STRING, 2),
     }),
   }
   {
@@ -1498,7 +1598,9 @@ func NewInvalidOperation() *InvalidOperation {
 
 func (p *InvalidOperation) Read(iprot TProtocol) (err TProtocolException) {
   _, err = iprot.ReadStructBegin()
-  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+  }
   for {
     fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
     if fieldId < 0 {
@@ -1512,102 +1614,148 @@ func (p *InvalidOperation) Read(iprot TProtocol) (err TProtocolException) {
     if err != nil {
       return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
     }
-    if fieldTypeId == STOP { break; }
+    if fieldTypeId == STOP {
+      break
+    }
     if fieldId == 1 || fieldName == "what" {
       if fieldTypeId == I32 {
         err = p.ReadField1(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else if fieldTypeId == VOID {
         err = iprot.Skip(fieldTypeId)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else {
         err = p.ReadField1(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       }
     } else if fieldId == 2 || fieldName == "why" {
       if fieldTypeId == STRING {
         err = p.ReadField2(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else if fieldTypeId == VOID {
         err = iprot.Skip(fieldTypeId)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       } else {
         err = p.ReadField2(iprot)
-        if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+        if err != nil {
+          return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+        }
       }
     } else {
       err = iprot.Skip(fieldTypeId)
-      if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      if err != nil {
+        return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+      }
     }
     err = iprot.ReadFieldEnd()
-    if err != nil { return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+    if err != nil {
+      return NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+    }
   }
   err = iprot.ReadStructEnd()
-  if err != nil { return NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+  }
   return err
 }
 
 func (p *InvalidOperation) ReadField1(iprot TProtocol) (err TProtocolException) {
   v12, err13 := iprot.ReadI32()
-  if err13 != nil { return NewTProtocolExceptionReadField(1, "what", p.ThriftName(), err13); }
+  if err13 != nil {
+    return NewTProtocolExceptionReadField(1, "what", p.ThriftName(), err13)
+  }
   p.What = v12
   return err
 }
 
-func (p *InvalidOperation) ReadFieldWhat(iprot TProtocol) (TProtocolException) {
+func (p *InvalidOperation) ReadFieldWhat(iprot TProtocol) TProtocolException {
   return p.ReadField1(iprot)
 }
 
 func (p *InvalidOperation) ReadField2(iprot TProtocol) (err TProtocolException) {
   v14, err15 := iprot.ReadString()
-  if err15 != nil { return NewTProtocolExceptionReadField(2, "why", p.ThriftName(), err15); }
+  if err15 != nil {
+    return NewTProtocolExceptionReadField(2, "why", p.ThriftName(), err15)
+  }
   p.Why = v14
   return err
 }
 
-func (p *InvalidOperation) ReadFieldWhy(iprot TProtocol) (TProtocolException) {
+func (p *InvalidOperation) ReadFieldWhy(iprot TProtocol) TProtocolException {
   return p.ReadField2(iprot)
 }
 
 func (p *InvalidOperation) Write(oprot TProtocol) (err TProtocolException) {
   err = oprot.WriteStructBegin("InvalidOperation")
-  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+  }
   err = p.WriteField1(oprot)
-  if err != nil { return err }
+  if err != nil {
+    return err
+  }
   err = p.WriteField2(oprot)
-  if err != nil { return err }
+  if err != nil {
+    return err
+  }
   err = oprot.WriteFieldStop()
-  if err != nil { return NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err)
+  }
   err = oprot.WriteStructEnd()
-  if err != nil { return NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+  }
   return err
 }
 
 func (p *InvalidOperation) WriteField1(oprot TProtocol) (err TProtocolException) {
   err = oprot.WriteFieldBegin("what", I32, 1)
-  if err != nil { return NewTProtocolExceptionWriteField(1, "what", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(1, "what", p.ThriftName(), err)
+  }
   err = oprot.WriteI32(int32(p.What))
-  if err != nil { return NewTProtocolExceptionWriteField(1, "what", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(1, "what", p.ThriftName(), err)
+  }
   err = oprot.WriteFieldEnd()
-  if err != nil { return NewTProtocolExceptionWriteField(1, "what", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(1, "what", p.ThriftName(), err)
+  }
   return err
 }
 
-func (p *InvalidOperation) WriteFieldWhat(oprot TProtocol) (TProtocolException) {
+func (p *InvalidOperation) WriteFieldWhat(oprot TProtocol) TProtocolException {
   return p.WriteField1(oprot)
 }
 
 func (p *InvalidOperation) WriteField2(oprot TProtocol) (err TProtocolException) {
   err = oprot.WriteFieldBegin("why", STRING, 2)
-  if err != nil { return NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err)
+  }
   err = oprot.WriteString(string(p.Why))
-  if err != nil { return NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err)
+  }
   err = oprot.WriteFieldEnd()
-  if err != nil { return NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err); }
+  if err != nil {
+    return NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err)
+  }
   return err
 }
 
-func (p *InvalidOperation) WriteFieldWhy(oprot TProtocol) (TProtocolException) {
+func (p *InvalidOperation) WriteFieldWhy(oprot TProtocol) TProtocolException {
   return p.WriteField2(oprot)
 }
 
@@ -1651,9 +1799,12 @@ func (p *InvalidOperation) CompareTo(other interface{}) (int, bool) {
 
 func (p *InvalidOperation) AttributeByFieldId(id int) interface{} {
   switch id {
-  default: return nil
-  case 1: return p.What
-  case 2: return p.Why
+  default:
+    return nil
+  case 1:
+    return p.What
+  case 2:
+    return p.Why
   }
   return nil
 }
@@ -1662,7 +1813,5 @@ func (p *InvalidOperation) TStructFields() TFieldContainer {
   return NewTFieldContainer([]TField{
     NewTField("what", I32, 1),
     NewTField("why", STRING, 2),
-    })
+  })
 }
-
-

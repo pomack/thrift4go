@@ -46,7 +46,7 @@ type TJSONProtocol struct {
  * Constructor
  */
 func NewTJSONProtocol(t TTransport) *TJSONProtocol {
-  v := &TJSONProtocol{TSimpleJSONProtocol:NewTSimpleJSONProtocol(t)}
+  v := &TJSONProtocol{TSimpleJSONProtocol: NewTSimpleJSONProtocol(t)}
   v.parseContextStack.Push(int(_CONTEXT_IN_TOPLEVEL))
   v.dumpContext.Push(int(_CONTEXT_IN_TOPLEVEL))
   return v

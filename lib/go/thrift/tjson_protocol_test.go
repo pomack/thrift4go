@@ -418,7 +418,7 @@ func TestWriteJSONProtocolBinary(t *testing.T) {
   if len(v1) != len(value) {
     t.Fatalf("Invalid value for binary\nexpected: \"%v\"\n   read: \"%v\"", value, v1)
   }
-  for k, v := range(value) {
+  for k, v := range value {
     if v1[k] != v {
       t.Fatalf("Invalid value for binary at %v\nexpected: \"%v\"\n   read: \"%v\"", k, v, v1[k])
     }

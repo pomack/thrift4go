@@ -41,8 +41,6 @@ func (p *tProcessorFactory) GetProcessor(trans TTransport) TProcessor {
 }
 
 
-
-
 /**
  * The default processor factory just returns a singleton
  * instance.

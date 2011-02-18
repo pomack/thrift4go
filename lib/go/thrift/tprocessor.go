@@ -31,4 +31,3 @@ type TProcessor interface {
 type TProcessorFunction interface {
   Process(seqId int32, in, out TProtocol) (bool, TException)
 }
-

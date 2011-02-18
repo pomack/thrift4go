@@ -208,13 +208,13 @@ func (p *TSimpleJSONProtocol) WriteFieldBegin(name string, typeId TType, id int1
   }
   return nil
   /*
-  	if e := p.OutputListBegin(); e != nil {
-      return e
-    }
-    if e := p.WriteByte(byte(typeId)); e != nil {
-      return e
-    }
-    return p.WriteI16(id)
+    	if e := p.OutputListBegin(); e != nil {
+        return e
+      }
+      if e := p.WriteByte(byte(typeId)); e != nil {
+        return e
+      }
+      return p.WriteI16(id)
   */
 }
 
