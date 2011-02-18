@@ -39,3 +39,26 @@ func NewTProcessorFactory(p TProcessor) TProcessorFactory {
 func (p *tProcessorFactory) GetProcessor(trans TTransport) TProcessor {
   return p.processor
 }
+
+
+
+
+/**
+ * The default processor factory just returns a singleton
+ * instance.
+ */
+type TProcessorFunctionFactory interface {
+  GetProcessorFunction(trans TTransport) TProcessorFunction
+}
+
+type tProcessorFunctionFactory struct {
+  processor TProcessorFunction
+}
+
+func NewTProcessorFunctionFactory(p TProcessorFunction) TProcessorFunctionFactory {
+  return &tProcessorFunctionFactory{processor: p}
+}
+
+func (p *tProcessorFunctionFactory) GetProcessorFunction(trans TTransport) TProcessorFunction {
+  return p.processor
+}

@@ -37,8 +37,6 @@ type TSimpleServer struct {
   outputTransportFactory TTransportFactory
   inputProtocolFactory   TProtocolFactory
   outputProtocolFactory  TProtocolFactory
-
-  seqId int32
 }
 
 func NewTSimpleServer2(processor TProcessor, serverTransport TServerTransport) *TSimpleServer {
@@ -147,9 +145,14 @@ func (p *TSimpleServer) processRequest(client TTransport) {
   outputTransport := p.outputTransportFactory.GetTransport(client)
   inputProtocol := p.inputProtocolFactory.GetProtocol(inputTransport)
   outputProtocol := p.outputProtocolFactory.GetProtocol(outputTransport)
+  if inputTransport != nil {
+    defer inputTransport.Close()
+  }
+  if outputTransport != nil {
+    defer outputTransport.Close()
+  }
   for {
-    ok, e := processor.Process(inputProtocol, outputProtocol, p.seqId)
-    p.seqId++
+    ok, e := processor.Process(inputProtocol, outputProtocol)
     if e != nil {
       if !p.stopped {
         // TODO(pomack) log error
@@ -158,20 +161,6 @@ func (p *TSimpleServer) processRequest(client TTransport) {
     }
     if !ok {
       break
-    }
-  }
-  if inputTransport != nil {
-    e2 := inputTransport.Close()
-    if e2 != nil {
-      // TODO(pomack) log error
-      return
-    }
-  }
-  if outputTransport != nil {
-    e2 := outputTransport.Close()
-    if e2 != nil {
-      // TODO(pomack) log error
-      return
     }
   }
 }
