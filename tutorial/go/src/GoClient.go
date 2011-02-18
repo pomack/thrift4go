@@ -1,4 +1,4 @@
-package main
+package main;
 
 
 /*
@@ -32,12 +32,12 @@ import (
 func Perform(client *tutorial.CalculatorClient) (err os.Error) {
   client.Ping()
   fmt.Print("ping()\n")
-
+  
   sum, _ := client.Add(1, 1)
   fmt.Print("1+1=", sum, "\n")
-
+  
   work := tutorial.NewWork()
-  work.Op = tutorial.ADD
+  work.Op = tutorial.DIVIDE
   work.Num1 = 1
   work.Num2 = 0
   quotient, ouch, err := client.Calculate(1, work)
@@ -46,11 +46,10 @@ func Perform(client *tutorial.CalculatorClient) (err os.Error) {
     return err
   } else if ouch != nil {
     fmt.Print("Invalid operation: ", ouch.String(), "\n")
-    return ouch
   } else {
     fmt.Print("Whoa we can divide by 0 with new value: ", quotient, "\n")
   }
-
+  
   work.Op = tutorial.SUBTRACT
   work.Num1 = 15
   work.Num2 = 10
@@ -60,11 +59,10 @@ func Perform(client *tutorial.CalculatorClient) (err os.Error) {
     return err
   } else if ouch != nil {
     fmt.Print("Invalid operation: ", ouch.String(), "\n")
-    return ouch
   } else {
     fmt.Print("15-10=", diff, "\n")
   }
-
+  
   log, err := client.GetStruct(1)
   if err != nil {
     fmt.Print("Unable to get struct: ", err.String(), "\n")
