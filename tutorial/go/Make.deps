@@ -1,4 +1,4 @@
-thrift/.install: bufio.install bytes.install container/list.install container/vector.install encoding/base64.install encoding/binary.install fmt.install http.install io.install json.install log.install math.install net.install os.install reflect.install sort.install strconv.install strings.install
+src.install: fmt.install net.install os.install strconv.install thrift.install
 archive/tar.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/archive/tar.a
 archive/zip.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/archive/zip.a
 asn1.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/asn1.a
@@ -132,3 +132,4 @@ xml.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/xml.a
 ../cmd/govet.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/../cmd/govet.a
 ../cmd/goyacc.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/../cmd/goyacc.a
 ../cmd/hgpatch.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/../cmd/hgpatch.a
+thrift.install: ${GOROOT}/pkg/${GOOS}_${GOARCH}/thrift.a
