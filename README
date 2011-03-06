@@ -1,3 +1,7 @@
+The contents of this repository are now part of Apache Thrift as of version 0.7 or commit revision 1072478 (https://issues.apache.org/jira/browse/THRIFT-625).
+
+This project will continued to be maintained for any further developments for Thrift for Go as needed.
+
 Add this git repository to your thrift checkout. It will overwrite a few files to add options for Go.
 
 Currently generates code for the following protocols:
