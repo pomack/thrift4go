@@ -965,16 +965,15 @@ void t_go_generator::generate_go_struct_reader(ofstream& out,
   // In the default case we skip the field
   if (first) {
     out <<
-      indent() << "if {" << endl;
+      indent() << "err = iprot.Skip(fieldTypeId)" << endl <<
+      indent() << "if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }" << endl;
   } else {
     out <<
       indent() << "} else {" << endl;
+      indent() << "  err = iprot.Skip(fieldTypeId)" << endl <<
+      indent() << "  if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }" << endl <<
+      indent() << "}" << endl;
   }
-  out <<
-    indent() << "  err = iprot.Skip(fieldTypeId)" << endl <<
-    indent() << "  if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }" << endl <<
-    indent() << "}" << endl;
-
   // Read field end marker
   out <<
     indent() << "err = iprot.ReadFieldEnd()" << endl <<
