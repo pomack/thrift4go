@@ -75,7 +75,7 @@ func Perform(client *tutorial.CalculatorClient) (err os.Error) {
 
 
 func RunClient(transportFactory thrift.TTransportFactory, protocolFactory thrift.TProtocolFactory) os.Error {
-  addr, err := net.ResolveTCPAddr("localhost:9090")
+  addr, err := net.ResolveTCPAddr("tcp", "localhost:9090")
   if err != nil {
     fmt.Print("Error resolving address: ", err.String(), "\n")
     return err

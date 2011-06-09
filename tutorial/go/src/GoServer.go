@@ -41,7 +41,7 @@ func NewGoServer() *GoServer {
 }
 
 func Simple(processor *tutorial.CalculatorProcessor, transportFactory thrift.TTransportFactory, protocolFactory thrift.TProtocolFactory, ch chan int) {
-  addr, err := net.ResolveTCPAddr("localhost:9090")
+  addr, err := net.ResolveTCPAddr("tcp", "localhost:9090")
   if err != nil {
     fmt.Print("Error resolving address: ", err.String(), "\n")
     return
@@ -68,7 +68,7 @@ func Simple(processor *tutorial.CalculatorProcessor, transportFactory thrift.TTr
 }
 
 func Secure(processor *tutorial.CalculatorProcessor) {
-  addr, _ := net.ResolveTCPAddr("localhost:9091")
+  addr, _ := net.ResolveTCPAddr("tcp", "localhost:9091")
   serverTransport, _ := thrift.NewTNonblockingServerSocketAddr(addr)
   server := thrift.NewTSimpleServer2(processor, serverTransport)
   fmt.Print("Starting the secure server... on ", addr, "\n")
