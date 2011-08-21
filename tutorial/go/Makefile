@@ -16,29 +16,43 @@ GOFILES=\
 
 clean.dirs: $(addsuffix .clean, $(DIRS))
 install.dirs: $(addsuffix .install, $(DIRS))
+nuke.dirs: $(addsuffix .nuke, $(DIRS))
 test.dirs: $(addsuffix .test, $(DIRS))
+check.dirs: $(addsuffix .check, $(DIRS))
 
 
 %.clean:
-	+cd $* && $(MAKE) clean
+	+cd $* && gomake clean
 
 %.install:
-	+cd $* && $(MAKE) install
+	+cd $* && gomake install
+
+%.nuke:
+	+cd $* && gomake nuke
 
 %.test:
-	+cd $* && $(MAKE) test
+	+cd $* && gomake test
 
-
-
-Make.deps:
-	./deps.bash
-
-deps:
-	./deps.bash
+%.check:
+	+cd $* && gomake check
 
 clean: clean.dirs
 
 install: install.dirs
 
 test:	test.dirs
+
+check:	check.dirs
+
+#nuke: nuke.dirs
+#	rm -rf "$(GOROOT)"/pkg/thrift.*
+
+echo-dirs:
+	@echo $(DIRS)
+
+Make.deps:
+	./deps.bash
+
+deps:
+	./deps.bash
 
