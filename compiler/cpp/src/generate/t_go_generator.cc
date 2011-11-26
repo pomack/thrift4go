@@ -1700,6 +1700,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "        \"net\"" << endl <<
     indent() << "        \"os\"" << endl <<
     indent() << "        \"strconv\"" << endl <<
+    indent() << "        \"url\"" << endl <<
     indent() << "        \"thrift\"" << endl <<
     indent() << "        \"thriftlib/" << service_module << "\"" << endl <<
     indent() << ")" << endl <<
@@ -1730,7 +1731,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "var framed bool" << endl <<
     indent() << "var useHttp bool" << endl <<
     indent() << "var help bool" << endl <<
-    indent() << "var url http.URL" << endl <<
+    indent() << "var parsedUrl url.URL" << endl <<
     indent() << "var trans thrift.TTransport" << endl <<
     indent() << "flag.Usage = Usage" << endl <<
     indent() << "flag.StringVar(&host, \"h\", \"localhost\", \"Specify host and port\")" << endl <<
@@ -1746,17 +1747,17 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "}" << endl <<
     indent() << endl <<
     indent() << "if len(urlString) > 0 {" << endl <<
-    indent() << "  url, err := http.ParseURL(urlString)" << endl <<
+    indent() << "  parsedUrl, err := url.Parse(urlString)" << endl <<
     indent() << "  if err != nil {" << endl <<
     indent() << "    fmt.Fprint(os.Stderr, \"Error parsing URL: \", err.String(), \"\\n\")" << endl <<
     indent() << "    flag.Usage()" << endl <<
     indent() << "  }" << endl <<
-    indent() << "  host = url.Host" << endl <<
-    //indent() << "  if len(url.Port) == 0 { url.Port = \"80\"; }" << endl <<
-    //indent() << "  port = int(url.Port)" << endl <<
-    indent() << "  useHttp = len(url.Scheme) <= 0 || url.Scheme == \"http\"" << endl <<
+    indent() << "  host = parsedUrl.Host" << endl <<
+    //indent() << "  if len(parsedUrl.Port) == 0 { parsedUrl.Port = \"80\"; }" << endl <<
+    //indent() << "  port = int(parsedUrl.Port)" << endl <<
+    indent() << "  useHttp = len(parsedUrl.Scheme) <= 0 || parsedUrl.Scheme == \"http\"" << endl <<
     indent() << "} else if useHttp {" << endl <<
-    indent() << "  _, err := http.ParseURL(fmt.Sprint(\"http://\", host, \":\", port))" << endl <<
+    indent() << "  _, err := url.Parse(fmt.Sprint(\"http://\", host, \":\", port))" << endl <<
     indent() << "  if err != nil {" << endl <<
     indent() << "    fmt.Fprint(os.Stderr, \"Error parsing URL: \", err.String(), \"\\n\")" << endl <<
     indent() << "    flag.Usage()" << endl <<
@@ -1766,7 +1767,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "cmd := flag.Arg(0)" << endl <<
     indent() << "var err os.Error" << endl <<
     indent() << "if useHttp {" << endl <<
-    indent() << "  trans, err = thrift.NewTHttpClient(url.Raw)" << endl <<
+    indent() << "  trans, err = thrift.NewTHttpClient(parsedUrl.Raw)" << endl <<
     indent() << "} else {" << endl <<
     indent() << "  addr, err := net.ResolveTCPAddr(\"tcp\", fmt.Sprint(host, \":\", port))" << endl <<
     indent() << "  if err != nil {" << endl <<
