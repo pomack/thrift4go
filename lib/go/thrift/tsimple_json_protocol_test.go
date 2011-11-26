@@ -648,8 +648,8 @@ func TestReadWriteSimpleJSONStruct(t *testing.T) {
   t.Log("Memory buffer contents: ", trans.String())
   read := NewWork()
   e := read.Read(p)
+  //t.Logf("Read %s value: %#v", thetype, read)
   if e != nil {
-    t.Logf("Read %s value: %#v", thetype, read)
     t.Fatalf("Unable to read %s due to error: %s", thetype, e.String())
   }
   if !orig.Equals(read) {
