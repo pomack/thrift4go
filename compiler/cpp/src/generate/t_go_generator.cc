@@ -1010,7 +1010,6 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
         i_check_value = (field_default_value == NULL) ? 0 : field_default_value->get_integer();
         out << 
           indent() << "return int64(p." << field_name << ") != " << i_check_value << endl;
-        break;
       } else if(type->is_struct() || type->is_xception()) {
         out <<
           indent() << "return p." << field_name << " != nil" << endl;
