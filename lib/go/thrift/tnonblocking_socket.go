@@ -21,7 +21,6 @@ package thrift
 
 import (
   "net"
-  "os"
 )
 
 /**
@@ -72,7 +71,7 @@ func NewTNonblockingSocketAddr(addr net.Addr) (*TNonblockingSocket, TTransportEx
  *
  * @param nsecTimeout Nanoseconds timeout
  */
-func (p *TNonblockingSocket) SetTimeout(nsecTimeout int64) os.Error {
+func (p *TNonblockingSocket) SetTimeout(nsecTimeout int64) error {
   p.nsecTimeout = nsecTimeout
   if p.IsOpen() {
     if err := p.conn.SetTimeout(nsecTimeout); err != nil {
@@ -93,7 +92,7 @@ func (p *TNonblockingSocket) IsOpen() bool {
 /**
  * Connects the socket, creating a new socket object if necessary.
  */
-func (p *TNonblockingSocket) Open() os.Error {
+func (p *TNonblockingSocket) Open() error {
   if p.IsOpen() {
     return NewTTransportException(ALREADY_OPEN, "Socket already connected.")
   }
@@ -107,10 +106,10 @@ func (p *TNonblockingSocket) Open() os.Error {
     return NewTTransportException(NOT_OPEN, "Cannot open bad address.")
   }
 
-  var err os.Error
+  var err error
   if p.conn, err = net.Dial(p.addr.Network(), p.addr.String()); err != nil {
-    LOGGER.Print("Could not open socket", err.String())
-    return NewTTransportException(NOT_OPEN, err.String())
+    LOGGER.Print("Could not open socket", err.Error())
+    return NewTTransportException(NOT_OPEN, err.Error())
   }
   if p.conn != nil {
     p.conn.SetTimeout(p.nsecTimeout)
@@ -121,7 +120,7 @@ func (p *TNonblockingSocket) Open() os.Error {
 /**
  * Perform a nonblocking read into buffer.
  */
-func (p *TNonblockingSocket) Read(buf []byte) (int, os.Error) {
+func (p *TNonblockingSocket) Read(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
@@ -130,14 +129,14 @@ func (p *TNonblockingSocket) Read(buf []byte) (int, os.Error) {
 }
 
 
-func (p *TNonblockingSocket) ReadAll(buf []byte) (int, os.Error) {
+func (p *TNonblockingSocket) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
 /**
  * Perform a nonblocking write of the data in buffer;
  */
-func (p *TNonblockingSocket) Write(buf []byte) (int, os.Error) {
+func (p *TNonblockingSocket) Write(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
@@ -147,7 +146,7 @@ func (p *TNonblockingSocket) Write(buf []byte) (int, os.Error) {
 /**
  * Flushes the underlying output stream if not null.
  */
-func (p *TNonblockingSocket) Flush() os.Error {
+func (p *TNonblockingSocket) Flush() error {
   if !p.IsOpen() {
     return NewTTransportException(NOT_OPEN, "Connection not open")
   }
@@ -172,10 +171,10 @@ func (p *TNonblockingSocket) Peek() bool {
 /**
  * Closes the socket.
  */
-func (p *TNonblockingSocket) Close() os.Error {
+func (p *TNonblockingSocket) Close() error {
   if p.conn != nil {
     if err := p.conn.Close(); err != nil {
-      LOGGER.Print("Could not close socket.", err.String())
+      LOGGER.Print("Could not close socket.", err.Error())
       return err
     }
     p.conn = nil
@@ -183,7 +182,7 @@ func (p *TNonblockingSocket) Close() os.Error {
   return nil
 }
 
-func (p *TNonblockingSocket) Interrupt() os.Error {
+func (p *TNonblockingSocket) Interrupt() error {
   if !p.IsOpen() {
     return nil
   }

@@ -20,7 +20,7 @@
 package thrift
 
 import (
-  "os"
+  "errors"
 )
 
 const (
@@ -42,8 +42,8 @@ const (
 type TApplicationException interface {
   TException
   TypeId() int32
-  Read(iprot TProtocol) (TApplicationException, os.Error)
-  Write(oprot TProtocol) os.Error
+  Read(iprot TProtocol) (TApplicationException, error)
+  Write(oprot TProtocol) error
 }
 
 type tApplicationException struct {
@@ -71,8 +71,14 @@ func (p *tApplicationException) TypeId() int32 {
   return p.type_
 }
 
-func (p *tApplicationException) Read(iprot TProtocol) (error TApplicationException, err os.Error) {
+func (p *tApplicationException) Read(iprot TProtocol) (error TApplicationException, err error) {
   _, err = iprot.ReadStructBegin()
+
+  // this shouldn't be needed
+  er := errors.New("empty")
+  if er == nil {
+    return
+  }
   if err != nil {
     return
   }
@@ -81,9 +87,9 @@ func (p *tApplicationException) Read(iprot TProtocol) (error TApplicationExcepti
   type_ := int32(UNKNOWN_APPLICATION_EXCEPTION)
 
   for {
-    _, ttype, id, err := iprot.ReadFieldBegin()
-    if err != nil {
-      return
+    _, ttype, id, er := iprot.ReadFieldBegin()
+    if er != nil {
+      return nil, er
     }
     if ttype == STOP {
       break
@@ -132,14 +138,14 @@ func (p *tApplicationException) Read(iprot TProtocol) (error TApplicationExcepti
   return
 }
 
-func (p *tApplicationException) Write(oprot TProtocol) (err os.Error) {
+func (p *tApplicationException) Write(oprot TProtocol) (err error) {
   err = oprot.WriteStructBegin("TApplicationException")
-  if len(p.String()) > 0 {
+  if len(p.Error()) > 0 {
     err = oprot.WriteFieldBegin("message", STRING, 1)
     if err != nil {
       return
     }
-    err = oprot.WriteString(p.String())
+    err = oprot.WriteString(p.Error())
     if err != nil {
       return
     }

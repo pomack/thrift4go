@@ -19,16 +19,16 @@
 
 package thrift
 
-import "os"
+
 
 /**
  * Server transport. Object which provides client transports.
  *
  */
 type TServerTransport interface {
-  Listen() os.Error
-  Accept() (TTransport, os.Error)
-  Close() os.Error
+  Listen() error
+  Accept() (TTransport, error)
+  Close() error
 
   /**
    * Optional method implementation. This signals to the server transport
@@ -37,5 +37,5 @@ type TServerTransport interface {
    * be called from a different thread context than the other TServerTransport
    * methods.
    */
-  Interrupt() os.Error
+  Interrupt() error
 }

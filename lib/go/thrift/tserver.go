@@ -20,7 +20,7 @@
 package thrift
 
 import (
-  "os"
+
 )
 
 type TServer interface {
@@ -52,10 +52,10 @@ type TServer interface {
   /**
    * The run method fires up the server and gets things going.
    */
-  Serve() os.Error
+  Serve() error
   /**
    * Stop the server. This is optional on a per-implementation basis. Not
    * all servers are required to be cleanly stoppable.
    */
-  Stop() os.Error
+  Stop() error
 }

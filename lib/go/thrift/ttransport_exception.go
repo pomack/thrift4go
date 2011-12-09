@@ -20,7 +20,7 @@
 package thrift
 
 import (
-  "os"
+  "io"
 )
 
 /**
@@ -49,7 +49,7 @@ func (p *tTransportException) TypeId() int {
   return p.typeId
 }
 
-func (p *tTransportException) String() string {
+func (p *tTransportException) Error() string {
   return p.message
 }
 
@@ -69,7 +69,7 @@ func NewTTransportException(t int, m string) TTransportException {
   return &tTransportException{typeId: t, message: m}
 }
 
-func NewTTransportExceptionFromOsError(e os.Error) TTransportException {
+func NewTTransportExceptionFromOsError(e error) TTransportException {
   if e == nil {
     return nil
   }
@@ -77,8 +77,8 @@ func NewTTransportExceptionFromOsError(e os.Error) TTransportException {
   if ok {
     return t
   }
-  if e == os.EOF {
-    return NewTTransportException(END_OF_FILE, e.String())
+  if e == io.EOF {
+    return NewTTransportException(END_OF_FILE, e.Error())
   }
-  return NewTTransportExceptionDefaultString(e.String())
+  return NewTTransportExceptionDefaultString(e.Error())
 }
