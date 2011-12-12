@@ -22,11 +22,10 @@ package thrift_test
 import (
   . "thrift"
   "testing"
-  "http"
+  "net/http"
   "math"
   "net"
   "io/ioutil"
-  "os"
   "bytes"
   "fmt"
 )
@@ -464,7 +463,7 @@ func ReadWriteBinary(t *testing.T, p TProtocol, trans TTransport) {
   p.Flush()
   value, err := p.ReadBinary()
   if err != nil {
-    t.Errorf("%s: %T %T Unable to read binary: %s", "ReadWriteBinary", p, trans, err.String())
+    t.Errorf("%s: %T %T Unable to read binary: %s", "ReadWriteBinary", p, trans, err.Error())
   }
   if len(v) != len(value) {
     t.Errorf("%s: %T %T len(v) != len(value)... %d != %d", "ReadWriteBinary", p, trans, len(v), len(value))
@@ -487,12 +486,12 @@ func ReadWriteWork(t *testing.T, p TProtocol, trans TTransport) {
   orig.Comment = "Add: 25 + 102"
   return
   if e := orig.Write(p); e != nil {
-    t.Fatalf("Unable to write %s value %#v due to error: %s", thetype, orig, e.String())
+    t.Fatalf("Unable to write %s value %#v due to error: %s", thetype, orig, e.Error())
   }
   read := NewWork()
   e := read.Read(p)
   if e != nil {
-    t.Fatalf("Unable to read %s due to error: %s", thetype, e.String())
+    t.Fatalf("Unable to read %s due to error: %s", thetype, e.Error())
   }
   if !orig.Equals(read) {
     t.Fatalf("Original Write != Read: %#v != %#v ", orig, read)
@@ -515,14 +514,14 @@ func ReadWriteCalculate(t *testing.T, p TProtocol, trans TTransport) {
   args31.W = w
   p.WriteMessageBegin(messageName, CALL, seqId)
   if err := args31.Write(p); err != nil {
-    t.Fatalf("%s: %T %T Unable to write message: %s", messageName, p, trans, err.String())
+    t.Fatalf("%s: %T %T Unable to write message: %s", messageName, p, trans, err.Error())
   }
   p.WriteMessageEnd()
   p.Transport().Flush()
 
   name, ttype, seqid, err1 := p.ReadMessageBegin()
   if err1 != nil {
-    t.Fatalf("%s: %T %T Unable to read message begin: %s", messageName, p, trans, err1.String())
+    t.Fatalf("%s: %T %T Unable to read message begin: %s", messageName, p, trans, err1.Error())
   }
   if name != messageName {
     t.Errorf("%s: %T %T Expected message named \"%s\", but was: \"%s\"", messageName, p, trans, messageName, name)
@@ -541,11 +540,11 @@ func ReadWriteCalculate(t *testing.T, p TProtocol, trans TTransport) {
     t.Errorf("%s: %T %T Calculate args not as expected, %T vs %T, cmp: %#v, ok: %#v, equals: %#v", messageName, p, trans, args31, calcArgs, cmp2, ok, args31.Equals(calcArgs))
   }
   if err2 != nil {
-    t.Fatalf("%s: %T %T Unable to read message end: %s", messageName, p, trans, err2.String())
+    t.Fatalf("%s: %T %T Unable to read message end: %s", messageName, p, trans, err2.Error())
   }
   err3 := p.ReadMessageEnd()
   if err3 != nil {
-    t.Fatalf("%s: %T %T Unable to read message end: %s", messageName, p, trans, err3.String())
+    t.Fatalf("%s: %T %T Unable to read message end: %s", messageName, p, trans, err3.Error())
   }
 }
 
@@ -999,7 +998,7 @@ type ICalculator interface {
    * Parameters:
    *  - Key
    */
-  Calculate(logid int32, w *Work) (retval30 int32, ouch *InvalidOperation, err os.Error)
+  Calculate(logid int32, w *Work) (retval30 int32, ouch *InvalidOperation, err error)
 }
 
 type CalculatorClient struct {
@@ -1034,7 +1033,7 @@ func NewCalculatorClientProtocol(t TTransport, iprot TProtocol, oprot TProtocol)
  *  - Logid
  *  - W
  */
-func (p *CalculatorClient) Calculate(logid int32, w *Work) (retval30 int32, ouch *InvalidOperation, err os.Error) {
+func (p *CalculatorClient) Calculate(logid int32, w *Work) (retval30 int32, ouch *InvalidOperation, err error) {
   err = p.SendCalculate(logid, w)
   if err != nil {
     return
@@ -1042,7 +1041,7 @@ func (p *CalculatorClient) Calculate(logid int32, w *Work) (retval30 int32, ouch
   return p.RecvCalculate()
 }
 
-func (p *CalculatorClient) SendCalculate(logid int32, w *Work) (err os.Error) {
+func (p *CalculatorClient) SendCalculate(logid int32, w *Work) (err error) {
   oprot := p.OutputProtocol
   if oprot != nil {
     oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1059,20 +1058,22 @@ func (p *CalculatorClient) SendCalculate(logid int32, w *Work) (err os.Error) {
 }
 
 
-func (p *CalculatorClient) RecvCalculate() (value int32, ouch *InvalidOperation, err os.Error) {
+func (p *CalculatorClient) RecvCalculate() (value int32, ouch *InvalidOperation, err error) {
   iprot := p.InputProtocol
   if iprot == nil {
     iprot = p.ProtocolFactory.GetProtocol(p.Transport)
     p.InputProtocol = iprot
   }
-  _, mTypeId, _, err := iprot.ReadMessageBegin()
-  if err != nil {
+  _, mTypeId, _, er := iprot.ReadMessageBegin()
+  if er != nil {
+    err = er
     return
   }
   if mTypeId == EXCEPTION {
     error33 := NewTApplicationExceptionDefault()
-    error34, err := error33.Read(iprot)
-    if err != nil {
+    error34, er := error33.Read(iprot)
+    if er != nil {
+      err = er
       return
     }
     if err = iprot.ReadMessageEnd(); err != nil {

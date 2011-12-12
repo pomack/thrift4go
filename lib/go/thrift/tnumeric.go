@@ -63,7 +63,7 @@ func NewNumericFromDouble(dValue float64) Numeric {
     return NAN
   }
   iValue := int64(dValue)
-  sValue := strconv.Ftoa64(dValue, 'g', 10)
+  sValue := strconv.FormatFloat(dValue, 'g', 10, 64)
   isNil := false
   return &numeric{iValue: iValue, dValue: dValue, sValue: sValue, isNil: isNil}
 }
@@ -92,8 +92,8 @@ func NewNumericFromString(sValue string) Numeric {
   if sValue == NAN.String() {
     return NAN
   }
-  iValue, _ := strconv.Atoi64(sValue)
-  dValue, _ := strconv.Atof64(sValue)
+  iValue, _ := strconv.ParseInt(sValue, 10, 64)
+  dValue, _ := strconv.ParseFloat(sValue, 64)
   isNil := len(sValue) == 0
   return &numeric{iValue: iValue, dValue: dValue, sValue: sValue, isNil: isNil}
 }
@@ -111,8 +111,8 @@ func NewNumericFromJSONString(sValue string, isNull bool) Numeric {
   if sValue == JSON_NAN {
     return NAN
   }
-  iValue, _ := strconv.Atoi64(sValue)
-  dValue, _ := strconv.Atof64(sValue)
+  iValue, _ := strconv.ParseInt(sValue,10,64)
+  dValue, _ := strconv.ParseFloat(sValue,64)
   return &numeric{iValue: iValue, dValue: dValue, sValue: sValue, isNil: isNull}
 }
 

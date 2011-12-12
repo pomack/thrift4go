@@ -21,7 +21,6 @@ package thrift
 
 import (
   "net"
-  "os"
 )
 
 
@@ -86,7 +85,7 @@ func NewTServerSocketAddrTimeout(addr net.Addr, nsecClientTimeout int64) (*TServ
   return s, nil
 }
 
-func (p *TServerSocket) Listen() (err os.Error) {
+func (p *TServerSocket) Listen() (err error) {
   if p.listener == nil {
     if p.listener, err = net.Listen("tcp", p.addr.String()); err != nil {
       return err
@@ -95,7 +94,7 @@ func (p *TServerSocket) Listen() (err os.Error) {
   return nil
 }
 
-func (p *TServerSocket) Accept() (TTransport, os.Error) {
+func (p *TServerSocket) Accept() (TTransport, error) {
   if p.listener == nil {
     if err := p.Listen(); err != nil {
       return nil, NewTTransportExceptionFromOsError(err)
@@ -122,7 +121,7 @@ func (p *TServerSocket) IsOpen() bool {
 /**
  * Connects the socket, creating a new socket object if necessary.
  */
-func (p *TServerSocket) Open() os.Error {
+func (p *TServerSocket) Open() error {
   if !p.IsOpen() {
     l, err := net.Listen(p.addr.Network(), p.addr.String())
     if err != nil {
@@ -137,25 +136,25 @@ func (p *TServerSocket) Open() os.Error {
 /**
  * Perform a nonblocking read into buffer.
  */
-func (p *TServerSocket) Read(buf []byte) (int, os.Error) {
+func (p *TServerSocket) Read(buf []byte) (int, error) {
   return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TServerSocket.Read([]byte) is not implemented")
 }
 
-func (p *TServerSocket) ReadAll(buf []byte) (int, os.Error) {
+func (p *TServerSocket) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
 /**
  * Perform a nonblocking write of the data in buffer;
  */
-func (p *TServerSocket) Write(buf []byte) (int, os.Error) {
+func (p *TServerSocket) Write(buf []byte) (int, error) {
   return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TServerSocket.Write([]byte) is not implemented")
 }
 
 /**
  * Flushes the underlying output stream if not null.
  */
-func (p *TServerSocket) Flush() os.Error {
+func (p *TServerSocket) Flush() error {
   return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TServerSocket.Flush() is not implemented")
 }
 
@@ -170,7 +169,7 @@ func (p *TServerSocket) Peek() bool {
 /**
  * Closes the socket.
  */
-func (p *TServerSocket) Close() (err os.Error) {
+func (p *TServerSocket) Close() (err error) {
   if p.IsOpen() {
     err := p.listener.Close()
     if err != nil {
@@ -188,7 +187,7 @@ func (p *TServerSocket) Close() (err os.Error) {
   return nil
 }
 
-func (p *TServerSocket) Interrupt() os.Error {
+func (p *TServerSocket) Interrupt() error {
   // TODO(pomack) fix Interrupt as it is probably not right
   return NewTTransportExceptionFromOsError(p.Close())
 }

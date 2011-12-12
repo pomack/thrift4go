@@ -19,9 +19,6 @@
 
 package thrift
 
-import (
-  "os"
-)
 
 
 /**
@@ -115,7 +112,7 @@ func (p *TSimpleServer) OutputProtocolFactory() TProtocolFactory {
   return p.outputProtocolFactory
 }
 
-func (p *TSimpleServer) Serve() os.Error {
+func (p *TSimpleServer) Serve() error {
   p.stopped = false
   err := p.serverTransport.Listen()
   if err != nil {
@@ -133,7 +130,7 @@ func (p *TSimpleServer) Serve() os.Error {
   return nil
 }
 
-func (p *TSimpleServer) Stop() os.Error {
+func (p *TSimpleServer) Stop() error {
   p.stopped = true
   p.serverTransport.Interrupt()
   return nil

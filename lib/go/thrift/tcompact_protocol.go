@@ -20,11 +20,9 @@
 package thrift
 
 import (
-  "container/vector"
   "encoding/binary"
   "fmt"
   "math"
-  "os"
   "strings"
 )
 
@@ -92,7 +90,7 @@ type TCompactProtocol struct {
    * Used to keep track of the last field for the current and previous structs,
    * so we can do the delta stuff.
    */
-  lastField   *vector.IntVector
+  lastField   []int
   lastFieldId int
 
   /** 
@@ -115,7 +113,7 @@ type TCompactProtocol struct {
  * @param transport the TTransport object to read from or write to.
  */
 func NewTCompactProtocol(trans TTransport) *TCompactProtocol {
-  return &TCompactProtocol{trans: trans, lastField: &vector.IntVector{}}
+  return &TCompactProtocol{trans: trans, lastField: make([]int,0)}
 }
 
 
@@ -153,7 +151,7 @@ func (p *TCompactProtocol) WriteMessageEnd() TProtocolException { return nil }
  * stack so we can get the field id deltas correct.
  */
 func (p *TCompactProtocol) WriteStructBegin(name string) TProtocolException {
-  p.lastField.Push(p.lastFieldId)
+  p.lastField = append(p.lastField,p.lastFieldId)
   p.lastFieldId = 0
   return nil
 }
@@ -164,7 +162,8 @@ func (p *TCompactProtocol) WriteStructBegin(name string) TProtocolException {
  * of the field stack.
  */
 func (p *TCompactProtocol) WriteStructEnd() TProtocolException {
-  p.lastFieldId = p.lastField.Pop()
+  p.lastFieldId = p.lastField[len(p.lastField)-1]
+  p.lastField =  p.lastField[:len(p.lastField)-1]
   return nil
 }
 
@@ -184,7 +183,7 @@ func (p *TCompactProtocol) WriteFieldBegin(name string, typeId TType, id int16) 
  * 'type override' of the type header. This is used specifically in the 
  * boolean field case.
  */
-func (p *TCompactProtocol) writeFieldBeginInternal(name string, typeId TType, id int16, typeOverride byte) (int, os.Error) {
+func (p *TCompactProtocol) writeFieldBeginInternal(name string, typeId TType, id int16, typeOverride byte) (int, error) {
   // short lastField = lastField_.pop();
 
   // if there's a type override, use that.
@@ -387,7 +386,7 @@ func (p *TCompactProtocol) ReadMessageEnd() TProtocolException { return nil }
  * opportunity to push a new struct begin marker onto the field stack.
  */
 func (p *TCompactProtocol) ReadStructBegin() (name string, err TProtocolException) {
-  p.lastField.Push(p.lastFieldId)
+  p.lastField = append(p.lastField, p.lastFieldId)
   p.lastFieldId = 0
   return
 }
@@ -398,7 +397,7 @@ func (p *TCompactProtocol) ReadStructBegin() (name string, err TProtocolExceptio
  */
 func (p *TCompactProtocol) ReadStructEnd() TProtocolException {
   // consume the last field we read off the wire.
-  p.lastFieldId = p.lastField.Pop()
+  p.lastFieldId = p.lastField[len(p.lastField)-1]
   return nil
 }
 
@@ -631,7 +630,7 @@ func (p *TCompactProtocol) Transport() TTransport {
  * Abstract method for writing the start of lists and sets. List and sets on 
  * the wire differ only by the type indicator.
  */
-func (p *TCompactProtocol) writeCollectionBegin(elemType TType, size int) (int, os.Error) {
+func (p *TCompactProtocol) writeCollectionBegin(elemType TType, size int) (int, error) {
   if size <= 14 {
     return p.writeByteDirect(byte(int32(size<<4) | int32(p.getCompactType(elemType))))
   }
@@ -647,7 +646,7 @@ func (p *TCompactProtocol) writeCollectionBegin(elemType TType, size int) (int, 
  * Write an i32 as a varint. Results in 1-5 bytes on the wire.
  * TODO(pomack): make a permanent buffer like writeVarint64?
  */
-func (p *TCompactProtocol) writeVarint32(n int32) (int, os.Error) {
+func (p *TCompactProtocol) writeVarint32(n int32) (int, error) {
   i32buf := make([]byte, 5)
   idx := 0
   for {
@@ -671,7 +670,7 @@ func (p *TCompactProtocol) writeVarint32(n int32) (int, os.Error) {
 /**
  * Write an i64 as a varint. Results in 1-10 bytes on the wire.
  */
-func (p *TCompactProtocol) writeVarint64(n int64) (int, os.Error) {
+func (p *TCompactProtocol) writeVarint64(n int64) (int, error) {
   varint64out := make([]byte, 10)
   idx := 0
   for {
@@ -717,14 +716,14 @@ func (p *TCompactProtocol) fixedInt64ToBytes(n int64, buf []byte) {
  * Writes a byte without any possiblity of all that field header nonsense. 
  * Used internally by other writing methods that know they need to write a byte.
  */
-func (p *TCompactProtocol) writeByteDirect(b byte) (int, os.Error) {
+func (p *TCompactProtocol) writeByteDirect(b byte) (int, error) {
   return p.trans.Write([]byte{b})
 }
 
 /** 
  * Writes a byte without any possiblity of all that field header nonsense.
  */
-func (p *TCompactProtocol) writeIntAsByteDirect(n int) (int, os.Error) {
+func (p *TCompactProtocol) writeIntAsByteDirect(n int) (int, error) {
   return p.writeByteDirect(byte(n))
 }
 
@@ -737,7 +736,7 @@ func (p *TCompactProtocol) writeIntAsByteDirect(n int) (int, os.Error) {
  * Read an i32 from the wire as a varint. The MSB of each byte is set
  * if there is another byte to follow. This can read up to 5 bytes.
  */
-func (p *TCompactProtocol) readVarint32() (int32, os.Error) {
+func (p *TCompactProtocol) readVarint32() (int32, error) {
   // if the wire contains the right stuff, this will just truncate the i64 we
   // read and get us the right sign.
   v, err := p.readVarint64()
@@ -749,7 +748,7 @@ func (p *TCompactProtocol) readVarint32() (int32, os.Error) {
  * Read an i64 from the wire as a proper varint. The MSB of each byte is set 
  * if there is another byte to follow. This can read up to 10 bytes.
  */
-func (p *TCompactProtocol) readVarint64() (int64, os.Error) {
+func (p *TCompactProtocol) readVarint64() (int64, error) {
   shift := uint(0)
   result := int64(0)
   for {
@@ -817,7 +816,7 @@ func (p *TCompactProtocol) isBoolType(b byte) bool {
  * Given a TCompactType constant, convert it to its corresponding 
  * TType value.
  */
-func (p *TCompactProtocol) getTType(t TCompactType) (TType, os.Error) {
+func (p *TCompactProtocol) getTType(t TCompactType) (TType, error) {
   switch byte(t) & 0x0f {
   case STOP:
     return STOP, nil

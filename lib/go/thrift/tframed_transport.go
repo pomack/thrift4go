@@ -22,7 +22,6 @@ package thrift
 import (
   "encoding/binary"
   "bytes"
-  "os"
 )
 
 
@@ -50,7 +49,7 @@ func NewTFramedTransport(transport TTransport) *TFramedTransport {
   return &TFramedTransport{transport: transport, writeBuffer: bytes.NewBuffer(writeBuf), readBuffer: bytes.NewBuffer(readBuf)}
 }
 
-func (p *TFramedTransport) Open() os.Error {
+func (p *TFramedTransport) Open() error {
   return p.transport.Open()
 }
 
@@ -62,11 +61,11 @@ func (p *TFramedTransport) Peek() bool {
   return p.transport.Peek()
 }
 
-func (p *TFramedTransport) Close() os.Error {
+func (p *TFramedTransport) Close() error {
   return p.transport.Close()
 }
 
-func (p *TFramedTransport) Read(buf []byte) (int, os.Error) {
+func (p *TFramedTransport) Read(buf []byte) (int, error) {
   if p.readBuffer.Len() > 0 {
     got, err := p.readBuffer.Read(buf)
     if got > 0 {
@@ -81,16 +80,16 @@ func (p *TFramedTransport) Read(buf []byte) (int, os.Error) {
   return got, NewTTransportExceptionFromOsError(err)
 }
 
-func (p *TFramedTransport) ReadAll(buf []byte) (int, os.Error) {
+func (p *TFramedTransport) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
-func (p *TFramedTransport) Write(buf []byte) (int, os.Error) {
+func (p *TFramedTransport) Write(buf []byte) (int, error) {
   n, err := p.writeBuffer.Write(buf)
   return n, NewTTransportExceptionFromOsError(err)
 }
 
-func (p *TFramedTransport) Flush() os.Error {
+func (p *TFramedTransport) Flush() error {
   size := p.writeBuffer.Len()
   buf := []byte{0, 0, 0, 0}
   binary.BigEndian.PutUint32(buf, uint32(size))
@@ -101,7 +100,7 @@ func (p *TFramedTransport) Flush() os.Error {
   if size > 0 {
     n, err := p.writeBuffer.WriteTo(p.transport)
     if err != nil {
-      print("Error while flushing write buffer of size ", size, " to transport, only wrote ", n, " bytes: ", err.String(), "\n")
+      print("Error while flushing write buffer of size ", size, " to transport, only wrote ", n, " bytes: ", err.Error(), "\n")
       return NewTTransportExceptionFromOsError(err)
     }
   }
@@ -109,7 +108,7 @@ func (p *TFramedTransport) Flush() os.Error {
   return NewTTransportExceptionFromOsError(err)
 }
 
-func (p *TFramedTransport) readFrame() (int, os.Error) {
+func (p *TFramedTransport) readFrame() (int, error) {
   buf := []byte{0, 0, 0, 0}
   _, err := p.transport.ReadAll(buf)
   if err != nil {

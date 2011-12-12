@@ -23,7 +23,6 @@ import (
   . "thrift"
   "testing"
   "net"
-  "os"
   "strconv"
 )
 
@@ -118,7 +117,7 @@ func CloseTransports(t *testing.T, readTrans TTransport, writeTrans TTransport) 
   }
 }
 
-func FindAvailableTCPServerPort(startPort int) (net.Addr, os.Error) {
+func FindAvailableTCPServerPort(startPort int) (net.Addr, error) {
   for i := startPort; i < 65535; i++ {
     s := "127.0.0.1:" + strconv.Itoa(i)
     l, err := net.Listen("tcp", s)
