@@ -21,7 +21,6 @@ package thrift
 
 import (
   "encoding/base64"
-  "os"
 )
 
 /**
@@ -55,6 +54,10 @@ func (p *tProtocolException) String() string {
   return p.message
 }
 
+func (p *tProtocolException) Error() string {
+  return p.message
+}
+
 func NewTProtocolExceptionDefault() TProtocolException {
   return NewTProtocolExceptionDefaultType(UNKNOWN_PROTOCOL_EXCEPTION)
 }
@@ -76,7 +79,7 @@ func NewTProtocolExceptionReadField(fieldId int, fieldName string, structName st
   if t == UNKNOWN_PROTOCOL_EXCEPTION {
     t = INVALID_DATA
   }
-  return NewTProtocolException(t, "Unable to read field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.String())
+  return NewTProtocolException(t, "Unable to read field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.Error())
 }
 
 func NewTProtocolExceptionWriteField(fieldId int, fieldName string, structName string, e TProtocolException) TProtocolException {
@@ -84,7 +87,7 @@ func NewTProtocolExceptionWriteField(fieldId int, fieldName string, structName s
   if t == UNKNOWN_PROTOCOL_EXCEPTION {
     t = INVALID_DATA
   }
-  return NewTProtocolException(t, "Unable to write field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.String())
+  return NewTProtocolException(t, "Unable to write field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.Error())
 }
 
 func NewTProtocolExceptionReadStruct(structName string, e TProtocolException) TProtocolException {
@@ -92,7 +95,7 @@ func NewTProtocolExceptionReadStruct(structName string, e TProtocolException) TP
   if t == UNKNOWN_PROTOCOL_EXCEPTION {
     t = INVALID_DATA
   }
-  return NewTProtocolException(t, "Unable to read struct "+structName+" due to: "+e.String())
+  return NewTProtocolException(t, "Unable to read struct "+structName+" due to: "+e.Error())
 }
 
 func NewTProtocolExceptionWriteStruct(structName string, e TProtocolException) TProtocolException {
@@ -100,10 +103,10 @@ func NewTProtocolExceptionWriteStruct(structName string, e TProtocolException) T
   if t == UNKNOWN_PROTOCOL_EXCEPTION {
     t = INVALID_DATA
   }
-  return NewTProtocolException(t, "Unable to write struct "+structName+" due to: "+e.String())
+  return NewTProtocolException(t, "Unable to write struct "+structName+" due to: "+e.Error())
 }
 
-func NewTProtocolExceptionFromOsError(e os.Error) TProtocolException {
+func NewTProtocolExceptionFromOsError(e error) TProtocolException {
   if e == nil {
     return nil
   }
@@ -114,9 +117,9 @@ func NewTProtocolExceptionFromOsError(e os.Error) TProtocolException {
     return NewTProtocolExceptionFromTransportException(te)
   }
   if _, ok := e.(base64.CorruptInputError); ok {
-    return NewTProtocolException(INVALID_DATA, e.String())
+    return NewTProtocolException(INVALID_DATA, e.Error())
   }
-  return NewTProtocolExceptionDefaultString(e.String())
+  return NewTProtocolExceptionDefaultString(e.Error())
 }
 
 func NewTProtocolExceptionFromTransportException(e TTransportException) TProtocolException {
@@ -126,5 +129,5 @@ func NewTProtocolExceptionFromTransportException(e TTransportException) TProtoco
   if t, ok := e.(TProtocolException); ok {
     return t
   }
-  return NewTProtocolExceptionDefaultString(e.String())
+  return NewTProtocolExceptionDefaultString(e.Error())
 }

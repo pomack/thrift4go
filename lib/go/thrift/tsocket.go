@@ -21,7 +21,6 @@ package thrift
 
 import (
   "net"
-  "os"
   "bytes"
 )
 
@@ -89,7 +88,7 @@ func NewTSocket(address net.Addr, nsecTimeout int64) *TSocket {
  *
  * @param timeout Nanoseconds timeout
  */
-func (p *TSocket) SetTimeout(nsecTimeout int64) os.Error {
+func (p *TSocket) SetTimeout(nsecTimeout int64) error {
   p.nsecTimeout = nsecTimeout
   if p.IsOpen() {
     if err := p.conn.SetTimeout(nsecTimeout); err != nil {
@@ -120,7 +119,7 @@ func (p *TSocket) IsOpen() bool {
 /**
  * Connects the socket, creating a new socket object if necessary.
  */
-func (p *TSocket) Open() os.Error {
+func (p *TSocket) Open() error {
   if p.IsOpen() {
     return NewTTransportException(ALREADY_OPEN, "Socket already connected.")
   }
@@ -133,10 +132,10 @@ func (p *TSocket) Open() os.Error {
   if len(p.addr.String()) == 0 {
     return NewTTransportException(NOT_OPEN, "Cannot open bad address.")
   }
-  var err os.Error
+  var err error
   if p.conn, err = net.Dial(p.addr.Network(), p.addr.String()); err != nil {
-    LOGGER.Print("Could not open socket", err.String())
-    return NewTTransportException(NOT_OPEN, err.String())
+    LOGGER.Print("Could not open socket", err.Error())
+    return NewTTransportException(NOT_OPEN, err.Error())
   }
   if p.conn != nil {
     p.conn.SetTimeout(p.nsecTimeout)
@@ -147,12 +146,12 @@ func (p *TSocket) Open() os.Error {
 /**
  * Closes the socket.
  */
-func (p *TSocket) Close() os.Error {
+func (p *TSocket) Close() error {
   // Close the socket
   if p.conn != nil {
     err := p.conn.Close()
     if err != nil {
-      LOGGER.Print("Could not close socket. ", err.String())
+      LOGGER.Print("Could not close socket. ", err.Error())
       return err
     }
     p.conn = nil
@@ -161,7 +160,7 @@ func (p *TSocket) Close() os.Error {
 }
 
 
-func (p *TSocket) Read(buf []byte) (int, os.Error) {
+func (p *TSocket) Read(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
@@ -170,11 +169,11 @@ func (p *TSocket) Read(buf []byte) (int, os.Error) {
 }
 
 
-func (p *TSocket) ReadAll(buf []byte) (int, os.Error) {
+func (p *TSocket) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
-func (p *TSocket) Write(buf []byte) (int, os.Error) {
+func (p *TSocket) Write(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
@@ -186,7 +185,7 @@ func (p *TSocket) Peek() bool {
   return p.IsOpen()
 }
 
-func (p *TSocket) Flush() os.Error {
+func (p *TSocket) Flush() error {
   if !p.IsOpen() {
     return NewTTransportException(NOT_OPEN, "Connection not open")
   }
@@ -194,7 +193,7 @@ func (p *TSocket) Flush() os.Error {
   return NewTTransportExceptionFromOsError(err)
 }
 
-func (p *TSocket) Interrupt() os.Error {
+func (p *TSocket) Interrupt() error {
   if !p.IsOpen() {
     return nil
   }

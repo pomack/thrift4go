@@ -233,7 +233,7 @@ func (p *TBinaryProtocol) WriteBinaryFromReader(reader io.Reader, size int) TPro
   if e != nil {
     return e
   }
-  _, err := io.Copyn(p.trans, reader, int64(size))
+  _, err := io.CopyN(p.trans, reader, int64(size))
   return NewTProtocolExceptionFromOsError(err)
 }
 

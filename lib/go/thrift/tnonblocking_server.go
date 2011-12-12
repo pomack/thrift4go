@@ -20,7 +20,7 @@
 package thrift
 
 import (
-  "os"
+
 )
 
 /**
@@ -123,7 +123,7 @@ func (p *TNonblockingServer) OutputProtocolFactory() TProtocolFactory {
   return p.outputProtocolFactory
 }
 
-func (p *TNonblockingServer) Serve() os.Error {
+func (p *TNonblockingServer) Serve() error {
   p.stopped = false
   err := p.serverTransport.Listen()
   if err != nil {
@@ -141,7 +141,7 @@ func (p *TNonblockingServer) Serve() os.Error {
   return nil
 }
 
-func (p *TNonblockingServer) Stop() os.Error {
+func (p *TNonblockingServer) Stop() error {
   p.stopped = true
   p.serverTransport.Interrupt()
   return nil
