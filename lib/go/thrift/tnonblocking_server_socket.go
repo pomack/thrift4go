@@ -21,7 +21,6 @@ package thrift
 
 import (
   "net"
-  "os"
 )
 
 /**
@@ -68,7 +67,7 @@ func NewTNonblockingServerSocketAddr(addr net.Addr) (*TNonblockingServerSocket, 
   return s, nil
 }
 
-func (p *TNonblockingServerSocket) Listen() os.Error {
+func (p *TNonblockingServerSocket) Listen() error {
   return p.Open()
 }
 
@@ -77,7 +76,7 @@ func (p *TNonblockingServerSocket) Listen() os.Error {
  *
  * @param timeout Nanoseconds timeout
  */
-func (p *TNonblockingServerSocket) SetTimeout(nsecTimeout int64) os.Error {
+func (p *TNonblockingServerSocket) SetTimeout(nsecTimeout int64) error {
   p.nsecTimeout = nsecTimeout
   return nil
 }
@@ -92,7 +91,7 @@ func (p *TNonblockingServerSocket) IsOpen() bool {
 /**
  * Connects the socket, creating a new socket object if necessary.
  */
-func (p *TNonblockingServerSocket) Open() os.Error {
+func (p *TNonblockingServerSocket) Open() error {
   if !p.IsOpen() {
     l, err := net.Listen(p.addr.Network(), p.addr.String())
     if err != nil {
@@ -107,25 +106,25 @@ func (p *TNonblockingServerSocket) Open() os.Error {
 /**
  * Perform a nonblocking read into buffer.
  */
-func (p *TNonblockingServerSocket) Read(buf []byte) (int, os.Error) {
+func (p *TNonblockingServerSocket) Read(buf []byte) (int, error) {
   return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Read([]byte) is not implemented")
 }
 
-func (p *TNonblockingServerSocket) ReadAll(buf []byte) (int, os.Error) {
+func (p *TNonblockingServerSocket) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
 /**
  * Perform a nonblocking write of the data in buffer;
  */
-func (p *TNonblockingServerSocket) Write(buf []byte) (int, os.Error) {
+func (p *TNonblockingServerSocket) Write(buf []byte) (int, error) {
   return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Write([]byte) is not implemented")
 }
 
 /**
  * Flushes the underlying output stream if not null.
  */
-func (p *TNonblockingServerSocket) Flush() os.Error {
+func (p *TNonblockingServerSocket) Flush() error {
   return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Flush() is not implemented")
 }
 
@@ -133,7 +132,7 @@ func (p *TNonblockingServerSocket) Addr() net.Addr {
   return p.addr
 }
 
-func (p *TNonblockingServerSocket) Accept() (TTransport, os.Error) {
+func (p *TNonblockingServerSocket) Accept() (TTransport, error) {
   if !p.IsOpen() {
     return nil, NewTTransportException(NOT_OPEN, "No underlying server socket")
   }
@@ -152,7 +151,7 @@ func (p *TNonblockingServerSocket) Peek() bool {
 /**
  * Closes the socket.
  */
-func (p *TNonblockingServerSocket) Close() (err os.Error) {
+func (p *TNonblockingServerSocket) Close() (err error) {
   if p.IsOpen() {
     err := p.listener.Close()
     if err != nil {
@@ -163,7 +162,7 @@ func (p *TNonblockingServerSocket) Close() (err os.Error) {
   return nil
 }
 
-func (p *TNonblockingServerSocket) Interrupt() os.Error {
+func (p *TNonblockingServerSocket) Interrupt() error {
   // probably not right
   return p.Close()
 }

@@ -21,10 +21,9 @@ package thrift
 
 import (
   "bytes"
-  "http"
-  "os"
+  "net/http"
+  "net/url"
   "strconv"
-  "url"
 )
 
 
@@ -70,7 +69,7 @@ func NewTHttpPostClientTransportFactory(url string) *THttpClientTransportFactory
 }
 
 
-func NewTHttpClient(urlstr string) (TTransport, os.Error) {
+func NewTHttpClient(urlstr string) (TTransport, error) {
   parsedURL, err := url.Parse(urlstr)
   if err != nil {
     return nil, err
@@ -82,7 +81,7 @@ func NewTHttpClient(urlstr string) (TTransport, os.Error) {
   return &THttpClient{response: response, url: parsedURL}, nil
 }
 
-func NewTHttpPostClient(urlstr string) (TTransport, os.Error) {
+func NewTHttpPostClient(urlstr string) (TTransport, error) {
   parsedURL, err := url.Parse(urlstr)
   if err != nil {
     return nil, err
@@ -91,7 +90,7 @@ func NewTHttpPostClient(urlstr string) (TTransport, os.Error) {
   return &THttpClient{url: parsedURL, requestBuffer: bytes.NewBuffer(buf)}, nil
 }
 
-func (p *THttpClient) Open() os.Error {
+func (p *THttpClient) Open() error {
   // do nothing
   return nil
 }
@@ -104,7 +103,7 @@ func (p *THttpClient) Peek() bool {
   return p.IsOpen()
 }
 
-func (p *THttpClient) Close() os.Error {
+func (p *THttpClient) Close() error {
   if p.response != nil && p.response.Body != nil {
     err := p.response.Body.Close()
     p.response = nil
@@ -117,7 +116,7 @@ func (p *THttpClient) Close() os.Error {
   return nil
 }
 
-func (p *THttpClient) Read(buf []byte) (int, os.Error) {
+func (p *THttpClient) Read(buf []byte) (int, error) {
   if p.response == nil {
     return 0, NewTTransportException(NOT_OPEN, "Response buffer is empty, no request.")
   }
@@ -125,16 +124,16 @@ func (p *THttpClient) Read(buf []byte) (int, os.Error) {
   return n, NewTTransportExceptionFromOsError(err)
 }
 
-func (p *THttpClient) ReadAll(buf []byte) (int, os.Error) {
+func (p *THttpClient) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
-func (p *THttpClient) Write(buf []byte) (int, os.Error) {
+func (p *THttpClient) Write(buf []byte) (int, error) {
   n, err := p.requestBuffer.Write(buf)
   return n, err
 }
 
-func (p *THttpClient) Flush() os.Error {
+func (p *THttpClient) Flush() error {
   response, err := http.Post(p.url.String(), "application/x-thrift", p.requestBuffer)
   if err != nil {
     return NewTTransportExceptionFromOsError(err)

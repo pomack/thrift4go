@@ -22,7 +22,6 @@ package thrift
 import (
   "bytes"
   "io"
-  "os"
 )
 
 /**
@@ -65,7 +64,7 @@ func (p *TMemoryBuffer) IsOpen() bool {
   return true
 }
 
-func (p *TMemoryBuffer) Open() os.Error {
+func (p *TMemoryBuffer) Open() error {
   return nil
 }
 
@@ -73,40 +72,40 @@ func (p *TMemoryBuffer) Peek() bool {
   return p.IsOpen()
 }
 
-func (p *TMemoryBuffer) Close() os.Error {
+func (p *TMemoryBuffer) Close() error {
   p.buf.Reset()
   return nil
 }
 
-func (p *TMemoryBuffer) Read(buf []byte) (int, os.Error) {
+func (p *TMemoryBuffer) Read(buf []byte) (int, error) {
   return p.buf.Read(buf)
 }
 
-func (p *TMemoryBuffer) ReadAll(buf []byte) (int, os.Error) {
+func (p *TMemoryBuffer) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
-func (p *TMemoryBuffer) ReadByte() (byte, os.Error) {
+func (p *TMemoryBuffer) ReadByte() (byte, error) {
   return p.buf.ReadByte()
 }
 
-func (p *TMemoryBuffer) ReadFrom(r io.Reader) (int64, os.Error) {
+func (p *TMemoryBuffer) ReadFrom(r io.Reader) (int64, error) {
   return p.buf.ReadFrom(r)
 }
 
-func (p *TMemoryBuffer) Write(buf []byte) (int, os.Error) {
+func (p *TMemoryBuffer) Write(buf []byte) (int, error) {
   return p.buf.Write(buf)
 }
 
-func (p *TMemoryBuffer) WriteString(buf string) (int, os.Error) {
+func (p *TMemoryBuffer) WriteString(buf string) (int, error) {
   return p.buf.WriteString(buf)
 }
 
-func (p *TMemoryBuffer) WriteTo(w io.Writer) (int64, os.Error) {
+func (p *TMemoryBuffer) WriteTo(w io.Writer) (int64, error) {
   return p.buf.WriteTo(w)
 }
 
-func (p *TMemoryBuffer) Flush() os.Error {
+func (p *TMemoryBuffer) Flush() error {
   return nil
 }
 

@@ -22,7 +22,6 @@ package thrift
 import (
   "bufio"
   "io"
-  "os"
 )
 
 /**
@@ -145,7 +144,7 @@ func (p *TIOStreamTransport) IsOpen() bool {
 /**
  * The streams must already be open. This method does nothing.
  */
-func (p *TIOStreamTransport) Open() os.Error {
+func (p *TIOStreamTransport) Open() error {
   return nil
 }
 
@@ -156,7 +155,7 @@ func (p *TIOStreamTransport) Peek() bool {
 /**
  * Closes both the input and output streams.
  */
-func (p *TIOStreamTransport) Close() os.Error {
+func (p *TIOStreamTransport) Close() error {
   closedReader := false
   if p.Reader != nil {
     c, ok := p.Reader.(io.Closer)
@@ -185,7 +184,7 @@ func (p *TIOStreamTransport) Close() os.Error {
 /**
  * Reads from the underlying input stream if not null.
  */
-func (p *TIOStreamTransport) Read(buf []byte) (int, os.Error) {
+func (p *TIOStreamTransport) Read(buf []byte) (int, error) {
   if p.Reader == nil {
     return 0, NewTTransportException(NOT_OPEN, "Cannot read from null inputStream")
   }
@@ -193,7 +192,7 @@ func (p *TIOStreamTransport) Read(buf []byte) (int, os.Error) {
   return n, NewTTransportExceptionFromOsError(err)
 }
 
-func (p *TIOStreamTransport) ReadAll(buf []byte) (int, os.Error) {
+func (p *TIOStreamTransport) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
 
@@ -201,14 +200,14 @@ func (p *TIOStreamTransport) ReadAll(buf []byte) (int, os.Error) {
 /**
  * Writes to the underlying output stream if not null.
  */
-func (p *TIOStreamTransport) Write(buf []byte) (int, os.Error) {
+func (p *TIOStreamTransport) Write(buf []byte) (int, error) {
   if p.Writer == nil {
     LOGGER.Print("Could not write to iostream as Writer is null\n")
     return 0, NewTTransportException(NOT_OPEN, "Cannot write to null outputStream")
   }
   n, err := p.Writer.Write(buf)
   if n == 0 || err != nil {
-    LOGGER.Print("Error writing to iostream, only wrote ", n, " bytes: ", err.String(), "\n")
+    LOGGER.Print("Error writing to iostream, only wrote ", n, " bytes: ", err.Error(), "\n")
   }
   return n, NewTTransportExceptionFromOsError(err)
 }
@@ -216,7 +215,7 @@ func (p *TIOStreamTransport) Write(buf []byte) (int, os.Error) {
 /**
  * Flushes the underlying output stream if not null.
  */
-func (p *TIOStreamTransport) Flush() os.Error {
+func (p *TIOStreamTransport) Flush() error {
   if p.Writer == nil {
     return NewTTransportException(NOT_OPEN, "Cannot flush null outputStream")
   }
