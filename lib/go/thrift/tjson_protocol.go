@@ -478,7 +478,7 @@ func (p *TJSONProtocol) TypeIdToString(fieldType TType) string {
     return "i32"
   case I64:
     return "i64"
-  case STRING:
+  case STRING, BINARY:
     return "str"
   case STRUCT:
     return "rec"
