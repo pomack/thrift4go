@@ -34,6 +34,7 @@ const (
   COMPACT_VERSION_MASK      = 0x1f
   COMPACT_TYPE_MASK         = 0x0E0
   COMPACT_TYPE_SHIFT_AMOUNT = 5
+  COMPACT_TYPE_NO_OVERRIDE  = 0xFF
 )
 
 type TCompactType byte
@@ -174,7 +175,7 @@ func (p *TCompactProtocol) WriteFieldBegin(name string, typeId TType, id int16) 
     p.booleanField = NewTField(name, typeId, int(id))
     return nil
   }
-  _, err := p.writeFieldBeginInternal(name, typeId, id, 0xFF)
+  _, err := p.writeFieldBeginInternal(name, typeId, id, COMPACT_TYPE_NO_OVERRIDE)
   return NewTProtocolExceptionFromOsError(err)
 }
 
@@ -189,7 +190,7 @@ func (p *TCompactProtocol) writeFieldBeginInternal(name string, typeId TType, id
 
   // if there's a type override, use that.
   var typeToWrite byte
-  if typeOverride == 0xFF {
+  if typeOverride == COMPACT_TYPE_NO_OVERRIDE {
     typeToWrite = byte(p.getCompactType(typeId))
   } else {
     typeToWrite = typeOverride
