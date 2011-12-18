@@ -36,7 +36,7 @@ type tMessage struct {
 }
 
 func NewTMessageDefault() TMessage {
-  return NewTMessage("", STOP, 0)
+  return NewTMessage("", iSTOP, 0)
 }
 
 func NewTMessage(n string, t TMessageType, s int) TMessage {

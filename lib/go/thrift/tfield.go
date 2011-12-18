@@ -20,6 +20,7 @@
 package thrift
 
 import (
+  "fmt"
   "sort"
 )
 
@@ -59,7 +60,7 @@ func (p *tField) Name() string {
 
 func (p *tField) TypeId() TType {
   if p == nil {
-    return TType(VOID)
+    return VOID
   }
   return p.typeId
 }
@@ -75,7 +76,7 @@ func (p *tField) String() string {
   if p == nil {
     return "<nil>"
   }
-  return "<TField name:'" + p.name + "' type:" + string(p.typeId) + " field-id:" + string(p.id) + ">"
+  return fmt.Sprintf("<TField name:'%s' type:%s field-id:%s>", p.name, p.typeId, string(p.id))
 }
 
 func (p *tField) CompareTo(other interface{}) (int, bool) {
@@ -87,7 +88,7 @@ func (p *tField) CompareTo(other interface{}) (int, bool) {
       return CompareInt(p.Id(), data.Id()), true
     }
     if p.TypeId() != data.TypeId() {
-      return CompareByte(byte(p.TypeId()), byte(data.TypeId())), true
+      return CompareByte(p.TypeId().ThriftTypeId(), data.TypeId().ThriftTypeId()), true
     }
     return CompareString(p.Name(), data.Name()), true
   }

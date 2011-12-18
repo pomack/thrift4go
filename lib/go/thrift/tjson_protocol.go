@@ -461,7 +461,7 @@ func (p *TJSONProtocol) writeElemListBegin(elemType TType, size int) TProtocolEx
 }
 
 func (p *TJSONProtocol) TypeIdToString(fieldType TType) string {
-  switch byte(fieldType) {
+  switch fieldType {
   case STOP:
     return "stp"
   case VOID:
@@ -492,8 +492,6 @@ func (p *TJSONProtocol) TypeIdToString(fieldType TType) string {
     return "i32"
   case UTF16:
     return "str"
-  case GENERIC:
-    return "gen"
   }
   return ""
 }
@@ -501,37 +499,35 @@ func (p *TJSONProtocol) TypeIdToString(fieldType TType) string {
 func (p *TJSONProtocol) StringToTypeId(fieldType string) TType {
   switch fieldType {
   case "stp":
-    return TType(STOP)
+    return STOP
   case "v":
-    return TType(VOID)
+    return VOID
   case "tf":
-    return TType(BOOL)
+    return BOOL
   case "i8":
-    return TType(BYTE)
+    return BYTE
   case "dbl":
-    return TType(DOUBLE)
+    return DOUBLE
   case "16":
-    return TType(I16)
+    return I16
   case "i32":
-    return TType(I32)
+    return I32
   case "i64":
-    return TType(I64)
+    return I64
   case "str":
-    return TType(STRING)
+    return STRING
   case "rec":
-    return TType(STRUCT)
+    return STRUCT
   case "map":
-    return TType(MAP)
+    return MAP
   case "set":
-    return TType(SET)
+    return SET
   case "lst":
-    return TType(LIST)
+    return LIST
   case "enm":
-    return TType(ENUM)
+    return ENUM
   case "u16":
-    return TType(UTF16)
-  case "gen":
-    return TType(GENERIC)
+    return UTF16
   }
-  return TType(STOP)
+  return STOP
 }

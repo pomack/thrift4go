@@ -40,6 +40,7 @@ const (
 type TCompactType byte
 
 const (
+  COMPACT_STOP          = 0x00
   COMPACT_BOOLEAN_TRUE  = 0x01
   COMPACT_BOOLEAN_FALSE = 0x02
   COMPACT_BYTE          = 0x03
@@ -61,20 +62,19 @@ var (
 
 func init() {
   _TSTOP = NewTField("", STOP, 0)
-  _TTypeToCompactType = make([]TCompactType, int(BINARY)+1)
-  _TTypeToCompactType[int(STOP)] = STOP
-  _TTypeToCompactType[int(BOOL)] = COMPACT_BOOLEAN_TRUE
-  _TTypeToCompactType[int(BYTE)] = COMPACT_BYTE
-  _TTypeToCompactType[int(I16)] = COMPACT_I16
-  _TTypeToCompactType[int(I32)] = COMPACT_I32
-  _TTypeToCompactType[int(I64)] = COMPACT_I64
-  _TTypeToCompactType[int(DOUBLE)] = COMPACT_DOUBLE
-  _TTypeToCompactType[int(STRING)] = COMPACT_BINARY
-  _TTypeToCompactType[int(LIST)] = COMPACT_LIST
-  _TTypeToCompactType[int(SET)] = COMPACT_SET
-  _TTypeToCompactType[int(MAP)] = COMPACT_MAP
-  _TTypeToCompactType[int(STRUCT)] = COMPACT_STRUCT
-  _TTypeToCompactType[int(BINARY)] = COMPACT_BINARY
+  _TTypeToCompactType = make([]TCompactType, int(UTF16.ThriftTypeId())+1)
+  _TTypeToCompactType[int(STOP.ThriftTypeId())] = COMPACT_STOP
+  _TTypeToCompactType[int(BOOL.ThriftTypeId())] = COMPACT_BOOLEAN_TRUE
+  _TTypeToCompactType[int(BYTE.ThriftTypeId())] = COMPACT_BYTE
+  _TTypeToCompactType[int(I16.ThriftTypeId())] = COMPACT_I16
+  _TTypeToCompactType[int(I32.ThriftTypeId())] = COMPACT_I32
+  _TTypeToCompactType[int(I64.ThriftTypeId())] = COMPACT_I64
+  _TTypeToCompactType[int(DOUBLE.ThriftTypeId())] = COMPACT_DOUBLE
+  _TTypeToCompactType[int(STRING.ThriftTypeId())] = COMPACT_BINARY
+  _TTypeToCompactType[int(LIST.ThriftTypeId())] = COMPACT_LIST
+  _TTypeToCompactType[int(SET.ThriftTypeId())] = COMPACT_SET
+  _TTypeToCompactType[int(MAP.ThriftTypeId())] = COMPACT_MAP
+  _TTypeToCompactType[int(STRUCT.ThriftTypeId())] = COMPACT_STRUCT
 }
 
 type TCompactProtocolFactory struct{}
@@ -227,7 +227,7 @@ func (p *TCompactProtocol) writeFieldBeginInternal(name string, typeId TType, id
 func (p *TCompactProtocol) WriteFieldEnd() TProtocolException { return nil }
 
 func (p *TCompactProtocol) WriteFieldStop() TProtocolException {
-  _, err := p.writeByteDirect(STOP)
+  _, err := p.writeByteDirect(COMPACT_STOP)
   return NewTProtocolExceptionFromOsError(err)
 }
 
@@ -414,7 +414,7 @@ func (p *TCompactProtocol) ReadFieldBegin() (name string, typeId TType, id int16
   }
 
   // if it's a stop, then we can return immediately, as the struct is over.
-  if (t & 0x0f) == STOP {
+  if (t & 0x0f) == COMPACT_STOP {
     return _TSTOP.Name(), _TSTOP.TypeId(), int16(_TSTOP.Id()), nil
   }
 
@@ -462,7 +462,7 @@ func (p *TCompactProtocol) ReadMapBegin() (keyType TType, valueType TType, size 
     err = NewTProtocolExceptionFromOsError(e)
     return
   }
-  keyAndValueType := byte(STOP)
+  keyAndValueType := byte(COMPACT_STOP)
   if size != 0 {
     keyAndValueType, err = p.ReadByte()
     if err != nil {
@@ -821,7 +821,7 @@ func (p *TCompactProtocol) isBoolType(b byte) bool {
  */
 func (p *TCompactProtocol) getTType(t TCompactType) (TType, os.Error) {
   switch byte(t) & 0x0f {
-  case STOP:
+  case COMPACT_STOP:
     return STOP, nil
   case COMPACT_BOOLEAN_FALSE:
   case COMPACT_BOOLEAN_TRUE:
@@ -854,9 +854,9 @@ func (p *TCompactProtocol) getTType(t TCompactType) (TType, os.Error) {
  * Given a TType value, find the appropriate TCompactProtocol.Types constant.
  */
 func (p *TCompactProtocol) getCompactType(t TType) TCompactType {
-  index := int(t)
+  index := int(t.ThriftTypeId())
   if index >= 0 && index < len(_TTypeToCompactType) {
-    return _TTypeToCompactType[int(t)]
+    return _TTypeToCompactType[index]
   }
-  return STOP
+  return COMPACT_STOP
 }

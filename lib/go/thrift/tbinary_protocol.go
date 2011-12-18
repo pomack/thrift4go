@@ -119,7 +119,7 @@ func (p *TBinaryProtocol) WriteFieldEnd() TProtocolException {
 }
 
 func (p *TBinaryProtocol) WriteFieldStop() TProtocolException {
-  e := p.WriteByte(STOP)
+  e := p.WriteByte(STOP.ThriftTypeId())
   return e
 }
 
@@ -296,11 +296,11 @@ func (p *TBinaryProtocol) ReadStructEnd() TProtocolException {
 
 func (p *TBinaryProtocol) ReadFieldBegin() (name string, typeId TType, seqId int16, err TProtocolException) {
   t, err := p.ReadByte()
-  typeId = TType(t)
+  typeId = TTypeFromThriftTypeId(t)
   if err != nil {
     return name, typeId, seqId, err
   }
-  if t != STOP {
+  if typeId != STOP {
     seqId, err = p.ReadI16()
   }
   return name, typeId, seqId, err
@@ -316,13 +316,13 @@ func (p *TBinaryProtocol) ReadMapBegin() (kType, vType TType, size int, err TPro
     err = NewTProtocolExceptionFromOsError(e)
     return
   }
-  kType = TType(k)
+  kType = TTypeFromThriftTypeId(k)
   v, e := p.ReadByte()
   if e != nil {
     err = NewTProtocolExceptionFromOsError(e)
     return
   }
-  vType = TType(v)
+  vType = TTypeFromThriftTypeId(v)
   size32, e := p.ReadI32()
   size = int(size32)
   if e != nil {
@@ -342,7 +342,7 @@ func (p *TBinaryProtocol) ReadListBegin() (elemType TType, size int, err TProtoc
     err = NewTProtocolExceptionFromOsError(e)
     return
   }
-  elemType = TType(b)
+  elemType = TTypeFromThriftTypeId(b)
   size32, e := p.ReadI32()
   size = int(size32)
   if e != nil {
@@ -362,7 +362,7 @@ func (p *TBinaryProtocol) ReadSetBegin() (elemType TType, size int, err TProtoco
     err = NewTProtocolExceptionFromOsError(e)
     return
   }
-  elemType = TType(b)
+  elemType = TTypeFromThriftTypeId(b)
   size32, e := p.ReadI32()
   size = int(size32)
   if e != nil {

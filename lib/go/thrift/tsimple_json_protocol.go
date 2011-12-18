@@ -229,10 +229,10 @@ func (p *TSimpleJSONProtocol) WriteMapBegin(keyType TType, valueType TType, size
   if e := p.OutputListBegin(); e != nil {
     return e
   }
-  if e := p.WriteByte(byte(keyType)); e != nil {
+  if e := p.WriteByte(keyType.ThriftTypeId()); e != nil {
     return e
   }
-  if e := p.WriteByte(byte(valueType)); e != nil {
+  if e := p.WriteByte(valueType.ThriftTypeId()); e != nil {
     return e
   }
   return p.WriteI32(int32(size))
@@ -363,7 +363,7 @@ func (p *TSimpleJSONProtocol) ReadFieldBegin() (string, TType, int16, TProtocolE
       if err != nil {
         return name, STOP, 0, err
       }
-      return name, GENERIC, -1, p.ParsePostValue()
+      return name, nil, -1, p.ParsePostValue()
       /*
          if err = p.ParsePostValue(); err != nil {
            return name, STOP, 0, err
@@ -397,14 +397,14 @@ func (p *TSimpleJSONProtocol) ReadMapBegin() (keyType TType, valueType TType, si
 
   // read keyType
   bKeyType, e := p.ReadByte()
-  keyType = TType(bKeyType)
+  keyType = TTypeFromThriftTypeId(bKeyType)
   if e != nil {
     return keyType, valueType, size, e
   }
 
   // read valueType
   bValueType, e := p.ReadByte()
-  valueType = TType(bValueType)
+  valueType = TTypeFromThriftTypeId(bValueType)
   if e != nil {
     return keyType, valueType, size, e
   }
@@ -734,7 +734,7 @@ func (p *TSimpleJSONProtocol) OutputElemListBegin(elemType TType, size int) TPro
   if e := p.OutputListBegin(); e != nil {
     return e
   }
-  if e := p.WriteByte(byte(elemType)); e != nil {
+  if e := p.WriteByte(elemType.ThriftTypeId()); e != nil {
     return e
   }
   if e := p.WriteI64(int64(size)); e != nil {
@@ -1016,7 +1016,7 @@ func (p *TSimpleJSONProtocol) ParseElemListBegin() (elemType TType, size int, e 
     return VOID, 0, e
   }
   bElemType, err := p.ReadByte()
-  elemType = TType(bElemType)
+  elemType = TTypeFromThriftTypeId(bElemType)
   if err != nil {
     return elemType, size, err
   }

@@ -30,84 +30,206 @@ import (
 /**
  * Type constants in the Thrift protocol.
  */
-type TType byte
-
-const (
-  STOP    = 0
-  VOID    = 1
-  BOOL    = 2
-  BYTE    = 3
-  I08     = 3
-  DOUBLE  = 4
-  I16     = 6
-  I32     = 8
-  I64     = 10
-  STRING  = 11
-  UTF7    = 11
-  STRUCT  = 12
-  MAP     = 13
-  SET     = 14
-  LIST    = 15
-  ENUM    = 16
-  UTF8    = 16
-  UTF16   = 17
-  BINARY  = 18
-  GENERIC = 127
-)
-
-func (p TType) ThriftTypeId() byte {
-  switch p {
-  default:
-    return byte(p)
-  case BINARY:
-    return byte(STRING)
-  }
-  return byte(0)
+type TType interface {
+    ThriftTypeId() byte
+    IsBinary() bool
+    IsUTF8() bool
+    String() string
+    IsBaseType() bool
+    IsEmptyType() bool
+    IsEnum() bool
+    IsNumericType() bool
+    IsStringType() bool
+    IsContainer() bool
+    IsStruct() bool
+    IsMap() bool
+    IsList() bool
+    IsSet() bool
+    IsInt() bool
+    LessType(other interface{}) bool
+    Less(i, j interface{}) bool
+    Compare(i, j interface{}) (int, bool)
+    CompareValueArrays(li, lj []interface{}) (int, bool)
+    Equals(other interface{}) bool
+    Coerce(other interface{}) TType
+    CoerceData(data interface{}) (interface{}, bool)
 }
 
-func (p TType) String() string {
-  switch p {
-  case STOP:
+type tType struct {
+    thriftTypeId byte
+    isBinary bool
+    isEnum bool
+    isUTF8 bool
+}
+
+const (
+    iSTOP   = 0
+    iVOID   = 1
+    iBOOL   = 2
+    iBYTE   = 3
+    iI08    = 3
+    iDOUBLE = 4
+    iI16    = 6
+    iI32    = 8
+    iI64    = 10
+    iSTRING = 11
+    iUTF7   = 11
+    iBINARY = 11
+    iSTRUCT = 12
+    iMAP    = 13
+    iSET    = 14
+    iLIST   = 15
+    iENUM   = 16
+    iUTF8   = 16
+    iUTF16  = 17
+    iGENERIC = 127
+)
+
+var (
+  STOP    = newStandardTType(iSTOP)
+  VOID    = newStandardTType(iVOID)
+  BOOL    = newStandardTType(iBOOL)
+  BYTE    = newStandardTType(iBYTE)
+  I08     = newStandardTType(iI08)
+  DOUBLE  = newStandardTType(iDOUBLE)
+  I16     = newStandardTType(iI16)
+  I32     = newStandardTType(iI32)
+  I64     = newStandardTType(iI64)
+  STRING  = newStandardTType(iSTRING)
+  UTF7    = newStandardTType(iUTF7)
+  BINARY  = newTType(iBINARY, true, false, false)
+  STRUCT  = newStandardTType(iSTRUCT)
+  MAP     = newStandardTType(iMAP)
+  SET     = newStandardTType(iSET)
+  LIST    = newStandardTType(iLIST)
+  ENUM    = newTType(iENUM, false, true, false)
+  UTF8    = newTType(iUTF8, false, false, true)
+  UTF16   = newStandardTType(iUTF16)
+)
+
+
+func newTType(thriftTypeId byte, isBinary, isEnum, isUTF8 bool) TType {
+    return &tType{
+        thriftTypeId: thriftTypeId, 
+        isBinary: isBinary, 
+        isEnum: isEnum, 
+        isUTF8: isUTF8,
+    }
+}
+
+func newStandardTType(thriftTypeId byte) TType {
+    return &tType{
+        thriftTypeId: thriftTypeId, 
+        isBinary: false, 
+        isEnum: false, 
+        isUTF8: false,
+    }
+}
+
+func TTypeFromThriftTypeId(thriftTypeId byte) TType {
+    var theType TType
+    switch thriftTypeId {
+    default:
+        theType = STOP
+    case iSTOP:
+        theType = STOP
+    case iVOID: 
+        theType = VOID
+    case iBOOL: 
+        theType = BOOL
+    case iBYTE:
+        theType = BYTE
+    case iDOUBLE:
+        theType = DOUBLE
+    case iI16:
+        theType = I16
+    case iI32:
+        theType = I32
+    case iI64:
+        theType = I64
+    case iSTRING:
+        theType = STRING
+    case iSTRUCT:
+        theType = STRUCT
+    case iMAP:
+        theType = MAP
+    case iSET:
+        theType = SET
+    case iLIST:
+        theType = LIST
+    case iENUM:
+        theType = ENUM
+    case iUTF16:
+        theType = UTF16
+    case iGENERIC:
+        theType = nil
+    }
+    return theType
+}
+
+func (p *tType) ThriftTypeId() byte {
+    return p.thriftTypeId
+}
+
+func (p *tType) IsBinary() bool {
+    return p.isBinary
+}
+
+func (p *tType) IsEnum() bool {
+    return p.isEnum
+}
+
+func (p *tType) IsUTF8() bool {
+    return p.isUTF8
+}
+
+func (p *tType) String() string {
+  switch p.ThriftTypeId() {
+  case iSTOP:
     return "STOP"
-  case VOID:
+  case iVOID:
     return "VOID"
-  case BOOL:
+  case iBOOL:
     return "BOOL"
-  case BYTE:
+  case iBYTE:
     return "BYTE"
-  case DOUBLE:
+  case iDOUBLE:
     return "DOUBLE"
-  case I16:
+  case iI16:
     return "I16"
-  case I32:
+  case iI32:
     return "I32"
-  case I64:
+  case iI64:
     return "I64"
-  case STRING:
+  case iSTRING:
+    if p.IsBinary() {
+      return "BINARY"
+    }
     return "STRING"
-  case STRUCT:
+  case iSTRUCT:
     return "STRUCT"
-  case MAP:
+  case iMAP:
     return "MAP"
-  case SET:
+  case iSET:
     return "SET"
-  case LIST:
+  case iLIST:
     return "LIST"
-  case ENUM:
+  case iENUM:
+    if p.IsUTF8() {
+      return "UTF8"
+    }
     return "ENUM"
-  case UTF16:
+  case iUTF16:
     return "UTF16"
-  case GENERIC:
+  case iGENERIC:
     return "GENERIC"
-  case BINARY:
-    return "BINARY"
   }
   return "Unknown"
 }
 
-func (p TType) IsBaseType() bool {
-  switch p {
-  case BOOL, BYTE, DOUBLE, I16, I32, I64, STRING, UTF8, UTF16, BINARY:
+func (p *tType) IsBaseType() bool {
+  switch p.ThriftTypeId() {
+  case iBOOL, iBYTE, iDOUBLE, iI16, iI32, iI64, iSTRING, iUTF8, iUTF16:
     return true
   default:
     return false
@@ -115,9 +237,9 @@ func (p TType) IsBaseType() bool {
   return false
 }
 
-func (p TType) IsEmptyType() bool {
-  switch p {
-  case STOP, VOID:
+func (p *tType) IsEmptyType() bool {
+  switch p.ThriftTypeId() {
+  case iSTOP, iVOID:
     return true
   default:
     return false
@@ -125,9 +247,9 @@ func (p TType) IsEmptyType() bool {
   return false
 }
 
-func (p TType) IsEnum() bool {
-  switch p {
-  case ENUM:
+func (p *tType) IsNumericType() bool {
+  switch p.ThriftTypeId() {
+  case iENUM, iBOOL, iBYTE, iDOUBLE, iI16, iI32, iI64:
     return true
   default:
     return false
@@ -135,9 +257,9 @@ func (p TType) IsEnum() bool {
   return false
 }
 
-func (p TType) IsNumericType() bool {
-  switch p {
-  case ENUM, BOOL, BYTE, DOUBLE, I16, I32, I64:
+func (p *tType) IsStringType() bool {
+  switch p.ThriftTypeId() {
+  case iSTRING, iUTF8, iUTF16:
     return true
   default:
     return false
@@ -145,9 +267,9 @@ func (p TType) IsNumericType() bool {
   return false
 }
 
-func (p TType) IsStringType() bool {
-  switch p {
-  case STRING, UTF8, UTF16, BINARY:
+func (p *tType) IsContainer() bool {
+  switch p.ThriftTypeId() {
+  case iMAP, iSET, iLIST:
     return true
   default:
     return false
@@ -155,9 +277,9 @@ func (p TType) IsStringType() bool {
   return false
 }
 
-func (p TType) IsContainer() bool {
-  switch p {
-  case MAP, SET, LIST:
+func (p *tType) IsStruct() bool {
+  switch p.ThriftTypeId() {
+  case iSTRUCT:
     return true
   default:
     return false
@@ -165,9 +287,9 @@ func (p TType) IsContainer() bool {
   return false
 }
 
-func (p TType) IsStruct() bool {
-  switch p {
-  case STRUCT:
+func (p *tType) IsMap() bool {
+  switch p.ThriftTypeId() {
+  case iMAP:
     return true
   default:
     return false
@@ -175,9 +297,9 @@ func (p TType) IsStruct() bool {
   return false
 }
 
-func (p TType) IsMap() bool {
-  switch p {
-  case MAP:
+func (p *tType) IsList() bool {
+  switch p.ThriftTypeId() {
+  case iLIST:
     return true
   default:
     return false
@@ -185,9 +307,9 @@ func (p TType) IsMap() bool {
   return false
 }
 
-func (p TType) IsList() bool {
-  switch p {
-  case LIST:
+func (p *tType) IsSet() bool {
+  switch p.ThriftTypeId() {
+  case iSET:
     return true
   default:
     return false
@@ -195,9 +317,9 @@ func (p TType) IsList() bool {
   return false
 }
 
-func (p TType) IsSet() bool {
-  switch p {
-  case SET:
+func (p *tType) IsInt() bool {
+  switch p.ThriftTypeId() {
+  case iBYTE, iI16, iI32, iI64:
     return true
   default:
     return false
@@ -205,62 +327,52 @@ func (p TType) IsSet() bool {
   return false
 }
 
-func (p TType) IsInt() bool {
-  switch p {
-  case BYTE, I16, I32, I64:
-    return true
-  default:
-    return false
-  }
-  return false
-}
-
-func (p TType) Coerce(other interface{}) TType {
+func (p *tType) Coerce(other interface{}) TType {
   if other == nil {
-    return TType(STOP)
+    return STOP
   }
   switch b := other.(type) {
   default:
-    return TType(STOP)
+    return STOP
   case nil:
-    return TType(STOP)
+    return STOP
   case TType:
     return b
   case byte:
-    return TType(b)
+    return TTypeFromThriftTypeId(b)
   case int:
-    return TType(byte(b))
+    return TTypeFromThriftTypeId(byte(b))
   case int8:
-    return TType(byte(b))
+    return TTypeFromThriftTypeId(byte(b))
   case int32:
-    return TType(byte(b))
+    return TTypeFromThriftTypeId(byte(b))
   case int64:
-    return TType(byte(b))
+    return TTypeFromThriftTypeId(byte(b))
   case uint:
-    return TType(byte(b))
+    return TTypeFromThriftTypeId(byte(b))
   case uint32:
-    return TType(byte(b))
+    return TTypeFromThriftTypeId(byte(b))
   case uint64:
-    return TType(byte(b))
+    return TTypeFromThriftTypeId(byte(b))
   case float32:
-    return TType(byte(int(b)))
+    return TTypeFromThriftTypeId(byte(int(b)))
   case float64:
-    return TType(byte(int(b)))
+    return TTypeFromThriftTypeId(byte(int(b)))
   }
-  return TType(STOP)
+  return STOP
 }
 
-func (p TType) LessType(other interface{}) bool {
-  return p < p.Coerce(other)
+func (p *tType) LessType(other interface{}) bool {
+  return p.ThriftTypeId() < p.Coerce(other).ThriftTypeId()
 }
 
-func (p TType) Less(i, j interface{}) bool {
+func (p *tType) Less(i, j interface{}) bool {
   cmp, ok := p.Compare(i, j)
   return ok && cmp > 0
 }
 
 
-func (p TType) Compare(i, j interface{}) (int, bool) {
+func (p *tType) Compare(i, j interface{}) (int, bool) {
   if i == j {
     return 0, true
   }
@@ -297,11 +409,11 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
   if cj == nil {
     return 1, true
   }
-  switch p {
-  case STOP, VOID:
+  switch p.ThriftTypeId() {
+  case iSTOP, iVOID:
     // hopefully this doesn't happen as Compare() would continuously return 0, false
     return 0, false
-  case BOOL:
+  case iBOOL:
     vi, iok := ci.(bool)
     vj, jok := cj.(bool)
     if !iok || !jok {
@@ -314,7 +426,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       return -1, true
     }
     return 1, true
-  case BYTE:
+  case iBYTE:
     vi, iok := ci.(byte)
     vj, jok := cj.(byte)
     if !iok || !jok {
@@ -327,7 +439,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       return -1, true
     }
     return 1, true
-  case DOUBLE:
+  case iDOUBLE:
     vi, iok := ci.(float64)
     vj, jok := cj.(float64)
     if !iok || !jok {
@@ -340,7 +452,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       return -1, true
     }
     return 1, true
-  case I16:
+  case iI16:
     vi, iok := ci.(int16)
     vj, jok := cj.(int16)
     if !iok || !jok {
@@ -353,7 +465,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       return -1, true
     }
     return 1, true
-  case I32:
+  case iI32:
     vi, iok := ci.(int32)
     vj, jok := cj.(int32)
     if !iok || !jok {
@@ -366,7 +478,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       return -1, true
     }
     return 1, true
-  case I64:
+  case iI64:
     vi, iok := ci.(int64)
     vj, jok := cj.(int64)
     if !iok || !jok {
@@ -379,27 +491,29 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       return -1, true
     }
     return 1, true
-  case STRING, UTF8, UTF16:
-    vi, iok := ci.(string)
-    vj, jok := cj.(string)
-    if !iok || !jok {
-      return 0, false
+  case iSTRING, iUTF8, iUTF16:
+    if !p.IsBinary() {
+      vi, iok := ci.(string)
+      vj, jok := cj.(string)
+      if !iok || !jok {
+        return 0, false
+      }
+      if vi == vj {
+        return 0, true
+      }
+      if vi < vj {
+        return -1, true
+      }
+      return 1, true
+    } else {
+      vi, iok := ci.([]byte)
+      vj, jok := cj.([]byte)
+      if !iok || !jok {
+        return 0, false
+      }
+      return bytes.Compare(vi, vj), true
     }
-    if vi == vj {
-      return 0, true
-    }
-    if vi < vj {
-      return -1, true
-    }
-    return 1, true
-  case BINARY:
-    vi, iok := ci.([]byte)
-    vj, jok := cj.([]byte)
-    if !iok || !jok {
-      return 0, false
-    }
-    return bytes.Compare(vi, vj), true
-  case STRUCT:
+  case iSTRUCT:
     si, iok := ci.(TStruct)
     sj, jok := cj.(TStruct)
     if !iok || !jok {
@@ -419,7 +533,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       }
     }
     return 0, true
-  case MAP:
+  case iMAP:
     mi, iok := ci.(TMap)
     mj, jok := cj.(TMap)
     if !iok || !jok {
@@ -427,7 +541,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
     }
     ei := mi.KeyType()
     if ej := mj.KeyType(); ei != ej {
-      return CompareInt(int(ei), int(ej)), true
+      return CompareInt(int(ei.ThriftTypeId()), int(ej.ThriftTypeId())), true
     }
     if size := mi.Len(); size != mj.Len() {
       return CompareInt(size, mj.Len()), true
@@ -436,7 +550,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       return c, cok
     }
     return ei.Compare(mi.Values(), mj.Values())
-  case LIST:
+  case iLIST:
     li, iok := ci.(TList)
     lj, jok := cj.(TList)
     if !iok || !jok {
@@ -445,7 +559,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
     ei := li.ElemType()
     ej := lj.ElemType()
     if ei != ej {
-      return CompareInt(int(ei), int(ej)), true
+      return CompareInt(int(ei.ThriftTypeId()), int(ej.ThriftTypeId())), true
     }
     size := li.Len()
     if size != lj.Len() {
@@ -460,7 +574,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
       }
     }
     return 0, true
-  case SET:
+  case iSET:
     li, iok := ci.(TSet)
     lj, jok := cj.(TSet)
     if !iok || !jok {
@@ -469,7 +583,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
     ei := li.ElemType()
     ej := lj.ElemType()
     if ei != ej {
-      return CompareInt(int(ei), int(ej)), true
+      return CompareInt(int(ei.ThriftTypeId()), int(ej.ThriftTypeId())), true
     }
     size := li.Len()
     if size != lj.Len() {
@@ -482,7 +596,7 @@ func (p TType) Compare(i, j interface{}) (int, bool) {
   return 0, false
 }
 
-func (p TType) CompareValueArrays(li, lj []interface{}) (int, bool) {
+func (p *tType) CompareValueArrays(li, lj []interface{}) (int, bool) {
   size := len(li)
   if cmp := CompareInt(size, len(lj)); cmp != 0 {
     return cmp, true
@@ -498,7 +612,7 @@ func (p TType) CompareValueArrays(li, lj []interface{}) (int, bool) {
   return 0, true
 }
 
-func (p TType) Equals(other interface{}) bool {
+func (p *tType) Equals(other interface{}) bool {
   return p == p.Coerce(other)
 }
 
@@ -548,47 +662,55 @@ func TypeFromValue(data interface{}) TType {
   return STOP
 }
 
-func (p TType) CoerceData(data interface{}) (interface{}, bool) {
+func (p *tType) CoerceData(data interface{}) (interface{}, bool) {
   if data == nil {
-    switch p {
-    case STOP:
+    switch p.ThriftTypeId() {
+    case iSTOP:
       return nil, true
-    case VOID:
+    case iVOID:
       return nil, true
-    case BOOL:
+    case iBOOL:
       return false, true
-    case BYTE:
+    case iBYTE:
       return byte(0), true
-    case DOUBLE:
+    case iDOUBLE:
       return float64(0), true
-    case I16:
+    case iI16:
       return int16(0), true
-    case I32:
+    case iI32:
       return int32(0), true
-    case I64:
+    case iI64:
       return int64(0), true
-    case STRING, UTF8, UTF16:
+    case iSTRING:
+      if p.IsBinary() {
+          return nil, true
+      }
       return "", true
-    case BINARY:
-      return nil, true
-    case STRUCT:
+    case iSTRUCT:
       return NewTStructEmpty(""), true
-    case MAP:
+    case iMAP:
       return NewTMapDefault(), true
-    case LIST:
+    case iLIST:
       return NewTListDefault(), true
-    case SET:
+    case iSET:
       return NewTSetDefault(), true
+    case iENUM:
+        if p.IsUTF8() {
+            return "", true
+        }
+        return int32(0), true
+    case iUTF16:
+        return "", true
     default:
       panic("Invalid thrift type to coerce")
     }
   }
-  switch p {
-  case STOP:
+  switch p.ThriftTypeId() {
+  case iSTOP:
     return nil, true
-  case VOID:
+  case iVOID:
     return nil, true
-  case BOOL:
+  case iBOOL:
     switch b := data.(type) {
     default:
       return false, false
@@ -634,7 +756,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
       }
       return true, true
     }
-  case BYTE:
+  case iBYTE:
     if b, ok := data.(byte); ok {
       return b, true
     }
@@ -699,7 +821,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
       }
     }
     return byte(0), false
-  case DOUBLE:
+  case iDOUBLE:
     if b, ok := data.(float32); ok {
       return float64(b), true
     }
@@ -764,7 +886,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
       }
     }
     return float64(0), false
-  case I16:
+  case iI16:
     if b, ok := data.(int16); ok {
       return b, true
     }
@@ -823,7 +945,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
       }
     }
     return int16(0), false
-  case I32:
+  case iI32:
     if b, ok := data.(int32); ok {
       return b, true
     }
@@ -882,7 +1004,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
       }
     }
     return int32(0), false
-  case I64:
+  case iI64:
     if b, ok := data.(int64); ok {
       return b, true
     }
@@ -941,146 +1063,148 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
       }
     }
     return int64(0), false
-  case STRING, UTF8, UTF16:
-    if b, ok := data.([]byte); ok {
-      return string(b), true
-    }
-    if b, ok := data.(Enumer); ok {
-      if i1, ok := data.(int); ok {
-        return string(i1), true
+  case iSTRING, iUTF8, iUTF16:
+    if !p.IsBinary() {
+      if b, ok := data.([]byte); ok {
+        return string(b), true
       }
-      return b.String(), true
-    }
-    if b, ok := data.(Stringer); ok {
-      return b.String(), true
-    }
-    if b, ok := data.(string); ok {
-      return b, true
-    }
-    if b, ok := data.(int); ok {
-      return string(b), true
-    }
-    if b, ok := data.(byte); ok {
-      return string(b), true
-    }
-    if b, ok := data.(bool); ok {
-      if b {
-        return "true", true
+      if b, ok := data.(Enumer); ok {
+        if i1, ok := data.(int); ok {
+          return string(i1), true
+        }
+        return b.String(), true
       }
-      return "false", true
-    }
-    if b, ok := data.(int8); ok {
-      return string(b), true
-    }
-    if b, ok := data.(int16); ok {
-      return string(b), true
-    }
-    if b, ok := data.(int32); ok {
-      return string(b), true
-    }
-    if b, ok := data.(int64); ok {
-      return string(b), true
-    }
-    if b, ok := data.(uint); ok {
-      return string(b), true
-    }
-    if b, ok := data.(uint8); ok {
-      return string(b), true
-    }
-    if b, ok := data.(uint16); ok {
-      return string(b), true
-    }
-    if b, ok := data.(uint32); ok {
-      return string(b), true
-    }
-    if b, ok := data.(uint64); ok {
-      return string(b), true
-    }
-    if b, ok := data.(float32); ok {
-      return strconv.Ftoa32(b, 'g', -1), true
-    }
-    if b, ok := data.(float64); ok {
-      return strconv.Ftoa64(b, 'g', -1), true
-    }
-    return "", false
-  case BINARY:
-    if b, ok := data.([]byte); ok {
-      return b, true
-    }
-    if b, ok := data.(Enumer); ok {
-      if i1, ok := data.(int); ok {
-        return []byte(string(i1)), true
+      if b, ok := data.(Stringer); ok {
+        return b.String(), true
       }
-      return []byte(b.String()), true
-    }
-    if b, ok := data.(Stringer); ok {
-      return []byte(b.String()), true
-    }
-    if b, ok := data.(string); ok {
-      return []byte(b), true
-    }
-    if b, ok := data.(int); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(byte); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(bool); ok {
-      if b {
-        return []byte("true"), true
+      if b, ok := data.(string); ok {
+        return b, true
       }
-      return []byte("false"), true
+      if b, ok := data.(int); ok {
+        return string(b), true
+      }
+      if b, ok := data.(byte); ok {
+        return string(b), true
+      }
+      if b, ok := data.(bool); ok {
+        if b {
+          return "true", true
+        }
+        return "false", true
+      }
+      if b, ok := data.(int8); ok {
+        return string(b), true
+      }
+      if b, ok := data.(int16); ok {
+        return string(b), true
+      }
+      if b, ok := data.(int32); ok {
+        return string(b), true
+      }
+      if b, ok := data.(int64); ok {
+        return string(b), true
+      }
+      if b, ok := data.(uint); ok {
+        return string(b), true
+      }
+      if b, ok := data.(uint8); ok {
+        return string(b), true
+      }
+      if b, ok := data.(uint16); ok {
+        return string(b), true
+      }
+      if b, ok := data.(uint32); ok {
+        return string(b), true
+      }
+      if b, ok := data.(uint64); ok {
+        return string(b), true
+      }
+      if b, ok := data.(float32); ok {
+        return strconv.Ftoa32(b, 'g', -1), true
+      }
+      if b, ok := data.(float64); ok {
+        return strconv.Ftoa64(b, 'g', -1), true
+      }
+      return "", false
+    } else {
+      if b, ok := data.([]byte); ok {
+        return b, true
+      }
+      if b, ok := data.(Enumer); ok {
+        if i1, ok := data.(int); ok {
+          return []byte(string(i1)), true
+        }
+        return []byte(b.String()), true
+      }
+      if b, ok := data.(Stringer); ok {
+        return []byte(b.String()), true
+      }
+      if b, ok := data.(string); ok {
+        return []byte(b), true
+      }
+      if b, ok := data.(int); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(byte); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(bool); ok {
+        if b {
+          return []byte("true"), true
+        }
+        return []byte("false"), true
+      }
+      if b, ok := data.(int8); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(int16); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(int32); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(int64); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(uint); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(uint8); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(uint16); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(uint32); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(uint64); ok {
+        return []byte(string(b)), true
+      }
+      if b, ok := data.(float32); ok {
+        return []byte(strconv.Ftoa32(b, 'g', -1)), true
+      }
+      if b, ok := data.(float64); ok {
+        return []byte(strconv.Ftoa64(b, 'g', -1)), true
+      }
+      return "", false
     }
-    if b, ok := data.(int8); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(int16); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(int32); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(int64); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(uint); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(uint8); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(uint16); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(uint32); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(uint64); ok {
-      return []byte(string(b)), true
-    }
-    if b, ok := data.(float32); ok {
-      return []byte(strconv.Ftoa32(b, 'g', -1)), true
-    }
-    if b, ok := data.(float64); ok {
-      return []byte(strconv.Ftoa64(b, 'g', -1)), true
-    }
-    return "", false
-  case STRUCT:
+  case iSTRUCT:
     if b, ok := data.(TStruct); ok {
       return b, true
     }
     return NewTStructEmpty(""), true
-  case MAP:
+  case iMAP:
     if b, ok := data.(TMap); ok {
       return b, true
     }
     return NewTMapDefault(), false
-  case LIST:
+  case iLIST:
     if b, ok := data.(TList); ok {
       return b, true
     }
     return NewTListDefault(), false
-  case SET:
+  case iSET:
     if b, ok := data.(TSet); ok {
       return b, true
     }
