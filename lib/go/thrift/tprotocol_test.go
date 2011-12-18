@@ -176,7 +176,7 @@ func ReadWriteProtocolTest(t *testing.T, protocolFactory TProtocolFactory) {
 }
 
 func ReadWriteBool(t *testing.T, p TProtocol, trans TTransport) {
-  thetype := TType(BOOL)
+  thetype := BOOL
   thelen := len(BOOL_VALUES)
   err := p.WriteListBegin(thetype, thelen)
   if err != nil {
@@ -222,7 +222,7 @@ func ReadWriteBool(t *testing.T, p TProtocol, trans TTransport) {
 }
 
 func ReadWriteByte(t *testing.T, p TProtocol, trans TTransport) {
-  thetype := TType(BYTE)
+  thetype := BYTE
   thelen := len(BYTE_VALUES)
   err := p.WriteListBegin(thetype, thelen)
   if err != nil {
@@ -271,7 +271,7 @@ func ReadWriteByte(t *testing.T, p TProtocol, trans TTransport) {
 }
 
 func ReadWriteI16(t *testing.T, p TProtocol, trans TTransport) {
-  thetype := TType(I16)
+  thetype := I16
   thelen := len(INT16_VALUES)
   p.WriteListBegin(thetype, thelen)
   for _, v := range INT16_VALUES {
@@ -308,7 +308,7 @@ func ReadWriteI16(t *testing.T, p TProtocol, trans TTransport) {
 }
 
 func ReadWriteI32(t *testing.T, p TProtocol, trans TTransport) {
-  thetype := TType(I32)
+  thetype := I32
   thelen := len(INT32_VALUES)
   p.WriteListBegin(thetype, thelen)
   for _, v := range INT32_VALUES {
@@ -344,7 +344,7 @@ func ReadWriteI32(t *testing.T, p TProtocol, trans TTransport) {
 }
 
 func ReadWriteI64(t *testing.T, p TProtocol, trans TTransport) {
-  thetype := TType(I64)
+  thetype := I64
   thelen := len(INT64_VALUES)
   p.WriteListBegin(thetype, thelen)
   for _, v := range INT64_VALUES {
@@ -380,7 +380,7 @@ func ReadWriteI64(t *testing.T, p TProtocol, trans TTransport) {
 }
 
 func ReadWriteDouble(t *testing.T, p TProtocol, trans TTransport) {
-  thetype := TType(DOUBLE)
+  thetype := DOUBLE
   thelen := len(DOUBLE_VALUES)
   p.WriteListBegin(thetype, thelen)
   for _, v := range DOUBLE_VALUES {
@@ -422,7 +422,7 @@ func ReadWriteDouble(t *testing.T, p TProtocol, trans TTransport) {
 }
 
 func ReadWriteString(t *testing.T, p TProtocol, trans TTransport) {
-  thetype := TType(STRING)
+  thetype := STRING
   thelen := len(STRING_VALUES)
   p.WriteListBegin(thetype, thelen)
   for _, v := range STRING_VALUES {

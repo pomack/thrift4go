@@ -453,7 +453,7 @@ func TestWriteSimpleJSONProtocolList(t *testing.T) {
   thetype := "list"
   trans := NewTMemoryBuffer()
   p := NewTSimpleJSONProtocol(trans)
-  p.WriteListBegin(TType(DOUBLE), len(DOUBLE_VALUES))
+  p.WriteListBegin(DOUBLE, len(DOUBLE_VALUES))
   for _, value := range DOUBLE_VALUES {
     if e := p.WriteDouble(value); e != nil {
       t.Fatalf("Unable to write %s value %v due to error: %s", thetype, value, e.String())
@@ -473,7 +473,7 @@ func TestWriteSimpleJSONProtocolList(t *testing.T) {
   if len(l) < 2 {
     t.Fatalf("List must be at least of length two to include metadata")
   }
-  if int(l[0].(float64)) != DOUBLE {
+  if byte(l[0].(float64)) != DOUBLE.ThriftTypeId() {
     t.Fatal("Invalid type for list, expected: ", DOUBLE, ", but was: ", l[0])
   }
   if int(l[1].(float64)) != len(DOUBLE_VALUES) {
@@ -507,7 +507,7 @@ func TestWriteSimpleJSONProtocolSet(t *testing.T) {
   thetype := "set"
   trans := NewTMemoryBuffer()
   p := NewTSimpleJSONProtocol(trans)
-  p.WriteSetBegin(TType(DOUBLE), len(DOUBLE_VALUES))
+  p.WriteSetBegin(DOUBLE, len(DOUBLE_VALUES))
   for _, value := range DOUBLE_VALUES {
     if e := p.WriteDouble(value); e != nil {
       t.Fatalf("Unable to write %s value %v due to error: %s", thetype, value, e.String())
@@ -527,7 +527,7 @@ func TestWriteSimpleJSONProtocolSet(t *testing.T) {
   if len(l) < 2 {
     t.Fatalf("Set must be at least of length two to include metadata")
   }
-  if int(l[0].(float64)) != DOUBLE {
+  if byte(l[0].(float64)) != DOUBLE.ThriftTypeId() {
     t.Fatal("Invalid type for set, expected: ", DOUBLE, ", but was: ", l[0])
   }
   if int(l[1].(float64)) != len(DOUBLE_VALUES) {
@@ -561,7 +561,7 @@ func TestWriteSimpleJSONProtocolMap(t *testing.T) {
   thetype := "map"
   trans := NewTMemoryBuffer()
   p := NewTSimpleJSONProtocol(trans)
-  p.WriteMapBegin(TType(I32), TType(DOUBLE), len(DOUBLE_VALUES))
+  p.WriteMapBegin(I32, DOUBLE, len(DOUBLE_VALUES))
   for k, value := range DOUBLE_VALUES {
     if e := p.WriteI32(int32(k)); e != nil {
       t.Fatalf("Unable to write %s key int32 value %v due to error: %s", thetype, k, e.String())
@@ -585,10 +585,10 @@ func TestWriteSimpleJSONProtocolMap(t *testing.T) {
   expectedKeyType, _ := strconv.Atoi(l[0])
   expectedValueType, _ := strconv.Atoi(l[1])
   expectedSize, _ := strconv.Atoi(l[2])
-  if expectedKeyType != I32 {
+  if expectedKeyType != int(I32.ThriftTypeId()) {
     t.Fatal("Expected map key type ", I32, ", but was ", l[0])
   }
-  if expectedValueType != DOUBLE {
+  if expectedValueType != int(DOUBLE.ThriftTypeId()) {
     t.Fatal("Expected map value type ", DOUBLE, ", but was ", l[1])
   }
   if expectedSize != len(DOUBLE_VALUES) {
