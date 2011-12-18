@@ -61,7 +61,7 @@ var (
 
 func init() {
   _TSTOP = NewTField("", STOP, 0)
-  _TTypeToCompactType = make([]TCompactType, int(UTF16)+1)
+  _TTypeToCompactType = make([]TCompactType, int(BINARY)+1)
   _TTypeToCompactType[int(STOP)] = STOP
   _TTypeToCompactType[int(BOOL)] = COMPACT_BOOLEAN_TRUE
   _TTypeToCompactType[int(BYTE)] = COMPACT_BYTE
@@ -74,6 +74,7 @@ func init() {
   _TTypeToCompactType[int(SET)] = COMPACT_SET
   _TTypeToCompactType[int(MAP)] = COMPACT_MAP
   _TTypeToCompactType[int(STRUCT)] = COMPACT_STRUCT
+  _TTypeToCompactType[int(BINARY)] = COMPACT_BINARY
 }
 
 type TCompactProtocolFactory struct{}
