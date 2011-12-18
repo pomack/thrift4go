@@ -853,5 +853,9 @@ func (p *TCompactProtocol) getTType(t TCompactType) (TType, os.Error) {
  * Given a TType value, find the appropriate TCompactProtocol.Types constant.
  */
 func (p *TCompactProtocol) getCompactType(t TType) TCompactType {
-  return _TTypeToCompactType[int(t)]
+  index := int(t)
+  if index >= 0 && index < len(_TTypeToCompactType) {
+    return _TTypeToCompactType[int(t)]
+  }
+  return STOP
 }
