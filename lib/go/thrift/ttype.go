@@ -105,6 +105,7 @@ var (
   ENUM    = newTType(iENUM, false, true, false)
   UTF8    = newTType(iUTF8, false, false, true)
   UTF16   = newStandardTType(iUTF16)
+  GENERIC   = newStandardTType(iGENERIC)
 )
 
 
@@ -162,7 +163,7 @@ func TTypeFromThriftTypeId(thriftTypeId byte) TType {
     case iUTF16:
         theType = UTF16
     case iGENERIC:
-        theType = nil
+        theType = GENERIC
     }
     return theType
 }
