@@ -48,7 +48,7 @@ type tList struct {
 
 func NewTList(t TType, s int) TList {
   var v vector.Vector
-  return &tList{elemType: t, l: v.Resize(s, s)}
+  return &tList{elemType: t, l: v.Resize(0, s)}
 }
 
 func NewTListDefault() TList {
