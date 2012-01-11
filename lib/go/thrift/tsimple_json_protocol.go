@@ -1038,7 +1038,7 @@ func (p *TSimpleJSONProtocol) ParseListEnd() TProtocolException {
     switch char {
     default:
       return NewTProtocolException(INVALID_DATA, fmt.Sprint("Expecting end of list \"]\", but found: \"", line, "\""))
-    case ' ', '\n', '\r', '\t', int(JSON_RBRACKET[0]):
+    case ' ', '\n', '\r', '\t', rune(JSON_RBRACKET[0]):
       break
     }
   }
