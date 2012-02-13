@@ -20,6 +20,7 @@
 package thrift
 
 import (
+  "bytes"
   "container/vector"
 )
 
@@ -139,6 +140,14 @@ func (p *tList) indexOf(data interface{}) int {
     return -1
   }
   size := p.l.Len()
+  if p.elemType == BINARY {
+    for i := 0; i < size; i++ {
+      if bytes.Compare(data.([]byte), p.l.At(i).([]byte)) == 0 {
+        return i
+      }
+    }
+    return -1;
+  }
   if p.elemType.IsBaseType() || p.elemType.IsEnum() {
     for i := 0; i < size; i++ {
       if data == p.l.At(i) {
