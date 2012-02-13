@@ -20,6 +20,7 @@
 package thrift
 
 import (
+  "bytes"
   "container/list"
 )
 
@@ -120,6 +121,14 @@ func (p *tSet) find(data interface{}) *list.Element {
   }
   data, ok := p.elemType.CoerceData(data)
   if data == nil || !ok {
+    return nil
+  }
+  if p.elemType == BINARY {
+    for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+      if bytes.Compare(data.([]byte), elem.Value.([]byte)) == 0 {
+        return elem
+      }
+    }
     return nil
   }
   if p.elemType.IsBaseType() || p.elemType.IsEnum() {
