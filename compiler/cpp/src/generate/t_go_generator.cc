@@ -978,7 +978,7 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
           if (((t_base_type*)type)->is_binary()) {
             // ignore default value for binary
             out << 
-              indent() << "return p." << field_name << " != nil && len(p." << field_name << ") > 0" << endl;
+              indent() << "return p." << field_name << " != nil" << endl;
           } else {
             s_check_value = (field_default_value == NULL) ? "\"\"" : render_const_value(type, field_default_value, tstruct_name);
             out << 
