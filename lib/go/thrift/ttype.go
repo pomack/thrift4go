@@ -25,6 +25,7 @@ import (
   "container/list"
   "container/vector"
   "strconv"
+  "reflect"
 )
 
 /**
@@ -374,7 +375,7 @@ func (p *tType) Less(i, j interface{}) bool {
 
 
 func (p *tType) Compare(i, j interface{}) (int, bool) {
-  if i == j {
+  if reflect.DeepEqual(i, j) {
     return 0, true
   }
   if i == nil {
@@ -398,7 +399,7 @@ func (p *tType) Compare(i, j interface{}) (int, bool) {
   if !iok && !jok {
     return 0, false
   }
-  if ci == cj {
+  if reflect.DeepEqual(ci, cj) {
     return 0, true
   }
   if ci == nil {
