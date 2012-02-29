@@ -374,8 +374,10 @@ func (p *tType) Less(i, j interface{}) bool {
 
 
 func (p *tType) Compare(i, j interface{}) (int, bool) {
-  if i == j {
-    return 0, true
+  if !p.IsBinary() {
+    if i == j {
+      return 0, true
+    }
   }
   if i == nil {
     if j == nil {
@@ -398,8 +400,10 @@ func (p *tType) Compare(i, j interface{}) (int, bool) {
   if !iok && !jok {
     return 0, false
   }
-  if ci == cj {
-    return 0, true
+  if !p.IsBinary() {
+    if ci == cj {
+      return 0, true
+    }
   }
   if ci == nil {
     if cj == nil {
