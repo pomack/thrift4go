@@ -40,8 +40,8 @@ func TestNonblockingTransportServerToClient(t *testing.T) {
   if err != nil {
     t.Fatalf("Unable to setup client socket: %s", err)
   }
-  trans1.SetTimeout(10)
-  trans2.SetTimeout(10)
+  trans1.SetTimeout(1e9)
+  trans2.SetTimeout(1e9)
   err = trans2.Open()
   if err != nil {
     t.Fatalf("Unable to connect client to server: %s", err)
@@ -72,8 +72,8 @@ func TestNonblockingTransportClientToServer(t *testing.T) {
   if err != nil {
     t.Fatalf("Unable to setup client socket: %s", err)
   }
-  trans1.SetTimeout(10)
-  trans2.SetTimeout(10)
+  trans1.SetTimeout(1e9)
+  trans2.SetTimeout(1e9)
   err = trans2.Open()
   if err != nil {
     t.Fatalf("Unable to connect client to server: %s", err)
