@@ -20,13 +20,13 @@
 package thrift_test
 
 import (
-  . "thrift"
   "encoding/base64"
-  "fmt"
   "encoding/json"
+  "fmt"
   "math"
   "strconv"
   "testing"
+  . "thrift"
 )
 
 func TestWriteJSONProtocolBool(t *testing.T) {
@@ -250,7 +250,7 @@ func TestReadJSONProtocolI64(t *testing.T) {
   for _, value := range INT64_VALUES {
     trans := NewTMemoryBuffer()
     p := NewTJSONProtocol(trans)
-    trans.WriteString(strconv.Itoa64(value))
+    trans.WriteString(strconv.FormatInt(value, 10))
     trans.Flush()
     s := trans.String()
     v, e := p.ReadI64()
@@ -611,7 +611,7 @@ func TestWriteJSONProtocolMap(t *testing.T) {
     if err != nil {
       t.Fatalf("Bad value for %s index %v, wrote: %v, expected: %v, error: %s", thetype, k, dv, value, err.Error())
     }
-    s := strconv.Ftoa64(dv, 'g', 10)
+    s := strconv.FormatFloat(dv, 'g', 10, 64)
     if math.IsInf(value, 1) {
       if !math.IsInf(dv, 1) {
         t.Fatalf("Bad value for %s at index %v %v, wrote: %v, expected: %v", thetype, k, value, s, JsonQuote(JSON_INFINITY))
@@ -625,7 +625,7 @@ func TestWriteJSONProtocolMap(t *testing.T) {
         t.Fatalf("Bad value for %s at index %v  %v, wrote: %v, expected: %v", thetype, k, value, s, JsonQuote(JSON_NAN))
       }
     } else {
-      expected := strconv.Ftoa64(value, 'g', 10)
+      expected := strconv.FormatFloat(value, 'g', 10, 64)
       if s != expected {
         t.Fatalf("Bad value for %s at index %v %v, wrote: %v, expected %v", thetype, k, value, s, expected)
       }
@@ -638,7 +638,6 @@ func TestWriteJSONProtocolMap(t *testing.T) {
   }
   trans.Close()
 }
-
 
 func TestReadWriteJSONStruct(t *testing.T) {
   thetype := "struct"

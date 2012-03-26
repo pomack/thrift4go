@@ -140,7 +140,8 @@ func (p *TNonblockingServerSocket) Accept() (TTransport, error) {
   if err != nil {
     return nil, NewTTransportExceptionFromOsError(err)
   }
-  conn.SetTimeout(p.nsecTimeout)
+  // This only makes sense in the context of calling Read/Write, not here as a direct replacement of SetTimeout()
+  // conn.SetDeadline(time.Now().Add(time.Duration(p.nsecTimeout)))
   return NewTSocketConn(conn)
 }
 

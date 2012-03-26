@@ -72,7 +72,8 @@ func NewTServerSocketConn(conn net.Conn) *TServerSocket {
 
 func NewTServerSocketConnTimeout(conn net.Conn, nsecClientTimeout int64) *TServerSocket {
   v := &TServerSocket{conn: conn, addr: conn.LocalAddr(), nsecClientTimeout: nsecClientTimeout}
-  conn.SetTimeout(nsecClientTimeout)
+  // This only makes sense in the context of calling Read/Write, not here as a direct replacement of SetTimeout()
+  // conn.SetDeadline(time.Now().Add(time.Duration(nsecClientTimeout)))
   return v
 }
 
@@ -107,7 +108,8 @@ func (p *TServerSocket) Accept() (TTransport, error) {
   if err != nil {
     return nil, NewTTransportExceptionFromOsError(err)
   }
-  conn.SetTimeout(p.nsecClientTimeout)
+  // This only makes sense in the context of calling Read/Write, not here as a direct replacement of SetTimeout()
+  // conn.SetDeadline(time.Now().Add(time.Duration(p.nsecTimeout)))
   return NewTSocketConn(conn)
 }
 
