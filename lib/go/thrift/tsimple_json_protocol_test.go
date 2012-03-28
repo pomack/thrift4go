@@ -251,7 +251,7 @@ func TestReadSimpleJSONProtocolI64(t *testing.T) {
   for _, value := range INT64_VALUES {
     trans := NewTMemoryBuffer()
     p := NewTSimpleJSONProtocol(trans)
-    trans.WriteString(strconv.Itoa64(value))
+    trans.WriteString(strconv.FormatInt(value, 10))
     trans.Flush()
     s := trans.String()
     v, e := p.ReadI64()
@@ -618,7 +618,7 @@ func TestWriteSimpleJSONProtocolMap(t *testing.T) {
         t.Fatalf("Bad value for %s at index %v  %v, wrote: %v, expected: %v", thetype, k, value, s, JsonQuote(JSON_NAN))
       }
     } else {
-      expected := strconv.Ftoa64(value, 'g', 10)
+      expected := strconv.FormatFloat(value, 'g', 10, 64)
       if s != expected {
         t.Fatalf("Bad value for %s at index %v %v, wrote: %v, expected %v", thetype, k, value, s, expected)
       }
