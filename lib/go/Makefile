@@ -28,6 +28,7 @@ clean:
 
 install:
 	GOPATH=$(GOPATH) go install thrift
+	-/bin/cp -f pkg/$(GOOS)_$(GOARCH)/thrift.* $(GOROOT)/pkg/$(GOOS)_$(GOARCH)/
 
 nuke:
 	GOPATH=$(GOPATH) go clean -i thrift
