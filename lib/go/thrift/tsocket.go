@@ -22,6 +22,7 @@ package thrift
 import (
   "bytes"
   "net"
+  "time"
 )
 
 /**
@@ -51,11 +52,21 @@ type TSocket struct {
  * @throws TTransportException if there is an error setting up the streams
  */
 func NewTSocketConn(connection net.Conn) (*TSocket, TTransportException) {
+  return NewTSocketConnTimeout(connection, 0)
+}
+
+/**
+ * Constructor that takes an already created socket.
+ *
+ * @param socket Already created socket object
+ * @throws TTransportException if there is an error setting up the streams
+ */
+func NewTSocketConnTimeout(connection net.Conn, nsecTimeout int64) (*TSocket, TTransportException) {
   address := connection.RemoteAddr()
   if address == nil {
     address = connection.LocalAddr()
   }
-  p := &TSocket{conn: connection, addr: address, nsecTimeout: 0, writeBuffer: bytes.NewBuffer(make([]byte, 0, 4096))}
+  p := &TSocket{conn: connection, addr: address, nsecTimeout: nsecTimeout, writeBuffer: bytes.NewBuffer(make([]byte, 0, 4096))}
   return p, nil
 }
 
@@ -90,13 +101,21 @@ func NewTSocket(address net.Addr, nsecTimeout int64) *TSocket {
  */
 func (p *TSocket) SetTimeout(nsecTimeout int64) error {
   p.nsecTimeout = nsecTimeout
-  if p.IsOpen() {
-    if err := p.conn.SetTimeout(nsecTimeout); err != nil {
-      LOGGER.Print("Could not set socket timeout.", err)
-      return err
-    }
-  }
   return nil
+}
+
+func (p *TSocket) pushDeadline(read, write bool) {
+  var t time.Time
+  if p.nsecTimeout > 0 {
+    t = time.Now().Add(time.Duration(p.nsecTimeout))
+  }
+  if read && write {
+    p.conn.SetDeadline(t)
+  } else if read {
+    p.conn.SetReadDeadline(t)
+  } else if write {
+    p.conn.SetWriteDeadline(t)
+  }
 }
 
 /**
@@ -133,12 +152,16 @@ func (p *TSocket) Open() error {
     return NewTTransportException(NOT_OPEN, "Cannot open bad address.")
   }
   var err error
-  if p.conn, err = net.Dial(p.addr.Network(), p.addr.String()); err != nil {
-    LOGGER.Print("Could not open socket", err.Error())
-    return NewTTransportException(NOT_OPEN, err.Error())
-  }
-  if p.conn != nil {
-    p.conn.SetTimeout(p.nsecTimeout)
+  if p.nsecTimeout > 0 {
+    if p.conn, err = net.DialTimeout(p.addr.Network(), p.addr.String(), time.Duration(p.nsecTimeout)); err != nil {
+      LOGGER.Print("Could not open socket", err.Error())
+      return NewTTransportException(NOT_OPEN, err.Error())
+    }
+  } else {
+    if p.conn, err = net.Dial(p.addr.Network(), p.addr.String()); err != nil {
+      LOGGER.Print("Could not open socket", err.Error())
+      return NewTTransportException(NOT_OPEN, err.Error())
+    }
   }
   return nil
 }
@@ -163,6 +186,7 @@ func (p *TSocket) Read(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
+  p.pushDeadline(true, false)
   n, err := p.conn.Read(buf)
   return n, NewTTransportExceptionFromOsError(err)
 }
@@ -175,6 +199,7 @@ func (p *TSocket) Write(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
+  p.pushDeadline(false, true)
   p.writeBuffer.Write(buf)
   return len(buf), nil
 }

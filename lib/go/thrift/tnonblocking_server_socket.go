@@ -43,8 +43,7 @@ func (p *TNonblockingServerSocketTransportFactory) GetTransport(trans TTransport
   if trans != nil {
     t, ok := trans.(*TNonblockingServerSocket)
     if ok && t.addr != nil {
-      s, _ := NewTNonblockingServerSocketAddr(t.addr)
-      s.SetTimeout(t.nsecTimeout)
+      s, _ := NewTNonblockingServerSocketAddrTimeout(t.addr, t.nsecTimeout)
       return s
     }
   }
@@ -63,6 +62,11 @@ func NewTNonblockingServerSocketListener(listener net.Listener) (*TNonblockingSe
 
 func NewTNonblockingServerSocketAddr(addr net.Addr) (*TNonblockingServerSocket, TTransportException) {
   s := &TNonblockingServerSocket{addr: addr}
+  return s, nil
+}
+
+func NewTNonblockingServerSocketAddrTimeout(addr net.Addr, nsecTimeout int64) (*TNonblockingServerSocket, TTransportException) {
+  s := &TNonblockingServerSocket{addr: addr, nsecTimeout: nsecTimeout}
   return s, nil
 }
 
@@ -139,8 +143,7 @@ func (p *TNonblockingServerSocket) Accept() (TTransport, error) {
   if err != nil {
     return nil, NewTTransportExceptionFromOsError(err)
   }
-  conn.SetTimeout(p.nsecTimeout)
-  return NewTSocketConn(conn)
+  return NewTSocketConnTimeout(conn, p.nsecTimeout)
 }
 
 func (p *TNonblockingServerSocket) Peek() bool {

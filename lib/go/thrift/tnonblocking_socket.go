@@ -21,6 +21,7 @@ package thrift
 
 import (
   "net"
+  "time"
 )
 
 /**
@@ -43,8 +44,7 @@ func (p *TNonblockingSocketTransportFactory) GetTransport(trans TTransport) TTra
   if trans != nil {
     t, ok := trans.(*TNonblockingSocket)
     if ok {
-      s, _ := NewTNonblockingSocketAddr(t.addr)
-      s.SetTimeout(t.nsecTimeout)
+      s, _ := NewTNonblockingSocketAddrTimeout(t.addr, t.nsecTimeout)
       return s
     }
   }
@@ -66,6 +66,11 @@ func NewTNonblockingSocketAddr(addr net.Addr) (*TNonblockingSocket, TTransportEx
   return s, nil
 }
 
+func NewTNonblockingSocketAddrTimeout(addr net.Addr, nsecTimeout int64) (*TNonblockingSocket, TTransportException) {
+  s := &TNonblockingSocket{addr: addr, nsecTimeout: nsecTimeout}
+  return s, nil
+}
+
 /**
  * Sets the socket timeout
  *
@@ -73,13 +78,21 @@ func NewTNonblockingSocketAddr(addr net.Addr) (*TNonblockingSocket, TTransportEx
  */
 func (p *TNonblockingSocket) SetTimeout(nsecTimeout int64) error {
   p.nsecTimeout = nsecTimeout
-  if p.IsOpen() {
-    if err := p.conn.SetTimeout(nsecTimeout); err != nil {
-      LOGGER.Print("Could not set socket timeout.", err)
-      return err
-    }
-  }
   return nil
+}
+
+func (p *TNonblockingSocket) pushDeadline(read, write bool) {
+  var t time.Time
+  if p.nsecTimeout > 0 {
+    t = time.Now().Add(time.Duration(p.nsecTimeout))
+  }
+  if read && write {
+    p.conn.SetDeadline(t)
+  } else if read {
+    p.conn.SetReadDeadline(t)
+  } else if write {
+    p.conn.SetWriteDeadline(t)
+  }
 }
 
 /**
@@ -111,9 +124,6 @@ func (p *TNonblockingSocket) Open() error {
     LOGGER.Print("Could not open socket", err.Error())
     return NewTTransportException(NOT_OPEN, err.Error())
   }
-  if p.conn != nil {
-    p.conn.SetTimeout(p.nsecTimeout)
-  }
   return nil
 }
 
@@ -124,6 +134,7 @@ func (p *TNonblockingSocket) Read(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
+  p.pushDeadline(true, false)
   n, err := p.conn.Read(buf)
   return n, NewTTransportExceptionFromOsError(err)
 }
@@ -139,6 +150,7 @@ func (p *TNonblockingSocket) Write(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
   }
+  p.pushDeadline(false, true)
   return p.conn.Write(buf)
 }
 
