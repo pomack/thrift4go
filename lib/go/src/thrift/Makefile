@@ -17,45 +17,24 @@
 # under the License.
 #
 
+
 all: install
 
-DIRS=\
-     src/thrift\
 
-TEST=\
-	$(filter-out $(NOTEST),$(DIRS))
+GOPATH:=$(GOPATH):`pwd`/../..
 
-clean.dirs: $(addsuffix .clean, $(DIRS))
-install.dirs: $(addsuffix .install, $(DIRS))
-nuke.dirs: $(addsuffix .nuke, $(DIRS))
-test.dirs: $(addsuffix .test, $(DIRS))
-check.dirs: $(addsuffix .check, $(DIRS))
+clean:
+	GOPATH=$(GOPATH) go clean
 
-%.clean:
-	+cd $* && make clean
+install:
+	GOPATH=$(GOPATH) go install
 
-%.install:
-	+cd $* && make install
+nuke:
+	GOPATH=$(GOPATH) go clean -i
 
-%.nuke:
-	+cd $* && make nuke
+test:
+	GOPATH=$(GOPATH) go test
 
-%.test:
-	+cd $* && make test
-
-%.check:
-	+cd $* && make check
-
-clean: clean.dirs
-
-install: install.dirs
-
-test:	test.dirs
-
-check:	check.dirs
-
-nuke: nuke.dirs
-
-echo-dirs:
-	@echo $(DIRS)
+check:
+	GOPATH=$(GOPATH) go build
 
