@@ -6,3 +6,4 @@ tutorial/go/src/TutorialServerClient
 _obj
 _test
 _test*.go
+lib/go/pkg
