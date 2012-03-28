@@ -19,7 +19,6 @@
 
 package thrift
 
-
 /**
  * The default processor factory just returns a singleton
  * instance.
@@ -39,7 +38,6 @@ func NewTProcessorFactory(p TProcessor) TProcessorFactory {
 func (p *tProcessorFactory) GetProcessor(trans TTransport) TProcessor {
   return p.processor
 }
-
 
 /**
  * The default processor factory just returns a singleton

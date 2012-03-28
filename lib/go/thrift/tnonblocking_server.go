@@ -19,9 +19,7 @@
 
 package thrift
 
-import (
-
-)
+import ()
 
 /**
  * A nonblocking TServer implementation. This allows for fairness amongst all
@@ -45,7 +43,6 @@ type TNonblockingServer struct {
   inputProtocolFactory   TProtocolFactory
   outputProtocolFactory  TProtocolFactory
 }
-
 
 func NewTNonblockingServer2(processor TProcessor, serverTransport TServerTransport) *TNonblockingServer {
   return NewTNonblockingServerFactory2(NewTProcessorFactory(processor), serverTransport)

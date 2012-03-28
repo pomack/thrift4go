@@ -26,7 +26,6 @@ import (
   "strconv"
 )
 
-
 type THttpClient struct {
   response           *http.Response
   url                *url.URL
@@ -67,7 +66,6 @@ func NewTHttpClientTransportFactory(url string) *THttpClientTransportFactory {
 func NewTHttpPostClientTransportFactory(url string) *THttpClientTransportFactory {
   return &THttpClientTransportFactory{url: url, isPost: true}
 }
-
 
 func NewTHttpClient(urlstr string) (TTransport, error) {
   parsedURL, err := url.Parse(urlstr)
@@ -140,7 +138,7 @@ func (p *THttpClient) Flush() error {
   }
   if response.StatusCode != http.StatusOK {
     // TODO(pomack) log bad response
-    return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "HTTP Response code: "+ strconv.Itoa(response.StatusCode))
+    return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "HTTP Response code: "+strconv.Itoa(response.StatusCode))
   }
   p.response = response
   return nil

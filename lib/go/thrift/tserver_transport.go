@@ -19,8 +19,6 @@
 
 package thrift
 
-
-
 /**
  * Server transport. Object which provides client transports.
  *

@@ -113,9 +113,8 @@ type TCompactProtocol struct {
  * @param transport the TTransport object to read from or write to.
  */
 func NewTCompactProtocol(trans TTransport) *TCompactProtocol {
-  return &TCompactProtocol{trans: trans, lastField: make([]int,0)}
+  return &TCompactProtocol{trans: trans, lastField: make([]int, 0)}
 }
-
 
 //
 // Public Writing methods.
@@ -151,7 +150,7 @@ func (p *TCompactProtocol) WriteMessageEnd() TProtocolException { return nil }
  * stack so we can get the field id deltas correct.
  */
 func (p *TCompactProtocol) WriteStructBegin(name string) TProtocolException {
-  p.lastField = append(p.lastField,p.lastFieldId)
+  p.lastField = append(p.lastField, p.lastFieldId)
   p.lastFieldId = 0
   return nil
 }
@@ -163,7 +162,7 @@ func (p *TCompactProtocol) WriteStructBegin(name string) TProtocolException {
  */
 func (p *TCompactProtocol) WriteStructEnd() TProtocolException {
   p.lastFieldId = p.lastField[len(p.lastField)-1]
-  p.lastField =  p.lastField[:len(p.lastField)-1]
+  p.lastField = p.lastField[:len(p.lastField)-1]
   return nil
 }
 
@@ -176,7 +175,6 @@ func (p *TCompactProtocol) WriteFieldBegin(name string, typeId TType, id int16) 
   _, err := p.writeFieldBeginInternal(name, typeId, id, 0xFF)
   return NewTProtocolExceptionFromOsError(err)
 }
-
 
 /**
  * The workhorse of writeFieldBegin. It has the option of doing a 
@@ -219,7 +217,6 @@ func (p *TCompactProtocol) writeFieldBeginInternal(name string, typeId TType, id
   // p.lastField.Push(field.id);
   return written, nil
 }
-
 
 func (p *TCompactProtocol) WriteFieldEnd() TProtocolException { return nil }
 
@@ -344,7 +341,6 @@ func (p *TCompactProtocol) WriteBinary(bin []byte) TProtocolException {
   }
   return nil
 }
-
 
 // 
 // Reading methods.
@@ -727,7 +723,6 @@ func (p *TCompactProtocol) writeIntAsByteDirect(n int) (int, error) {
   return p.writeByteDirect(byte(n))
 }
 
-
 //
 // Internal reading methods
 //
@@ -742,7 +737,6 @@ func (p *TCompactProtocol) readVarint32() (int32, error) {
   v, err := p.readVarint64()
   return int32(v), err
 }
-
 
 /**
  * Read an i64 from the wire as a proper varint. The MSB of each byte is set 
@@ -764,7 +758,6 @@ func (p *TCompactProtocol) readVarint64() (int64, error) {
   }
   return result, nil
 }
-
 
 //
 // encoding helpers

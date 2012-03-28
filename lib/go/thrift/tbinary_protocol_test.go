@@ -20,11 +20,10 @@
 package thrift_test
 
 import (
-  . "thrift"
   "testing"
+  . "thrift"
   //"bytes";
 )
-
 
 func TestReadWriteBinaryProtocol(t *testing.T) {
   ReadWriteProtocolTest(t, NewTBinaryProtocolFactoryDefault())

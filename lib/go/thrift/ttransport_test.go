@@ -20,10 +20,10 @@
 package thrift_test
 
 import (
-  . "thrift"
-  "testing"
   "net"
   "strconv"
+  "testing"
+  . "thrift"
 )
 
 const TRANSPORT_BINARY_DATA_SIZE = 4096

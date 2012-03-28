@@ -56,7 +56,6 @@ func NewTNonblockingServerSocketTransportFactory(addr net.Addr) *TNonblockingSer
   return &TNonblockingServerSocketTransportFactory{addr: addr}
 }
 
-
 func NewTNonblockingServerSocketListener(listener net.Listener) (*TNonblockingServerSocket, TTransportException) {
   s := &TNonblockingServerSocket{listener: listener, addr: listener.Addr()}
   return s, nil

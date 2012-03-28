@@ -81,7 +81,6 @@ func NewTIOStreamTransportFactory(reader io.Reader, writer io.Writer, isReadWrit
   return &TIOStreamTransportFactory{Reader: reader, Writer: writer, IsReadWriter: isReadWriter}
 }
 
-
 /**
  * Subclasses can invoke the default constructor and then assign the input
  * streams in the open method.
@@ -195,7 +194,6 @@ func (p *TIOStreamTransport) Read(buf []byte) (int, error) {
 func (p *TIOStreamTransport) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }
-
 
 /**
  * Writes to the underlying output stream if not null.

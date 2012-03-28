@@ -20,10 +20,9 @@
 package thrift
 
 import (
-  "encoding/binary"
   "bytes"
+  "encoding/binary"
 )
-
 
 type TFramedTransport struct {
   transport   TTransport

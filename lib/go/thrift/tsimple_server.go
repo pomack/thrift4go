@@ -19,8 +19,6 @@
 
 package thrift
 
-
-
 /**
  * Simple singlethreaded server for testing.
  *

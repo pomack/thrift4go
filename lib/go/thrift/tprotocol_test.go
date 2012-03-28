@@ -20,14 +20,14 @@
 package thrift_test
 
 import (
-  . "thrift"
-  "testing"
-  "net/http"
-  "math"
-  "net"
-  "io/ioutil"
   "bytes"
   "fmt"
+  "io/ioutil"
+  "math"
+  "net"
+  "net/http"
+  "testing"
+  . "thrift"
 )
 
 const PROTOCOL_BINARY_DATA_SIZE = 155
@@ -43,7 +43,6 @@ var (
   DOUBLE_VALUES  []float64
   STRING_VALUES  []string
 )
-
 
 func init() {
   protocol_bdata = make([]byte, PROTOCOL_BINARY_DATA_SIZE)
@@ -87,7 +86,6 @@ func HttpClientSetupForTest(t *testing.T) (net.Listener, net.Addr) {
   go http.Serve(l, &HTTPEchoServer{})
   return l, addr
 }
-
 
 func ReadWriteProtocolTest(t *testing.T, protocolFactory TProtocolFactory) {
   buf := bytes.NewBuffer(make([]byte, 0, 1024))
@@ -456,7 +454,6 @@ func ReadWriteString(t *testing.T, p TProtocol, trans TTransport) {
   }
 }
 
-
 func ReadWriteBinary(t *testing.T, p TProtocol, trans TTransport) {
   v := protocol_bdata
   p.WriteBinary(v)
@@ -475,7 +472,6 @@ func ReadWriteBinary(t *testing.T, p TProtocol, trans TTransport) {
     }
   }
 }
-
 
 func ReadWriteWork(t *testing.T, p TProtocol, trans TTransport) {
   thetype := "struct"
@@ -497,7 +493,6 @@ func ReadWriteWork(t *testing.T, p TProtocol, trans TTransport) {
     t.Fatalf("Original Write != Read: %#v != %#v ", orig, read)
   }
 }
-
 
 func ReadWriteCalculate(t *testing.T, p TProtocol, trans TTransport) {
   messageName := "calculate"
@@ -547,7 +542,6 @@ func ReadWriteCalculate(t *testing.T, p TProtocol, trans TTransport) {
     t.Fatalf("%s: %T %T Unable to read message end: %s", messageName, p, trans, err3.Error())
   }
 }
-
 
 /**
  *You can define enums, which are just 32 bit integers. Values are optional
@@ -607,6 +601,7 @@ type MyInteger int32
 const INT32CONSTANT = 9853
 
 var MAPCONSTANT TMap
+
 /**
  * Structs are the basic complex data structures. They are comprised of fields
  * which each have an integer identifier, a type, a symbolic name, and an
@@ -992,7 +987,6 @@ func (p *Work) TStructFields() TFieldContainer {
   })
 }
 
-
 type ICalculator interface {
   /**
    * Parameters:
@@ -1027,7 +1021,6 @@ func NewCalculatorClientProtocol(t TTransport, iprot TProtocol, oprot TProtocol)
   }
 }
 
-
 /**
  * Parameters:
  *  - Logid
@@ -1056,7 +1049,6 @@ func (p *CalculatorClient) SendCalculate(logid int32, w *Work) (err error) {
   oprot.Transport().Flush()
   return
 }
-
 
 func (p *CalculatorClient) RecvCalculate() (value int32, ouch *InvalidOperation, err error) {
   iprot := p.InputProtocol
@@ -1091,7 +1083,6 @@ func (p *CalculatorClient) RecvCalculate() (value int32, ouch *InvalidOperation,
   }
   return
 }
-
 
 /**
  * Attributes:
@@ -1577,7 +1568,6 @@ func (p *CalculateResult) TStructFields() TFieldContainer {
     NewTField("ouch", STRUCT, 1),
   })
 }
-
 
 /**
  * Structs can also be exceptions, if they are nasty.

@@ -20,8 +20,8 @@
 package thrift_test
 
 import (
-  . "thrift"
   "testing"
+  . "thrift"
   //"bytes";
 )
 

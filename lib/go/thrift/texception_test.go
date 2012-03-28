@@ -20,11 +20,10 @@
 package thrift_test
 
 import (
-  . "thrift"
   "io"
   "testing"
+  . "thrift"
 )
-
 
 func TestTException(t *testing.T) {
   exc := NewTException("")

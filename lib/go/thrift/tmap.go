@@ -310,7 +310,6 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
   return nil, false
 }
 
-
 func (p *tMap) Set(key, value interface{}) {
   if p.KeyType() == STOP || p.KeyType() == VOID {
     p.keyType = TypeFromValue(key)
@@ -733,7 +732,6 @@ func (p *tMap) ValueIter() <-chan interface{} {
   go p.iterateValues(c)
   return c
 }
-
 
 func (p *tMap) Less(other interface{}) bool {
   cmp, ok := p.CompareTo(other)

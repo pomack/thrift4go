@@ -20,14 +20,14 @@
 package thrift_test
 
 import (
-  . "thrift"
   "encoding/base64"
-  "fmt"
   "encoding/json"
+  "fmt"
   "math"
   "strconv"
   "strings"
   "testing"
+  . "thrift"
 )
 
 func TestWriteSimpleJSONProtocolBool(t *testing.T) {
@@ -631,7 +631,6 @@ func TestWriteSimpleJSONProtocolMap(t *testing.T) {
   }
   trans.Close()
 }
-
 
 func TestReadWriteSimpleJSONStruct(t *testing.T) {
   thetype := "struct"

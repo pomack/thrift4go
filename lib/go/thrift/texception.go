@@ -19,9 +19,7 @@
 
 package thrift
 
-import (
-
-)
+import ()
 
 /**
  * Generic exception class for Thrift.

@@ -20,9 +20,9 @@
 package thrift_test
 
 import (
-  . "thrift"
-  "testing"
   "net"
+  "testing"
+  . "thrift"
 )
 
 func TestNonblockingTransportServerToClient(t *testing.T) {

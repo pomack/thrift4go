@@ -1,11 +1,10 @@
 package thrift_test
- 
+
 import (
-  . "thrift"
   "testing"
+  . "thrift"
 )
- 
- 
+
 func TestMapSetI32(t *testing.T) {
   tm := NewTMap(I32, BOOL, 1)
   tm.Set(15, true)
@@ -29,7 +28,7 @@ func TestMapSetI32(t *testing.T) {
     t.Errorf("Expected key of 37 => false, false, but was %v, %v", v, found)
   }
 }
- 
+
 func TestMapSetString(t *testing.T) {
   tm := NewTMap(STRING, BOOL, 1)
   tm.Set("a", true)
@@ -53,7 +52,7 @@ func TestMapSetString(t *testing.T) {
     t.Errorf("Expected key of \"c\" => false, false, but was %v, %v", v, found)
   }
 }
- 
+
 func TestMapSetBinary(t *testing.T) {
   tm := NewTMap(BINARY, BOOL, 1)
   tm.Set([]byte("a"), true)

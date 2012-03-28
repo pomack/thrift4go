@@ -20,8 +20,8 @@
 package thrift
 
 import (
-  "os"
   "log"
+  "os"
   "strconv"
 )
 
@@ -99,6 +99,7 @@ type TTransport interface {
    */
   Peek() bool
 }
+
 /*
 type TTransportBase struct {
 }
@@ -171,7 +172,6 @@ func ReadAllTransport(p TTransport, buf []byte) (n int, err error) {
   }
   return n, err
 }
-
 
 var (
   LOGGER *log.Logger

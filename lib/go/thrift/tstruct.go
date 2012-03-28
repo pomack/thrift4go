@@ -85,7 +85,6 @@ func (p *tStruct) AttributeFromFieldName(fieldName string) interface{} {
   return p.AttributeFromFieldId(p.FieldIdFromFieldName(fieldName))
 }
 
-
 var ANONYMOUS_STRUCT TStruct
 
 func init() {

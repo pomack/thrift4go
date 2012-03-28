@@ -20,9 +20,9 @@
 package thrift_test
 
 import (
-  . "thrift"
-  "testing"
   "bytes"
+  "testing"
+  . "thrift"
 )
 
 func TestIOStreamTransport(t *testing.T) {

@@ -19,7 +19,6 @@
 
 package thrift
 
-
 const (
   VERSION_MASK = 0xffff0000
   VERSION_1    = 0x80010000

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package thrift
 
 import (
@@ -257,7 +256,6 @@ func (p TType) Less(i, j interface{}) bool {
   cmp, ok := p.Compare(i, j)
   return ok && cmp > 0
 }
-
 
 func (p TType) Compare(i, j interface{}) (int, bool) {
   if p != BINARY {
@@ -549,7 +547,7 @@ func TypeFromValue(data interface{}) TType {
     return MAP
   case TSet:
     return SET
-  case []interface{}, *list.List,  TList:
+  case []interface{}, *list.List, TList:
     return LIST
   }
   return STOP

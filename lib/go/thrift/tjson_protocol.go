@@ -47,8 +47,8 @@ type TJSONProtocol struct {
  */
 func NewTJSONProtocol(t TTransport) *TJSONProtocol {
   v := &TJSONProtocol{TSimpleJSONProtocol: NewTSimpleJSONProtocol(t)}
-  v.parseContextStack = append(v.parseContextStack,int(_CONTEXT_IN_TOPLEVEL))
-  v.dumpContext = append(v.dumpContext,int(_CONTEXT_IN_TOPLEVEL))
+  v.parseContextStack = append(v.parseContextStack, int(_CONTEXT_IN_TOPLEVEL))
+  v.dumpContext = append(v.dumpContext, int(_CONTEXT_IN_TOPLEVEL))
   return v
 }
 
@@ -64,7 +64,6 @@ func (p *TJSONProtocolFactory) GetProtocol(trans TTransport) TProtocol {
 func NewTJSONProtocolFactory() *TJSONProtocolFactory {
   return &TJSONProtocolFactory{}
 }
-
 
 func (p *TJSONProtocol) WriteMessageBegin(name string, typeId TMessageType, seqId int32) TProtocolException {
   if e := p.OutputListBegin(); e != nil {

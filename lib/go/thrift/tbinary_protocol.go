@@ -21,9 +21,9 @@ package thrift
 
 import (
   "encoding/binary"
+  "io"
   "math"
   "strings"
-  "io"
 )
 
 type TBinaryProtocol struct {
@@ -236,7 +236,6 @@ func (p *TBinaryProtocol) WriteBinaryFromReader(reader io.Reader, size int) TPro
   _, err := io.CopyN(p.trans, reader, int64(size))
   return NewTProtocolExceptionFromOsError(err)
 }
-
 
 /**
  * Reading methods

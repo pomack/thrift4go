@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package thrift
 
 import (
@@ -111,8 +110,8 @@ func NewNumericFromJSONString(sValue string, isNull bool) Numeric {
   if sValue == JSON_NAN {
     return NAN
   }
-  iValue, _ := strconv.ParseInt(sValue,10,64)
-  dValue, _ := strconv.ParseFloat(sValue,64)
+  iValue, _ := strconv.ParseInt(sValue, 10, 64)
+  dValue, _ := strconv.ParseFloat(sValue, 64)
   return &numeric{iValue: iValue, dValue: dValue, sValue: sValue, isNil: isNull}
 }
 

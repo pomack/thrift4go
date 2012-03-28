@@ -20,8 +20,8 @@
 package thrift
 
 import (
-  "net"
   "bytes"
+  "net"
 )
 
 /**
@@ -159,7 +159,6 @@ func (p *TSocket) Close() error {
   return nil
 }
 
-
 func (p *TSocket) Read(buf []byte) (int, error) {
   if !p.IsOpen() {
     return 0, NewTTransportException(NOT_OPEN, "Connection not open")
@@ -167,7 +166,6 @@ func (p *TSocket) Read(buf []byte) (int, error) {
   n, err := p.conn.Read(buf)
   return n, NewTTransportExceptionFromOsError(err)
 }
-
 
 func (p *TSocket) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)

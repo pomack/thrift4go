@@ -128,7 +128,6 @@ func (p *TNonblockingSocket) Read(buf []byte) (int, error) {
   return n, NewTTransportExceptionFromOsError(err)
 }
 
-
 func (p *TNonblockingSocket) ReadAll(buf []byte) (int, error) {
   return ReadAllTransport(p, buf)
 }

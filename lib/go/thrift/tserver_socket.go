@@ -23,7 +23,6 @@ import (
   "net"
 )
 
-
 type TServerSocket struct {
   /**
    * Underlying socket conection object

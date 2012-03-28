@@ -48,12 +48,12 @@ type tList struct {
 
 func NewTList(t TType, s int) TList {
   //this automatically grows using append so 0
-  v := make([]interface{}, 0) 
+  v := make([]interface{}, 0)
   return &tList{elemType: t, l: v}
 }
 
 func NewTListDefault() TList {
-  return &tList{elemType: TType(STOP), l: make([]interface{}, 0) }
+  return &tList{elemType: TType(STOP), l: make([]interface{}, 0)}
 }
 
 func (p *tList) ElemType() TType {
@@ -76,7 +76,7 @@ func (p *tList) Set(i int, data interface{}) {
     if len(p.l) >= i {
       p.l[i] = data
     } else {
-      p.l = append(p.l,data)
+      p.l = append(p.l, data)
     }
   }
 }
@@ -87,7 +87,7 @@ func (p *tList) Push(data interface{}) {
   }
   data, ok := p.elemType.CoerceData(data)
   if ok {
-    p.l = append(p.l,data)
+    p.l = append(p.l, data)
   }
 }
 
@@ -104,7 +104,7 @@ func (p *tList) Swap(i, j int) {
 }
 
 func (p *tList) Insert(i int, data interface{}) {
-  newl := make([]interface{}, 1) 
+  newl := make([]interface{}, 1)
   newl[0] = data
   p.l = append(p.l[:i], append(newl, p.l[i:]...)...)
 }
@@ -118,7 +118,7 @@ func (p *tList) Contains(data interface{}) bool {
 }
 
 func (p *tList) Less(i, j int) bool {
-  _, less := p.elemType.Compare(p.l[i],p.l[j])
+  _, less := p.elemType.Compare(p.l[i], p.l[j])
   return less
 }
 
@@ -156,7 +156,7 @@ func (p *tList) indexOf(data interface{}) int {
         return i
       }
     }
-    return -1;
+    return -1
   }
   if p.elemType.IsBaseType() || p.elemType.IsEnum() {
     for i := 0; i < size; i++ {

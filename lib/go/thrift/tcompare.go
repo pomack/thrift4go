@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package thrift
 
 func CompareInt(i, j int) int {

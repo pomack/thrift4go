@@ -20,8 +20,8 @@
 package thrift_test
 
 import (
-  . "thrift"
   "testing"
+  . "thrift"
 )
 
 func TestHttpClient(t *testing.T) {

@@ -34,7 +34,6 @@ const (
   PROTOCOL_ERROR                 = 7
 )
 
-
 /**
  * Application level exception
  *
