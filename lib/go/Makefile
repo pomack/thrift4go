@@ -1,64 +1,42 @@
-# Copyright 2009 The Go Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style
-# license that can be found in the LICENSE file.
-
-# After editing the DIRS= list or adding imports to any Go files
-# in any of those directories, run:
 #
-#	./deps.bash
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements. See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership. The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License. You may obtain a copy of the License at
 #
-# to rebuild the dependency information in Make.deps.
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
 
 
-include $(GOROOT)/src/Make.inc
-
-all: Make.deps install
-
-DIRS=\
-     thrift/\
-
-TEST=\
-	$(filter-out $(NOTEST),$(DIRS))
+all: install
 
 
-clean.dirs: $(addsuffix .clean, $(DIRS))
-install.dirs: $(addsuffix .install, $(DIRS))
-nuke.dirs: $(addsuffix .nuke, $(DIRS))
-test.dirs: $(addsuffix .test, $(DIRS))
-check.dirs: $(addsuffix .check, $(DIRS))
+GOPATH:=$(GOPATH):`pwd`
 
-%.clean:
-	+cd $* && gomake clean
+clean:
+	GOPATH=$(GOPATH) go clean thrift
 
-%.install:
-	+cd $* && gomake install
+install:
+	GOPATH=$(GOPATH) go install thrift
+	-/bin/cp -f pkg/$(GOOS)_$(GOARCH)/thrift.* $(GOROOT)/pkg/$(GOOS)_$(GOARCH)/
 
-%.nuke:
-	+cd $* && gomake nuke
+nuke:
+	GOPATH=$(GOPATH) go clean -i thrift
+	/bin/rm -rf pkg bin
 
-%.test:
-	+cd $* && gomake test
+test:
+	GOPATH=$(GOPATH) go test thrift
 
-%.check:
-	+cd $* && gomake check
-
-clean: clean.dirs
-
-install: install.dirs
-
-test:	test.dirs
-
-check:	check.dirs
-
-#nuke: nuke.dirs
-#	rm -rf "$(GOROOT)"/pkg/thrift.*
-
-echo-dirs:
-	@echo $(DIRS)
-
-Make.deps:
-	./deps.bash
-
-deps:
-	./deps.bash
+check:
+	GOPATH=$(GOPATH) go build thrift
 
