@@ -281,7 +281,7 @@ std::string t_go_generator::variable_name_to_go_name(const std::string& value) {
       break;
     case 'e':
     case 'E':
-      if(value2 != "else") {
+      if(value2 != "else" && value2 != "error") {
         return value;
       }
       break;
