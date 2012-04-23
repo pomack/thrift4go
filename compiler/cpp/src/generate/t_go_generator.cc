@@ -1766,7 +1766,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "cmd := flag.Arg(0)" << endl <<
     indent() << "var err error" << endl <<
     indent() << "if useHttp {" << endl <<
-    indent() << "  trans, err = thrift.NewTHttpClient(parsedUrl.Raw)" << endl <<
+    indent() << "  trans, err = thrift.NewTHttpClient(parsedUrl.String())" << endl <<
     indent() << "} else {" << endl <<
     indent() << "  addr, err := net.ResolveTCPAddr(\"tcp\", fmt.Sprint(host, \":\", port))" << endl <<
     indent() << "  if err != nil {" << endl <<
