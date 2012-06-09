@@ -27,6 +27,7 @@ import (
 /**
  * Helper class that encapsulates set metadata.
  *
+ * Note that lists of structs requires pointers, not struct values.
  */
 type TSet interface {
   TContainer
