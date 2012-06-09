@@ -26,6 +26,7 @@ import (
 /**
  * Helper class that encapsulates list metadata.
  *
+ * Note that lists of structs requires pointers, not struct values.
  */
 type TList interface {
   TContainer
