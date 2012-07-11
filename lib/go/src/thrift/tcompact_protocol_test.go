@@ -17,19 +17,17 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
 	"testing"
-	. "thrift"
-	//"bytes";
 )
 
 func TestReadWriteCompactProtocol(t *testing.T) {
 	ReadWriteProtocolTest(t, NewTCompactProtocolFactory())
 	/*
 	   transports := []TTransport{
-	     NewTMemoryBuffer(), 
+	     NewTMemoryBuffer(),
 	     NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 16384))),
 	     NewTFramedTransport(NewTMemoryBuffer()),
 	   }

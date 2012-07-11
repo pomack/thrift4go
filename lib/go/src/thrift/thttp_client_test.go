@@ -17,11 +17,10 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
 	"testing"
-	. "thrift"
 )
 
 func TestHttpClient(t *testing.T) {

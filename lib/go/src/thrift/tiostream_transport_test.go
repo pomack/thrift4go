@@ -17,12 +17,11 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
 	"bytes"
 	"testing"
-	. "thrift"
 )
 
 func TestIOStreamTransport(t *testing.T) {

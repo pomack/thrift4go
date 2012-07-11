@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
 	"encoding/base64"
@@ -27,7 +27,6 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-	. "thrift"
 )
 
 func TestWriteSimpleJSONProtocolBool(t *testing.T) {

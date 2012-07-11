@@ -17,12 +17,11 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
 	"io"
 	"testing"
-	. "thrift"
 )
 
 func TestTException(t *testing.T) {
