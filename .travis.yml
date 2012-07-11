@@ -9,8 +9,16 @@
 
 language: erlang
 
+# N.B.(matttproud): Travis CI now includes the Go runtime packages made and
+#                   maintained by who-knows-whom.  They conflict with the
+#                   hermeticness of the test environment and are thusly
+#                   removed.
 before_install:
- - sudo apt-get install bzr git-core >/dev/null 2>&1
+ - sudo apt-get remove -y --force-yes --purge golang || true
+ - sudo apt-get remove -y --force-yes --purge golang-stable || true
+ - sudo apt-get remove -y --force-yes --purge golang-weekly || true
+ - sudo apt-get remove -y --force-yes --purge golang-tip || true
+ - test ! -x "$(which go)" || (echo "Go is still present: $(which go)" ; exit 1)
 
 install:
  - hg clone -u release https://code.google.com/p/go "${HOME}/go" >/dev/null 2>&1
