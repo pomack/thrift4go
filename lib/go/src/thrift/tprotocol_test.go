@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
 	"bytes"
@@ -27,7 +27,6 @@ import (
 	"net"
 	"net/http"
 	"testing"
-	. "thrift"
 )
 
 const PROTOCOL_BINARY_DATA_SIZE = 155
@@ -606,11 +605,11 @@ var MAPCONSTANT TMap
  * Structs are the basic complex data structures. They are comprised of fields
  * which each have an integer identifier, a type, a symbolic name, and an
  * optional default value.
- * 
+ *
  * Fields can be declared "optional", which ensures they will not be included
  * in the serialized output if they aren't set.  Note that this requires some
  * manual management in some languages.
- * 
+ *
  * Attributes:
  *  - Num1
  *  - Num2
@@ -1571,7 +1570,7 @@ func (p *CalculateResult) TStructFields() TFieldContainer {
 
 /**
  * Structs can also be exceptions, if they are nasty.
- * 
+ *
  * Attributes:
  *  - What
  *  - Why

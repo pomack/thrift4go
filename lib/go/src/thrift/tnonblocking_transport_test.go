@@ -17,12 +17,11 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
 	"net"
 	"testing"
-	. "thrift"
 )
 
 func TestNonblockingTransportServerToClient(t *testing.T) {
