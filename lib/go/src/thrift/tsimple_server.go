@@ -24,138 +24,138 @@ package thrift
  *
  */
 type TSimpleServer struct {
-  stopped bool
+	stopped bool
 
-  processorFactory       TProcessorFactory
-  serverTransport        TServerTransport
-  inputTransportFactory  TTransportFactory
-  outputTransportFactory TTransportFactory
-  inputProtocolFactory   TProtocolFactory
-  outputProtocolFactory  TProtocolFactory
+	processorFactory       TProcessorFactory
+	serverTransport        TServerTransport
+	inputTransportFactory  TTransportFactory
+	outputTransportFactory TTransportFactory
+	inputProtocolFactory   TProtocolFactory
+	outputProtocolFactory  TProtocolFactory
 }
 
 func NewTSimpleServer2(processor TProcessor, serverTransport TServerTransport) *TSimpleServer {
-  return NewTSimpleServerFactory2(NewTProcessorFactory(processor), serverTransport)
+	return NewTSimpleServerFactory2(NewTProcessorFactory(processor), serverTransport)
 }
 
 func NewTSimpleServer4(processor TProcessor, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TSimpleServer {
-  return NewTSimpleServerFactory4(NewTProcessorFactory(processor),
-    serverTransport,
-    transportFactory,
-    protocolFactory,
-  )
+	return NewTSimpleServerFactory4(NewTProcessorFactory(processor),
+		serverTransport,
+		transportFactory,
+		protocolFactory,
+	)
 }
 
 func NewTSimpleServer6(processor TProcessor, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TSimpleServer {
-  return NewTSimpleServerFactory6(NewTProcessorFactory(processor),
-    serverTransport,
-    inputTransportFactory,
-    outputTransportFactory,
-    inputProtocolFactory,
-    outputProtocolFactory,
-  )
+	return NewTSimpleServerFactory6(NewTProcessorFactory(processor),
+		serverTransport,
+		inputTransportFactory,
+		outputTransportFactory,
+		inputProtocolFactory,
+		outputProtocolFactory,
+	)
 }
 
 func NewTSimpleServerFactory2(processorFactory TProcessorFactory, serverTransport TServerTransport) *TSimpleServer {
-  return NewTSimpleServerFactory6(processorFactory,
-    serverTransport,
-    NewTTransportFactory(),
-    NewTTransportFactory(),
-    NewTBinaryProtocolFactoryDefault(),
-    NewTBinaryProtocolFactoryDefault(),
-  )
+	return NewTSimpleServerFactory6(processorFactory,
+		serverTransport,
+		NewTTransportFactory(),
+		NewTTransportFactory(),
+		NewTBinaryProtocolFactoryDefault(),
+		NewTBinaryProtocolFactoryDefault(),
+	)
 }
 
 func NewTSimpleServerFactory4(processorFactory TProcessorFactory, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TSimpleServer {
-  return NewTSimpleServerFactory6(processorFactory,
-    serverTransport,
-    transportFactory,
-    transportFactory,
-    protocolFactory,
-    protocolFactory,
-  )
+	return NewTSimpleServerFactory6(processorFactory,
+		serverTransport,
+		transportFactory,
+		transportFactory,
+		protocolFactory,
+		protocolFactory,
+	)
 }
 
 func NewTSimpleServerFactory6(processorFactory TProcessorFactory, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TSimpleServer {
-  return &TSimpleServer{processorFactory: processorFactory,
-    serverTransport:        serverTransport,
-    inputTransportFactory:  inputTransportFactory,
-    outputTransportFactory: outputTransportFactory,
-    inputProtocolFactory:   inputProtocolFactory,
-    outputProtocolFactory:  outputProtocolFactory,
-  }
+	return &TSimpleServer{processorFactory: processorFactory,
+		serverTransport:        serverTransport,
+		inputTransportFactory:  inputTransportFactory,
+		outputTransportFactory: outputTransportFactory,
+		inputProtocolFactory:   inputProtocolFactory,
+		outputProtocolFactory:  outputProtocolFactory,
+	}
 }
 
 func (p *TSimpleServer) ProcessorFactory() TProcessorFactory {
-  return p.processorFactory
+	return p.processorFactory
 }
 
 func (p *TSimpleServer) ServerTransport() TServerTransport {
-  return p.serverTransport
+	return p.serverTransport
 }
 
 func (p *TSimpleServer) InputTransportFactory() TTransportFactory {
-  return p.inputTransportFactory
+	return p.inputTransportFactory
 }
 
 func (p *TSimpleServer) OutputTransportFactory() TTransportFactory {
-  return p.outputTransportFactory
+	return p.outputTransportFactory
 }
 
 func (p *TSimpleServer) InputProtocolFactory() TProtocolFactory {
-  return p.inputProtocolFactory
+	return p.inputProtocolFactory
 }
 
 func (p *TSimpleServer) OutputProtocolFactory() TProtocolFactory {
-  return p.outputProtocolFactory
+	return p.outputProtocolFactory
 }
 
 func (p *TSimpleServer) Serve() error {
-  p.stopped = false
-  err := p.serverTransport.Listen()
-  if err != nil {
-    return err
-  }
-  for !p.stopped {
-    client, err := p.serverTransport.Accept()
-    if err != nil {
-      return err
-    }
-    if client != nil {
-      p.processRequest(client)
-    }
-  }
-  return nil
+	p.stopped = false
+	err := p.serverTransport.Listen()
+	if err != nil {
+		return err
+	}
+	for !p.stopped {
+		client, err := p.serverTransport.Accept()
+		if err != nil {
+			return err
+		}
+		if client != nil {
+			p.processRequest(client)
+		}
+	}
+	return nil
 }
 
 func (p *TSimpleServer) Stop() error {
-  p.stopped = true
-  p.serverTransport.Interrupt()
-  return nil
+	p.stopped = true
+	p.serverTransport.Interrupt()
+	return nil
 }
 
 func (p *TSimpleServer) processRequest(client TTransport) {
-  processor := p.processorFactory.GetProcessor(client)
-  inputTransport := p.inputTransportFactory.GetTransport(client)
-  outputTransport := p.outputTransportFactory.GetTransport(client)
-  inputProtocol := p.inputProtocolFactory.GetProtocol(inputTransport)
-  outputProtocol := p.outputProtocolFactory.GetProtocol(outputTransport)
-  if inputTransport != nil {
-    defer inputTransport.Close()
-  }
-  if outputTransport != nil {
-    defer outputTransport.Close()
-  }
-  for {
-    ok, e := processor.Process(inputProtocol, outputProtocol)
-    if e != nil {
-      if !p.stopped {
-        // TODO(pomack) log error
-        break
-      }
-    }
-    if !ok {
-      break
-    }
-  }
+	processor := p.processorFactory.GetProcessor(client)
+	inputTransport := p.inputTransportFactory.GetTransport(client)
+	outputTransport := p.outputTransportFactory.GetTransport(client)
+	inputProtocol := p.inputProtocolFactory.GetProtocol(inputTransport)
+	outputProtocol := p.outputProtocolFactory.GetProtocol(outputTransport)
+	if inputTransport != nil {
+		defer inputTransport.Close()
+	}
+	if outputTransport != nil {
+		defer outputTransport.Close()
+	}
+	for {
+		ok, e := processor.Process(inputProtocol, outputProtocol)
+		if e != nil {
+			if !p.stopped {
+				// TODO(pomack) log error
+				break
+			}
+		}
+		if !ok {
+			break
+		}
+	}
 }

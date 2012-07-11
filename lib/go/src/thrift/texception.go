@@ -27,28 +27,28 @@ import ()
  */
 
 type TException interface {
-  Error() string
+	Error() string
 }
 
 type tException struct {
-  message string
+	message string
 }
 
 func (p *tException) Error() string {
-  return p.message
+	return p.message
 }
 
 func NewTException(m string) TException {
-  return &tException{message: m}
+	return &tException{message: m}
 }
 
 func NewTExceptionFromOsError(e error) TException {
-  if e == nil {
-    return nil
-  }
-  t, ok := e.(TException)
-  if ok {
-    return t
-  }
-  return NewTException(e.Error())
+	if e == nil {
+		return nil
+	}
+	t, ok := e.(TException)
+	if ok {
+		return t
+	}
+	return NewTException(e.Error())
 }
