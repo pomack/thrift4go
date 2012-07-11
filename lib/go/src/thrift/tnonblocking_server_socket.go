@@ -20,58 +20,58 @@
 package thrift
 
 import (
-  "net"
+	"net"
 )
 
 /**
  * Socket implementation of the TTransport interface. To be commented soon!
  */
 type TNonblockingServerSocket struct {
-  listener net.Listener
-  addr     net.Addr
-  /**
-   * Socket timeout
-   */
-  nsecTimeout int64
+	listener net.Listener
+	addr     net.Addr
+	/**
+	 * Socket timeout
+	 */
+	nsecTimeout int64
 }
 
 type TNonblockingServerSocketTransportFactory struct {
-  addr net.Addr
+	addr net.Addr
 }
 
 func (p *TNonblockingServerSocketTransportFactory) GetTransport(trans TTransport) TTransport {
-  if trans != nil {
-    t, ok := trans.(*TNonblockingServerSocket)
-    if ok && t.addr != nil {
-      s, _ := NewTNonblockingServerSocketAddrTimeout(t.addr, t.nsecTimeout)
-      return s
-    }
-  }
-  s, _ := NewTNonblockingServerSocketAddr(p.addr)
-  return s
+	if trans != nil {
+		t, ok := trans.(*TNonblockingServerSocket)
+		if ok && t.addr != nil {
+			s, _ := NewTNonblockingServerSocketAddrTimeout(t.addr, t.nsecTimeout)
+			return s
+		}
+	}
+	s, _ := NewTNonblockingServerSocketAddr(p.addr)
+	return s
 }
 
 func NewTNonblockingServerSocketTransportFactory(addr net.Addr) *TNonblockingServerSocketTransportFactory {
-  return &TNonblockingServerSocketTransportFactory{addr: addr}
+	return &TNonblockingServerSocketTransportFactory{addr: addr}
 }
 
 func NewTNonblockingServerSocketListener(listener net.Listener) (*TNonblockingServerSocket, TTransportException) {
-  s := &TNonblockingServerSocket{listener: listener, addr: listener.Addr()}
-  return s, nil
+	s := &TNonblockingServerSocket{listener: listener, addr: listener.Addr()}
+	return s, nil
 }
 
 func NewTNonblockingServerSocketAddr(addr net.Addr) (*TNonblockingServerSocket, TTransportException) {
-  s := &TNonblockingServerSocket{addr: addr}
-  return s, nil
+	s := &TNonblockingServerSocket{addr: addr}
+	return s, nil
 }
 
 func NewTNonblockingServerSocketAddrTimeout(addr net.Addr, nsecTimeout int64) (*TNonblockingServerSocket, TTransportException) {
-  s := &TNonblockingServerSocket{addr: addr, nsecTimeout: nsecTimeout}
-  return s, nil
+	s := &TNonblockingServerSocket{addr: addr, nsecTimeout: nsecTimeout}
+	return s, nil
 }
 
 func (p *TNonblockingServerSocket) Listen() error {
-  return p.Open()
+	return p.Open()
 }
 
 /**
@@ -80,91 +80,91 @@ func (p *TNonblockingServerSocket) Listen() error {
  * @param timeout Nanoseconds timeout
  */
 func (p *TNonblockingServerSocket) SetTimeout(nsecTimeout int64) error {
-  p.nsecTimeout = nsecTimeout
-  return nil
+	p.nsecTimeout = nsecTimeout
+	return nil
 }
 
 /**
  * Checks whether the socket is connected.
  */
 func (p *TNonblockingServerSocket) IsOpen() bool {
-  return p.listener != nil
+	return p.listener != nil
 }
 
 /**
  * Connects the socket, creating a new socket object if necessary.
  */
 func (p *TNonblockingServerSocket) Open() error {
-  if !p.IsOpen() {
-    l, err := net.Listen(p.addr.Network(), p.addr.String())
-    if err != nil {
-      return err
-    }
-    p.listener = l
-    return nil
-  }
-  return NewTTransportException(ALREADY_OPEN, "Server socket already open")
+	if !p.IsOpen() {
+		l, err := net.Listen(p.addr.Network(), p.addr.String())
+		if err != nil {
+			return err
+		}
+		p.listener = l
+		return nil
+	}
+	return NewTTransportException(ALREADY_OPEN, "Server socket already open")
 }
 
 /**
  * Perform a nonblocking read into buffer.
  */
 func (p *TNonblockingServerSocket) Read(buf []byte) (int, error) {
-  return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Read([]byte) is not implemented")
+	return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Read([]byte) is not implemented")
 }
 
 func (p *TNonblockingServerSocket) ReadAll(buf []byte) (int, error) {
-  return ReadAllTransport(p, buf)
+	return ReadAllTransport(p, buf)
 }
 
 /**
  * Perform a nonblocking write of the data in buffer;
  */
 func (p *TNonblockingServerSocket) Write(buf []byte) (int, error) {
-  return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Write([]byte) is not implemented")
+	return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Write([]byte) is not implemented")
 }
 
 /**
  * Flushes the underlying output stream if not null.
  */
 func (p *TNonblockingServerSocket) Flush() error {
-  return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Flush() is not implemented")
+	return NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "TNonblockingServerSocket.Flush() is not implemented")
 }
 
 func (p *TNonblockingServerSocket) Addr() net.Addr {
-  return p.addr
+	return p.addr
 }
 
 func (p *TNonblockingServerSocket) Accept() (TTransport, error) {
-  if !p.IsOpen() {
-    return nil, NewTTransportException(NOT_OPEN, "No underlying server socket")
-  }
-  conn, err := p.listener.Accept()
-  if err != nil {
-    return nil, NewTTransportExceptionFromOsError(err)
-  }
-  return NewTSocketConnTimeout(conn, p.nsecTimeout)
+	if !p.IsOpen() {
+		return nil, NewTTransportException(NOT_OPEN, "No underlying server socket")
+	}
+	conn, err := p.listener.Accept()
+	if err != nil {
+		return nil, NewTTransportExceptionFromOsError(err)
+	}
+	return NewTSocketConnTimeout(conn, p.nsecTimeout)
 }
 
 func (p *TNonblockingServerSocket) Peek() bool {
-  return p.IsOpen()
+	return p.IsOpen()
 }
 
 /**
  * Closes the socket.
  */
 func (p *TNonblockingServerSocket) Close() (err error) {
-  if p.IsOpen() {
-    err := p.listener.Close()
-    if err != nil {
-      return NewTTransportExceptionFromOsError(err)
-    }
-    p.listener = nil
-  }
-  return nil
+	if p.IsOpen() {
+		err := p.listener.Close()
+		if err != nil {
+			return NewTTransportExceptionFromOsError(err)
+		}
+		p.listener = nil
+	}
+	return nil
 }
 
 func (p *TNonblockingServerSocket) Interrupt() error {
-  // probably not right
-  return p.Close()
+	// probably not right
+	return p.Close()
 }
