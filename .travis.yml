@@ -33,5 +33,6 @@ install:
  - git clone https://github.com/pomack/thrift4go.git "${HOME}/github.com/pomack/thrift4go"
 
 script:
- - go build -a -v github.com/pomack/thrift4go/lib/go/src/thrift/...
- - go test -v github.com/pomack/thrift4go/lib/go/src/thrift/...
+ - cd "${HOME}/github.com/pomack/thrift4go/lib/go/src/thrift"
+ - go build -a -v .
+ - go test -v .
