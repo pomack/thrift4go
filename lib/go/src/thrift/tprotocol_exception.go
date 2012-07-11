@@ -20,7 +20,7 @@
 package thrift
 
 import (
-  "encoding/base64"
+	"encoding/base64"
 )
 
 /**
@@ -28,106 +28,106 @@ import (
  *
  */
 type TProtocolException interface {
-  TException
-  TypeId() int
+	TException
+	TypeId() int
 }
 
 const (
-  UNKNOWN_PROTOCOL_EXCEPTION = 0
-  INVALID_DATA               = 1
-  NEGATIVE_SIZE              = 2
-  SIZE_LIMIT                 = 3
-  BAD_VERSION                = 4
-  NOT_IMPLEMENTED            = 5
+	UNKNOWN_PROTOCOL_EXCEPTION = 0
+	INVALID_DATA               = 1
+	NEGATIVE_SIZE              = 2
+	SIZE_LIMIT                 = 3
+	BAD_VERSION                = 4
+	NOT_IMPLEMENTED            = 5
 )
 
 type tProtocolException struct {
-  typeId  int
-  message string
+	typeId  int
+	message string
 }
 
 func (p *tProtocolException) TypeId() int {
-  return p.typeId
+	return p.typeId
 }
 
 func (p *tProtocolException) String() string {
-  return p.message
+	return p.message
 }
 
 func (p *tProtocolException) Error() string {
-  return p.message
+	return p.message
 }
 
 func NewTProtocolExceptionDefault() TProtocolException {
-  return NewTProtocolExceptionDefaultType(UNKNOWN_PROTOCOL_EXCEPTION)
+	return NewTProtocolExceptionDefaultType(UNKNOWN_PROTOCOL_EXCEPTION)
 }
 
 func NewTProtocolExceptionDefaultType(t int) TProtocolException {
-  return NewTProtocolException(t, "")
+	return NewTProtocolException(t, "")
 }
 
 func NewTProtocolExceptionDefaultString(m string) TProtocolException {
-  return NewTProtocolException(UNKNOWN_PROTOCOL_EXCEPTION, m)
+	return NewTProtocolException(UNKNOWN_PROTOCOL_EXCEPTION, m)
 }
 
 func NewTProtocolException(t int, m string) TProtocolException {
-  return &tProtocolException{typeId: t, message: m}
+	return &tProtocolException{typeId: t, message: m}
 }
 
 func NewTProtocolExceptionReadField(fieldId int, fieldName string, structName string, e TProtocolException) TProtocolException {
-  t := e.TypeId()
-  if t == UNKNOWN_PROTOCOL_EXCEPTION {
-    t = INVALID_DATA
-  }
-  return NewTProtocolException(t, "Unable to read field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.Error())
+	t := e.TypeId()
+	if t == UNKNOWN_PROTOCOL_EXCEPTION {
+		t = INVALID_DATA
+	}
+	return NewTProtocolException(t, "Unable to read field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.Error())
 }
 
 func NewTProtocolExceptionWriteField(fieldId int, fieldName string, structName string, e TProtocolException) TProtocolException {
-  t := e.TypeId()
-  if t == UNKNOWN_PROTOCOL_EXCEPTION {
-    t = INVALID_DATA
-  }
-  return NewTProtocolException(t, "Unable to write field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.Error())
+	t := e.TypeId()
+	if t == UNKNOWN_PROTOCOL_EXCEPTION {
+		t = INVALID_DATA
+	}
+	return NewTProtocolException(t, "Unable to write field "+string(fieldId)+" ("+fieldName+") in "+structName+" due to: "+e.Error())
 }
 
 func NewTProtocolExceptionReadStruct(structName string, e TProtocolException) TProtocolException {
-  t := e.TypeId()
-  if t == UNKNOWN_PROTOCOL_EXCEPTION {
-    t = INVALID_DATA
-  }
-  return NewTProtocolException(t, "Unable to read struct "+structName+" due to: "+e.Error())
+	t := e.TypeId()
+	if t == UNKNOWN_PROTOCOL_EXCEPTION {
+		t = INVALID_DATA
+	}
+	return NewTProtocolException(t, "Unable to read struct "+structName+" due to: "+e.Error())
 }
 
 func NewTProtocolExceptionWriteStruct(structName string, e TProtocolException) TProtocolException {
-  t := e.TypeId()
-  if t == UNKNOWN_PROTOCOL_EXCEPTION {
-    t = INVALID_DATA
-  }
-  return NewTProtocolException(t, "Unable to write struct "+structName+" due to: "+e.Error())
+	t := e.TypeId()
+	if t == UNKNOWN_PROTOCOL_EXCEPTION {
+		t = INVALID_DATA
+	}
+	return NewTProtocolException(t, "Unable to write struct "+structName+" due to: "+e.Error())
 }
 
 func NewTProtocolExceptionFromOsError(e error) TProtocolException {
-  if e == nil {
-    return nil
-  }
-  if t, ok := e.(TProtocolException); ok {
-    return t
-  }
-  if te, ok := e.(TTransportException); ok {
-    return NewTProtocolExceptionFromTransportException(te)
-  }
-  if _, ok := e.(base64.CorruptInputError); ok {
-    return NewTProtocolException(INVALID_DATA, e.Error())
-  }
-  return NewTProtocolExceptionDefaultString(e.Error())
+	if e == nil {
+		return nil
+	}
+	if t, ok := e.(TProtocolException); ok {
+		return t
+	}
+	if te, ok := e.(TTransportException); ok {
+		return NewTProtocolExceptionFromTransportException(te)
+	}
+	if _, ok := e.(base64.CorruptInputError); ok {
+		return NewTProtocolException(INVALID_DATA, e.Error())
+	}
+	return NewTProtocolExceptionDefaultString(e.Error())
 }
 
 func NewTProtocolExceptionFromTransportException(e TTransportException) TProtocolException {
-  if e == nil {
-    return nil
-  }
-  if t, ok := e.(TProtocolException); ok {
-    return t
-  }
-  return NewTProtocolExceptionDefaultString(e.Error())
+	if e == nil {
+		return nil
+	}
+	if t, ok := e.(TProtocolException); ok {
+		return t
+	}
+	return NewTProtocolExceptionDefaultString(e.Error())
 }

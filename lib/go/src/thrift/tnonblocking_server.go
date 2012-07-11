@@ -33,143 +33,143 @@ import ()
  * method call has been read off the wire. Clients must also use TFramedTransport.
  */
 type TNonblockingServer struct {
-  /** Flag for stopping the server */
-  stopped bool
+	/** Flag for stopping the server */
+	stopped bool
 
-  processorFactory       TProcessorFactory
-  serverTransport        TServerTransport
-  inputTransportFactory  TTransportFactory
-  outputTransportFactory TTransportFactory
-  inputProtocolFactory   TProtocolFactory
-  outputProtocolFactory  TProtocolFactory
+	processorFactory       TProcessorFactory
+	serverTransport        TServerTransport
+	inputTransportFactory  TTransportFactory
+	outputTransportFactory TTransportFactory
+	inputProtocolFactory   TProtocolFactory
+	outputProtocolFactory  TProtocolFactory
 }
 
 func NewTNonblockingServer2(processor TProcessor, serverTransport TServerTransport) *TNonblockingServer {
-  return NewTNonblockingServerFactory2(NewTProcessorFactory(processor), serverTransport)
+	return NewTNonblockingServerFactory2(NewTProcessorFactory(processor), serverTransport)
 }
 
 func NewTNonblockingServer4(processor TProcessor, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TNonblockingServer {
-  return NewTNonblockingServerFactory4(NewTProcessorFactory(processor),
-    serverTransport,
-    transportFactory,
-    protocolFactory,
-  )
+	return NewTNonblockingServerFactory4(NewTProcessorFactory(processor),
+		serverTransport,
+		transportFactory,
+		protocolFactory,
+	)
 }
 
 func NewTNonblockingServer6(processor TProcessor, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TNonblockingServer {
-  return NewTNonblockingServerFactory6(NewTProcessorFactory(processor),
-    serverTransport,
-    inputTransportFactory,
-    outputTransportFactory,
-    inputProtocolFactory,
-    outputProtocolFactory,
-  )
+	return NewTNonblockingServerFactory6(NewTProcessorFactory(processor),
+		serverTransport,
+		inputTransportFactory,
+		outputTransportFactory,
+		inputProtocolFactory,
+		outputProtocolFactory,
+	)
 }
 
 func NewTNonblockingServerFactory2(processorFactory TProcessorFactory, serverTransport TServerTransport) *TNonblockingServer {
-  return NewTNonblockingServerFactory6(processorFactory,
-    serverTransport,
-    NewTTransportFactory(),
-    NewTTransportFactory(),
-    NewTBinaryProtocolFactoryDefault(),
-    NewTBinaryProtocolFactoryDefault(),
-  )
+	return NewTNonblockingServerFactory6(processorFactory,
+		serverTransport,
+		NewTTransportFactory(),
+		NewTTransportFactory(),
+		NewTBinaryProtocolFactoryDefault(),
+		NewTBinaryProtocolFactoryDefault(),
+	)
 }
 
 func NewTNonblockingServerFactory4(processorFactory TProcessorFactory, serverTransport TServerTransport, transportFactory TTransportFactory, protocolFactory TProtocolFactory) *TNonblockingServer {
-  return NewTNonblockingServerFactory6(processorFactory,
-    serverTransport,
-    transportFactory,
-    transportFactory,
-    protocolFactory,
-    protocolFactory,
-  )
+	return NewTNonblockingServerFactory6(processorFactory,
+		serverTransport,
+		transportFactory,
+		transportFactory,
+		protocolFactory,
+		protocolFactory,
+	)
 }
 
 func NewTNonblockingServerFactory6(processorFactory TProcessorFactory, serverTransport TServerTransport, inputTransportFactory TTransportFactory, outputTransportFactory TTransportFactory, inputProtocolFactory TProtocolFactory, outputProtocolFactory TProtocolFactory) *TNonblockingServer {
-  return &TNonblockingServer{processorFactory: processorFactory,
-    serverTransport:        serverTransport,
-    inputTransportFactory:  inputTransportFactory,
-    outputTransportFactory: outputTransportFactory,
-    inputProtocolFactory:   inputProtocolFactory,
-    outputProtocolFactory:  outputProtocolFactory,
-  }
+	return &TNonblockingServer{processorFactory: processorFactory,
+		serverTransport:        serverTransport,
+		inputTransportFactory:  inputTransportFactory,
+		outputTransportFactory: outputTransportFactory,
+		inputProtocolFactory:   inputProtocolFactory,
+		outputProtocolFactory:  outputProtocolFactory,
+	}
 }
 
 func (p *TNonblockingServer) ProcessorFactory() TProcessorFactory {
-  return p.processorFactory
+	return p.processorFactory
 }
 
 func (p *TNonblockingServer) ServerTransport() TServerTransport {
-  return p.serverTransport
+	return p.serverTransport
 }
 
 func (p *TNonblockingServer) InputTransportFactory() TTransportFactory {
-  return p.inputTransportFactory
+	return p.inputTransportFactory
 }
 
 func (p *TNonblockingServer) OutputTransportFactory() TTransportFactory {
-  return p.outputTransportFactory
+	return p.outputTransportFactory
 }
 
 func (p *TNonblockingServer) InputProtocolFactory() TProtocolFactory {
-  return p.inputProtocolFactory
+	return p.inputProtocolFactory
 }
 
 func (p *TNonblockingServer) OutputProtocolFactory() TProtocolFactory {
-  return p.outputProtocolFactory
+	return p.outputProtocolFactory
 }
 
 func (p *TNonblockingServer) Serve() error {
-  p.stopped = false
-  err := p.serverTransport.Listen()
-  if err != nil {
-    return err
-  }
-  for !p.stopped {
-    client, err := p.serverTransport.Accept()
-    if err != nil {
-      return err
-    }
-    if client != nil {
-      go p.processRequest(client)
-    }
-  }
-  return nil
+	p.stopped = false
+	err := p.serverTransport.Listen()
+	if err != nil {
+		return err
+	}
+	for !p.stopped {
+		client, err := p.serverTransport.Accept()
+		if err != nil {
+			return err
+		}
+		if client != nil {
+			go p.processRequest(client)
+		}
+	}
+	return nil
 }
 
 func (p *TNonblockingServer) Stop() error {
-  p.stopped = true
-  p.serverTransport.Interrupt()
-  return nil
+	p.stopped = true
+	p.serverTransport.Interrupt()
+	return nil
 }
 
 func (p *TNonblockingServer) IsStopped() bool {
-  return p.stopped
+	return p.stopped
 }
 
 func (p *TNonblockingServer) processRequest(client TTransport) {
-  processor := p.processorFactory.GetProcessor(client)
-  inputTransport := p.inputTransportFactory.GetTransport(client)
-  outputTransport := p.outputTransportFactory.GetTransport(client)
-  inputProtocol := p.inputProtocolFactory.GetProtocol(inputTransport)
-  outputProtocol := p.outputProtocolFactory.GetProtocol(outputTransport)
-  if inputTransport != nil {
-    defer inputTransport.Close()
-  }
-  if outputTransport != nil {
-    defer outputTransport.Close()
-  }
-  for {
-    ok, e := processor.Process(inputProtocol, outputProtocol)
-    if e != nil {
-      if !p.stopped {
-        // TODO(pomack) log error
-        break
-      }
-    }
-    if !ok {
-      break
-    }
-  }
+	processor := p.processorFactory.GetProcessor(client)
+	inputTransport := p.inputTransportFactory.GetTransport(client)
+	outputTransport := p.outputTransportFactory.GetTransport(client)
+	inputProtocol := p.inputProtocolFactory.GetProtocol(inputTransport)
+	outputProtocol := p.outputProtocolFactory.GetProtocol(outputTransport)
+	if inputTransport != nil {
+		defer inputTransport.Close()
+	}
+	if outputTransport != nil {
+		defer outputTransport.Close()
+	}
+	for {
+		ok, e := processor.Process(inputProtocol, outputProtocol)
+		if e != nil {
+			if !p.stopped {
+				// TODO(pomack) log error
+				break
+			}
+		}
+		if !ok {
+			break
+		}
+	}
 }

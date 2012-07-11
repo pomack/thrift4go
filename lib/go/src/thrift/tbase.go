@@ -25,42 +25,42 @@ package thrift
  */
 type TBase interface {
 
-  /**
-   * Reads the TObject from the given input protocol
-   *
-   * @param iprot Input protocol
-   */
-  Read(iprot TProtocol) (err TException)
+	/**
+	 * Reads the TObject from the given input protocol
+	 *
+	 * @param iprot Input protocol
+	 */
+	Read(iprot TProtocol) (err TException)
 
-  /**
-   * Writes the objects out to the protocol
-   *
-   * @param oprot Output protocol
-   */
-  Write(oprot TProtocol) (err TException)
+	/**
+	 * Writes the objects out to the protocol
+	 *
+	 * @param oprot Output protocol
+	 */
+	Write(oprot TProtocol) (err TException)
 
-  /**
-   * Check if a field is currently set or unset.
-   *
-   * @param field
-   */
-  IsSet(field TField) bool
+	/**
+	 * Check if a field is currently set or unset.
+	 *
+	 * @param field
+	 */
+	IsSet(field TField) bool
 
-  /**
-   * Get a field's value by field variable. Primitive types will be wrapped in 
-   * the appropriate "boxed" types.
-   *
-   * @param field
-   */
-  FieldValue(field TField) interface{}
+	/**
+	 * Get a field's value by field variable. Primitive types will be wrapped in 
+	 * the appropriate "boxed" types.
+	 *
+	 * @param field
+	 */
+	FieldValue(field TField) interface{}
 
-  /**
-   * Set a field's value by field variable. Primitive types must be "boxed" in
-   * the appropriate object wrapper type.
-   *
-   * @param field
-   */
-  SetFieldValue(field TField, value interface{})
+	/**
+	 * Set a field's value by field variable. Primitive types must be "boxed" in
+	 * the appropriate object wrapper type.
+	 *
+	 * @param field
+	 */
+	SetFieldValue(field TField, value interface{})
 
-  DeepCopy() TBase
+	DeepCopy() TBase
 }

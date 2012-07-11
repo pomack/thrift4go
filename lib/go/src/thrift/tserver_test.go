@@ -20,7 +20,7 @@
 package thrift_test
 
 import (
-  "testing"
+	"testing"
 )
 
 func TestNothing(t *testing.T) {
