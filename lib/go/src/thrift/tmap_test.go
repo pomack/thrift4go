@@ -1,8 +1,7 @@
-package thrift_test
+package thrift
 
 import (
 	"testing"
-	. "thrift"
 )
 
 func TestMapSetI32(t *testing.T) {
