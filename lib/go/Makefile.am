@@ -17,26 +17,33 @@
 # under the License.
 #
 
+# N.B.(matttproud): The flag assumptions of this makefile could be improved to
+#                   potentially be more cross-platform compatible.  For
+#                   instance, I think the »-t« flag for »cp« may be invalid on
+#                   BSD and Darwin systems.
 
 all: install
 
 
-GOPATH:=$(GOPATH):`pwd`
+export GOPATH = $(PWD)
+SOURCE = $(GOPATH)/{pkg,/src}
+DESTINATION = $(DESTDIR)/$(GOROOT)
 
-clean:
-	GOPATH=$(GOPATH) go clean thrift
 
-install:
-	GOPATH=$(GOPATH) go install thrift
-	-/bin/cp -f pkg/$(GOOS)_$(GOARCH)/thrift.* $(GOROOT)/pkg/$(GOOS)_$(GOARCH)/
+clean-local:
+	go clean thrift
 
-nuke:
-	GOPATH=$(GOPATH) go clean -i thrift
-	/bin/rm -rf pkg bin
+nuke-local:
+	go clean -i -r -x thrift
+	$(RM) -rf bin pkg
 
-test:
-	GOPATH=$(GOPATH) go test thrift
+install-exec-local: test
+	go install -a -v -x thrift
+	mkdir -vp "$(DESTINATION)"
+	cp -av $(SOURCE) -t "$(DESTINATION)"
 
-check:
-	GOPATH=$(GOPATH) go build thrift
+test: check
+	go test -a -v -x thrift
 
+check-local:
+	go build -a -v -x thrift
