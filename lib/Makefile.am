@@ -33,6 +33,9 @@ endif
 
 if WITH_JAVA
 SUBDIRS += java
+# JavaScript unit test depends on java
+# so test only if java, ant & co is available
+SUBDIRS += js/test
 endif
 
 if WITH_PYTHON
@@ -59,12 +62,18 @@ if WITH_PHP
 SUBDIRS += php
 endif
 
+if WITH_GO
+SUBDIRS += go
+endif
+
 # All of the libs that don't use Automake need to go in here
 # so they will end up in our release tarballs.
 EXTRA_DIST = \
-  cocoa \
-  ocaml \
-  js \
-  as3 \
-  st \
-  go
+			as3 \
+			cocoa \
+			delphi \
+			javame \
+			js \
+			nodejs \
+			ocaml \
+			st
