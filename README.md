@@ -11,6 +11,7 @@ Add this Git repository to your Thrift checkout.  It will overwrite a few files
 to add options for Go.
 
 Currently generates code for the following protocols:
+
 1. Binary Protocol (with test cases)
 2. Fast Binary Protocol (with test cases)
 3. Standard Thrift JSON Protocol (with test cases)
@@ -23,11 +24,12 @@ To install locally, perform the following:
   ```go get github.com/pomack/thrift4go/lib/go/thrift```
 
 5 files for thrift compiler (last tested on July 18, 2012):
-1. configure.ac
-2. lib/Makefile.am
-3. lib/go/Makefile.am
-4. compiler/cpp/Makefile.am
-5. compiler/cpp/src/generate/t_go_generator.cc
+
+1. ```configure.ac```
+2. ```lib/Makefile.am```
+3. ```lib/go/Makefile.am```
+4. ```compiler/cpp/Makefile.am```
+5. ```compiler/cpp/src/generate/t_go_generator.cc```
 
 A tutorial has been created in the thrift4go/tutorial/go/src directory.
 
@@ -44,48 +46,47 @@ run the client from either
 
 Make sure you specify the same protocol for both the server and client.
 
-Here's a basic walk-through:
+# Basic Walkthrough
 
-    ```thrift --gen go <thrift_src_dir>/test/ThriftTest.thrift```
+```thrift --gen go <thrift_src_dir>/test/ThriftTest.thrift```
 
-  This will create ```gen-go/thrift/test/*.go``` and associated
-  files/directories.
+This will create ```gen-go/thrift/test/*.go``` and associated files/directories.
 
-  * ```gen-go/thrift/test/ThriftTest.go``` shows a service and client base
-    implementation with the associated interfaces and the ability to
-    send/receive or serialize/deserialize as necessary.
+- ```gen-go/thrift/test/ThriftTest.go``` shows a service and client base
+implementation with the associated interfaces and the ability to send/receive
+or serialize/deserialize as necessary.
 
-  * ThriftTestClient is a client library designed to access the ThriftTest
-    service.  No changes would need to be made here.
+- ThriftTestClient is a client library designed to access the ThriftTest
+service.  No changes would need to be made here.
 
-  * A ```ThriftTest/ThriftTest-remote.go``` and associated Makefile is also made
-    available so you can access a remote service implementing the ThriftTest
-    interface and see how the client side works under the covers.  The
-    command-line arguments use the custom JSON parser, so you can just pass in
-    JSON strings as arguments when you need to populate a struct, which I find
-    better than any other alternative.
+- A ```ThriftTest/ThriftTest-remote.go``` and associated Makefile is also made
+available so you can access a remote service implementing the ThriftTest
+interface and see how the client side works under the covers.  The command-line
+arguments use the custom JSON parser, so you can just pass in JSON strings as
+arguments when you need to populate a struct, which I find better than any
+other alternative.
 
-  * ThriftTestProcessor implements the server side and you would want to
-    implement the server handlers using ```NewThriftTestProcessor()```.
+- ThriftTestProcessor implements the server side and you would want to implement
+the server handlers using ```NewThriftTestProcessor()```.
 
-  * You just pass in your handler that implements the ```IThriftTest```
-    interface and make sure you import the appropriate package.  Package
-    directories/names are shown in the relevant Makefile.
+- You just pass in your handler that implements the ```IThriftTest``` interface
+and make sure you import the appropriate package.  Package directories/names
+are shown in the relevant Makefile.
 
-  * One unique thing about Go is that to have a publicly available
-    function/variable, the first letter has to be capitalized, so all
-    exportable functions/variables have the first letter capitalized, but
-    since the thrift files normally don't, they assume any serialization uses
-    the capitalization found in the Thrift interface definition file itself.
+- One unique thing about Go is that to have a publicly available
+function/variable, the first letter has to be capitalized, so all exportable
+functions/variables have the first letter capitalized, but since the Thrift
+files normally don't, they assume any serialization uses the capitalization
+found in the Thrift interface definition file itself.
 
 # Areas for Future Assistance
 
-  * Providing qualification tests that automatically build against Thrift stable
-    as well as HEAD.
+- Providing qualification tests that automatically build against Thrift stable
+as well as HEAD.
 
-  * Improving idiomaticness of generated Thrift.
+- Improving idiomaticness of generated Thrift.
 
-  * Generating Go interface code that would comply with ```gofmt``` tool.
+- Generating Go interface code that would comply with ```gofmt``` tool.
 
 # Continuous Integration
 
