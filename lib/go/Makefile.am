@@ -26,7 +26,7 @@ all: install
 
 
 export GOPATH = $(PWD)
-SOURCE = $(GOPATH)/{pkg,/src}
+SOURCE = $(GOPATH)/{pkg,src}
 DESTINATION = $(DESTDIR)/$(GOROOT)
 
 
