@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
-  "testing"
+	"testing"
 )
 
 func TestNothing(t *testing.T) {

@@ -17,22 +17,21 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
-  "testing"
-  . "thrift"
+	"testing"
 )
 
 func TestHttpClient(t *testing.T) {
-  l, addr := HttpClientSetupForTest(t)
-  if l != nil {
-    defer l.Close()
-  }
-  trans, err := NewTHttpPostClient("http://" + addr.String())
-  if err != nil {
-    l.Close()
-    t.Fatalf("Unable to connect to %s: %s", addr.String(), err)
-  }
-  TransportTest(t, trans, trans)
+	l, addr := HttpClientSetupForTest(t)
+	if l != nil {
+		defer l.Close()
+	}
+	trans, err := NewTHttpPostClient("http://" + addr.String())
+	if err != nil {
+		l.Close()
+		t.Fatalf("Unable to connect to %s: %s", addr.String(), err)
+	}
+	TransportTest(t, trans, trans)
 }

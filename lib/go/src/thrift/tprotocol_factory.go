@@ -24,5 +24,5 @@ package thrift
  *
  */
 type TProtocolFactory interface {
-  GetProtocol(trans TTransport) TProtocol
+	GetProtocol(trans TTransport) TProtocol
 }
