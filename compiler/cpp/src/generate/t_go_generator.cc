@@ -1326,7 +1326,6 @@ void t_go_generator::generate_service(t_service* tservice) {
 
   f_service_ << endl;
 
-  // Generate the three main parts of the service (well, two for now in PHP)
   generate_service_interface(tservice);
   generate_service_client(tservice);
   generate_service_server(tservice);
@@ -2650,7 +2649,7 @@ void t_go_generator::generate_serialize_field(ofstream &out,
         out << "WriteDouble(float64(" << name << "))";
         break;
       default:
-        throw "compiler error: no PHP name for base type " + t_base_type::t_base_name(tbase);
+        throw "compiler error: no Go name for base type " + t_base_type::t_base_name(tbase);
       }
     } else if (type->is_enum()) {
       out << "WriteI32(int32(" << name << "))";
