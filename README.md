@@ -11,11 +11,11 @@ Add this Git repository to your Thrift checkout.  It will overwrite a few files
 to add options for Go.
 
 Currently generates code for the following protocols:
-1) Binary Protocol (with test cases)
-2) Fast Binary Protocol (with test cases)
-3) Standard Thrift JSON Protocol (with test cases)
-4) A (custom) simple JSON Protocol (with test cases)
-5) Services (compiles and runs against Java, assumed to work elsewhere)
+1. Binary Protocol (with test cases)
+2. Fast Binary Protocol (with test cases)
+3. Standard Thrift JSON Protocol (with test cases)
+4. A (custom) simple JSON Protocol (with test cases)
+5. Services (compiles and runs against Java, assumed to work elsewhere)
 
 Tested on Mac OS X 10.6 (Snow Leopard) and Linux ca. 2010 derivatives.
 
@@ -23,11 +23,11 @@ To install locally, perform the following:
   ```go get github.com/pomack/thrift4go/lib/go/thrift```
 
 5 files for thrift compiler (last tested on July 18, 2012):
-1) configure.ac
-2) lib/Makefile.am
-3) lib/go/Makefile.am
-4) compiler/cpp/Makefile.am
-5) compiler/cpp/src/generate/t_go_generator.cc
+1. configure.ac
+2. lib/Makefile.am
+3. lib/go/Makefile.am
+4. compiler/cpp/Makefile.am
+5. compiler/cpp/src/generate/t_go_generator.cc
 
 A tutorial has been created in the thrift4go/tutorial/go/src directory.
 
@@ -44,7 +44,7 @@ run the client from either
 
 Make sure you specify the same protocol for both the server and client.
 
-Here's a basic walkthrough:
+Here's a basic walk-through:
 
     ```thrift --gen go <thrift_src_dir>/test/ThriftTest.thrift```
 
