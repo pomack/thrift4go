@@ -17,18 +17,11 @@
 # under the License.
 #
 
-# N.B.(matttproud): The flag assumptions of this makefile could be improved to
-#                   potentially be more cross-platform compatible.  For
-#                   instance, I think the »-t« flag for »cp« may be invalid on
-#                   BSD and Darwin systems.
-
-all: install
-
+all: test
 
 export GOPATH = $(PWD)
 SOURCE = $(GOPATH)/{pkg,src}
 DESTINATION = $(DESTDIR)/$(GOROOT)
-
 
 clean-local:
 	go clean thrift
@@ -37,13 +30,21 @@ nuke-local:
 	go clean -i -r -x thrift
 	$(RM) -rf bin pkg
 
+# N.B.(matttproud): This step may fail to run with sudo due to sudo clearing
+#                   environment variables before changing permissions for
+#                   security reasons.  This can be avoided by using the
+#                   DESTDIR construct described above to provide emissions to
+#                   an intermediate directory for subsequent manual merging.
+
 install-exec-local: test
-	go install -a -v -x thrift
-	mkdir -vp "$(DESTINATION)"
-	cp -av $(SOURCE) -t "$(DESTINATION)"
+	go install -v -x thrift
+	install -d "$(GOPATH)/pkg"
+	install -d "$(GOPATH)/src"
+	cp -av "$(GOPATH)/pkg/" "$(DESTINATION)/pkg/"
+	cp -av "$(GOPATH)/src/" "$(DESTINATION)/src/"
 
 test: check
-	go test -a -v -x thrift
+	go test -v -x thrift
 
 check-local:
-	go build -a -v -x thrift
+	go build -v -x thrift
