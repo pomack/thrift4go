@@ -23,13 +23,12 @@ Tested on Mac OS X 10.6 (Snow Leopard) and Linux ca. 2010 derivatives.
 To install locally, perform the following:
   ``go get github.com/pomack/thrift4go/lib/go/thrift``
 
-5 files for thrift compiler (last tested on July 18, 2012):
+Four files for thrift compiler (last tested on August 12, 2012):
 
 1. ``configure.ac``
 2. ``lib/Makefile.am``
 3. ``lib/go/Makefile.am``
-4. ``compiler/cpp/Makefile.am``
-5. ``compiler/cpp/src/generate/t_go_generator.cc``
+4. ``compiler/cpp/src/generate/t_go_generator.cc``
 
 A tutorial has been created in the thrift4go/tutorial/go/src directory.
 
@@ -78,6 +77,12 @@ function/variable, the first letter has to be capitalized, so all exportable
 functions/variables have the first letter capitalized, but since the Thrift
 files normally don't, they assume any serialization uses the capitalization
 found in the Thrift interface definition file itself.
+
+# Patching into Mainline Thrift
+This package is targeted to Thrift stable, which at the time of writing this,
+is 0.8.0.  Please give the ``merge_and_build.sh`` script a run for more
+information.  It will perform the grungework of merging a local checkout of
+Thrift stable and thrift4go.
 
 # Areas for Future Assistance
 
