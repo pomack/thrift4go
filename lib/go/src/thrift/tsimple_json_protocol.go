@@ -275,7 +275,7 @@ func (p *TSimpleJSONProtocol) WriteString(v string) TProtocolException {
 }
 
 func (p *TSimpleJSONProtocol) WriteBinary(v []byte) TProtocolException {
-	// JSON library only takes in a string, 
+	// JSON library only takes in a string,
 	// not an arbitrary byte array, to ensure bytes are transmitted
 	// efficiently we must convert this into a valid JSON string
 	// therefore we use base64 encoding to avoid excessive escaping/quoting
