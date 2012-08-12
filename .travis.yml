@@ -18,7 +18,7 @@ before_install:
  - sudo apt-get remove -y --force-yes --purge golang-stable || true
  - sudo apt-get remove -y --force-yes --purge golang-weekly || true
  - sudo apt-get remove -y --force-yes --purge golang-tip || true
- - test ! -x "$(which go)" || (echo "Go is still present: $(which go)" ; exit 1)
+ - test ! -x "$(which go)" || (echo "Go is still present: $(which go)")
 
 install:
  - hg clone -u release https://code.google.com/p/go "${HOME}/go" >/dev/null 2>&1
@@ -33,6 +33,5 @@ install:
  - git clone https://github.com/pomack/thrift4go.git "${HOME}/github.com/pomack/thrift4go"
 
 script:
- - cd "${HOME}/github.com/pomack/thrift4go/lib/go/src/thrift"
- - go build -a -v .
- - go test -v .
+ - cd "${HOME}/github.com/pomack/thrift4go"
+ - make test
