@@ -49,14 +49,14 @@ for filename in $(ls -1 ${GOLIBDIR}); do
 done
 
 dirpat=$(echo $dirs $localdirs C | awk '{
-	for(i=1;i<=NF;i++){ 
+	for(i=1;i<=NF;i++){
 		x=$i
 		gsub("/", "\\/", x)
 		printf("/^(%s)$/\n", x)
 	}
 }')
 
-for dir in $localdirs; do 
+for dir in $localdirs; do
   if [ -d $STARTDIR/$dir ]; then
     cd $STARTDIR/$dir || exit 1
   else
@@ -69,7 +69,7 @@ for dir in $localdirs; do
 	# /dev/null here means we get an empty dependency list if $sources is empty
 	# instead of listing every file in the directory.
 	sources=$(ls $sources /dev/null 2> /dev/null)  # remove .s, .c, etc.
-	
+
 	#sources=$(sed -n 's/\.go\\/.go/p' Makefile)
 	#sources=$(ls $sources 2> /dev/null)  # remove .s, .c, etc.
 

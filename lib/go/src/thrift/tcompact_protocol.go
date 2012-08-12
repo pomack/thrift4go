@@ -86,21 +86,21 @@ func (p *TCompactProtocolFactory) GetProtocol(trans TTransport) TProtocol {
 type TCompactProtocol struct {
 	trans TTransport
 
-	/** 
+	/**
 	 * Used to keep track of the last field for the current and previous structs,
 	 * so we can do the delta stuff.
 	 */
 	lastField   []int
 	lastFieldId int
 
-	/** 
-	 * If we encounter a boolean field begin, save the TField here so it can 
+	/**
+	 * If we encounter a boolean field begin, save the TField here so it can
 	 * have the value incorporated.
 	 */
 	booleanField TField
 
 	/**
-	 * If we read a field header, and it's a boolean field, save the boolean 
+	 * If we read a field header, and it's a boolean field, save the boolean
 	 * value here so that readBool can use it.
 	 */
 	boolValue          bool
@@ -145,7 +145,7 @@ func (p *TCompactProtocol) WriteMessageBegin(name string, typeId TMessageType, s
 func (p *TCompactProtocol) WriteMessageEnd() TProtocolException { return nil }
 
 /**
- * Write a struct begin. This doesn't actually put anything on the wire. We 
+ * Write a struct begin. This doesn't actually put anything on the wire. We
  * use it as an opportunity to put special placeholder markers on the field
  * stack so we can get the field id deltas correct.
  */
@@ -177,8 +177,8 @@ func (p *TCompactProtocol) WriteFieldBegin(name string, typeId TType, id int16) 
 }
 
 /**
- * The workhorse of writeFieldBegin. It has the option of doing a 
- * 'type override' of the type header. This is used specifically in the 
+ * The workhorse of writeFieldBegin. It has the option of doing a
+ * 'type override' of the type header. This is used specifically in the
  * boolean field case.
  */
 func (p *TCompactProtocol) writeFieldBeginInternal(name string, typeId TType, id int16, typeOverride byte) (int, error) {
@@ -276,7 +276,7 @@ func (p *TCompactProtocol) WriteBool(value bool) TProtocolException {
 	return NewTProtocolExceptionFromOsError(err)
 }
 
-/** 
+/**
  * Write a byte. Nothing to see here!
  */
 func (p *TCompactProtocol) WriteByte(value byte) TProtocolException {
@@ -328,7 +328,7 @@ func (p *TCompactProtocol) WriteString(value string) TProtocolException {
 }
 
 /**
- * Write a byte array, using a varint for the size. 
+ * Write a byte array, using a varint for the size.
  */
 func (p *TCompactProtocol) WriteBinary(bin []byte) TProtocolException {
 	_, e := p.writeVarint32(int32(len(bin)))
@@ -342,12 +342,12 @@ func (p *TCompactProtocol) WriteBinary(bin []byte) TProtocolException {
 	return nil
 }
 
-// 
+//
 // Reading methods.
-// 
+//
 
 /**
- * Read a message header. 
+ * Read a message header.
  */
 func (p *TCompactProtocol) ReadMessageBegin() (name string, typeId TMessageType, seqId int32, err TProtocolException) {
 	protocolId, err := p.ReadByte()
@@ -388,7 +388,7 @@ func (p *TCompactProtocol) ReadStructBegin() (name string, err TProtocolExceptio
 }
 
 /**
- * Doesn't actually consume any wire data, just removes the last field for 
+ * Doesn't actually consume any wire data, just removes the last field for
  * this struct from the field stack.
  */
 func (p *TCompactProtocol) ReadStructEnd() TProtocolException {
@@ -398,7 +398,7 @@ func (p *TCompactProtocol) ReadStructEnd() TProtocolException {
 }
 
 /**
- * Read a field header off the wire. 
+ * Read a field header off the wire.
  */
 func (p *TCompactProtocol) ReadFieldBegin() (name string, typeId TType, id int16, err TProtocolException) {
 	t, err := p.ReadByte()
@@ -443,7 +443,7 @@ func (p *TCompactProtocol) ReadFieldBegin() (name string, typeId TType, id int16
 
 func (p *TCompactProtocol) ReadFieldEnd() TProtocolException { return nil }
 
-/** 
+/**
  * Read a map header off the wire. If the size is zero, skip reading the key
  * and value type. This means that 0-length maps will yield TMaps without the
  * "correct" types.
@@ -470,7 +470,7 @@ func (p *TCompactProtocol) ReadMapBegin() (keyType TType, valueType TType, size 
 func (p *TCompactProtocol) ReadMapEnd() TProtocolException { return nil }
 
 /**
- * Read a list header off the wire. If the list size is 0-14, the size will 
+ * Read a list header off the wire. If the list size is 0-14, the size will
  * be packed into the element type header. If it's a longer list, the 4 MSB
  * of the element type header will be 0xF, and a varint will follow with the
  * true size.
@@ -500,7 +500,7 @@ func (p *TCompactProtocol) ReadListBegin() (elemType TType, size int, err TProto
 func (p *TCompactProtocol) ReadListEnd() TProtocolException { return nil }
 
 /**
- * Read a set header off the wire. If the set size is 0-14, the size will 
+ * Read a set header off the wire. If the set size is 0-14, the size will
  * be packed into the element type header. If it's a longer set, the 4 MSB
  * of the element type header will be 0xF, and a varint will follow with the
  * true size.
@@ -590,7 +590,7 @@ func (p *TCompactProtocol) ReadString() (value string, err TProtocolException) {
 }
 
 /**
- * Read a []byte from the wire. 
+ * Read a []byte from the wire.
  */
 func (p *TCompactProtocol) ReadBinary() (value []byte, err TProtocolException) {
 	length, e := p.readVarint32()
@@ -623,7 +623,7 @@ func (p *TCompactProtocol) Transport() TTransport {
 //
 
 /**
- * Abstract method for writing the start of lists and sets. List and sets on 
+ * Abstract method for writing the start of lists and sets. List and sets on
  * the wire differ only by the type indicator.
  */
 func (p *TCompactProtocol) writeCollectionBegin(elemType TType, size int) (int, error) {
@@ -685,7 +685,7 @@ func (p *TCompactProtocol) writeVarint64(n int64) (int, error) {
 }
 
 /**
- * Convert l into a zigzag long. This allows negative numbers to be 
+ * Convert l into a zigzag long. This allows negative numbers to be
  * represented compactly as a varint.
  */
 func (p *TCompactProtocol) int64ToZigzag(l int64) int64 {
@@ -693,7 +693,7 @@ func (p *TCompactProtocol) int64ToZigzag(l int64) int64 {
 }
 
 /**
- * Convert l into a zigzag long. This allows negative numbers to be 
+ * Convert l into a zigzag long. This allows negative numbers to be
  * represented compactly as a varint.
  */
 func (p *TCompactProtocol) int32ToZigzag(n int32) int32 {
@@ -708,15 +708,15 @@ func (p *TCompactProtocol) fixedInt64ToBytes(n int64, buf []byte) {
 	binary.LittleEndian.PutUint64(buf, uint64(n))
 }
 
-/** 
- * Writes a byte without any possiblity of all that field header nonsense. 
+/**
+ * Writes a byte without any possiblity of all that field header nonsense.
  * Used internally by other writing methods that know they need to write a byte.
  */
 func (p *TCompactProtocol) writeByteDirect(b byte) (int, error) {
 	return p.trans.Write([]byte{b})
 }
 
-/** 
+/**
  * Writes a byte without any possiblity of all that field header nonsense.
  */
 func (p *TCompactProtocol) writeIntAsByteDirect(n int) (int, error) {
@@ -739,7 +739,7 @@ func (p *TCompactProtocol) readVarint32() (int32, error) {
 }
 
 /**
- * Read an i64 from the wire as a proper varint. The MSB of each byte is set 
+ * Read an i64 from the wire as a proper varint. The MSB of each byte is set
  * if there is another byte to follow. This can read up to 10 bytes.
  */
 func (p *TCompactProtocol) readVarint64() (int64, error) {
@@ -771,7 +771,7 @@ func (p *TCompactProtocol) zigzagToInt32(n int32) int32 {
 	return int32(u>>1) ^ -(n & 1)
 }
 
-/** 
+/**
  * Convert from zigzag long to long.
  */
 func (p *TCompactProtocol) zigzagToInt64(n int64) int64 {
@@ -780,7 +780,7 @@ func (p *TCompactProtocol) zigzagToInt64(n int64) int64 {
 }
 
 /**
- * Note that it's important that the mask bytes are long literals, 
+ * Note that it's important that the mask bytes are long literals,
  * otherwise they'll default to ints, and when you shift an int left 56 bits,
  * you just get a messed up int.
  */
@@ -789,7 +789,7 @@ func (p *TCompactProtocol) bytesToInt64(b []byte) int64 {
 }
 
 /**
- * Note that it's important that the mask bytes are long literals, 
+ * Note that it's important that the mask bytes are long literals,
  * otherwise they'll default to ints, and when you shift an int left 56 bits,
  * you just get a messed up int.
  */
@@ -806,7 +806,7 @@ func (p *TCompactProtocol) isBoolType(b byte) bool {
 }
 
 /**
- * Given a TCompactType constant, convert it to its corresponding 
+ * Given a TCompactType constant, convert it to its corresponding
  * TType value.
  */
 func (p *TCompactProtocol) getTType(t TCompactType) (TType, error) {
