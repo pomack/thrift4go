@@ -12,7 +12,7 @@ EOF
 
 while true ; do
   read -p "Do you wish to proceed: [Y]es or [N]o?" response
-  case "${response}" in 
+  case "${response}" in
     [Yy]* ) break ;;
     [Nn]* ) echo "Aborting..." ; exit 1 ;;
   esac
