@@ -1,0 +1,7 @@
+This directory contains test cases for thrift4go.  Each test case should exist
+in its own directory with a Makefile that properly handles the two cases:
+
+- clean: Destroy any test artifacts and return the environment to a pristine
+         condition.
+
+- test: Setup the test environment and run the tests.
