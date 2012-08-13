@@ -8,8 +8,28 @@ checks will be run before-hand.
 One may wish to run this script as "bash -x ${0}" to see exactly what steps
 it performs, as it will modify the local source copy of Thrift.  The script
 will abort if it encounters any errors.
+
+It may also be run as "${0} -b" for batch mode, in which case no prompts will
+be performed.
 EOF
 
+batch=false
+
+arguments=$(getopt b ${*})
+set -- ${arguments}
+
+for i do
+  case "${i}" in
+    -b)
+      batch=true
+      shift;;
+    --)
+      shift
+      break;;
+  esac
+done
+
+if [[ "${batch}" == "false" ]]; then
 while true ; do
   read -p "Do you wish to proceed: [Y]es or [N]o?" response
   case "${response}" in
@@ -17,6 +37,7 @@ while true ; do
     [Nn]* ) echo "Aborting..." ; exit 1 ;;
   esac
 done
+fi
 
 if [ ! -d "${THRIFT}" ]; then
 cat >&2 <<EOF
@@ -32,12 +53,28 @@ fi
 if [ ! -d "${THRIFT4GO}" ]; then
 cat >&2 <<EOF
 A required environmental variable was not set: "THRIFT4GO".  This should refer
-to the path where a pristine copy of thrift4g0 lives.
+to the path where a pristine copy of thrift4go lives.
 
 export THRIFT4GO='/tmp/thrift4go
 EOF
 
 exit 1
+fi
+
+if [ ! -x "${THRIFT}/cleanup.sh" ]; then
+cat >&2 <<EOF
+WARNING: ${THRIFT}/cleanup.sh does not exist.  A copy from Thrift 0.8.0 is
+being provided in its place.  This may occur if using a Thrift release tarball.
+EOF
+cp -f "${THRIFT4GO}/scripts/cleanup.sh" "${THRIFT}/cleanup.sh"
+fi
+
+if [ ! -x "${THRIFT}/bootstrap.sh" ]; then
+cat >&2 <<EOF
+WARNING: ${THRIFT}/bootstrap.sh does not exist.  A copy from Thrift 0.8.0 is
+being provided in its place.  This may occur if using a Thrift release tarball.
+EOF
+cp -f "${THRIFT4GO}/scripts/bootstrap.sh" "${THRIFT}/bootstrap.sh"
 fi
 
 set -e

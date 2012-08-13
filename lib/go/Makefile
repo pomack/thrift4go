@@ -1,5 +1,5 @@
 export GOPATH = $(CURDIR)
-ARTIFACTS = test-stamp
+TEST_ARTIFACTS = test-stamp
 
 all: test
 
@@ -11,6 +11,6 @@ test-stamp:
 	touch $@
 
 clean:
-	-rm -f $(ARTIFACTS)
+	-rm -f $(TEST_ARTIFACTS)
 
 .PHONY: test clean
