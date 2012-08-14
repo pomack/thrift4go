@@ -25,7 +25,14 @@ test-merge-stamp: thrift-extraction tree-stamp
 	cd $(THRIFT) && ./configure \
 		--prefix=$(CURDIR)/tree \
 		--with-go \
-		--without-{c_glib,java,haskell,php,erlang,perl,python,ruby}
+		--without-c_glib \
+		--without-erlang \
+		--without-haskell \
+		--without-java \
+		--without-perl \
+		--without-php \
+		--without-python \
+		--without-ruby
 	cd $(THRIFT) && make
 	touch $@
 
