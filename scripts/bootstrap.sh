@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -17,63 +19,28 @@
 # under the License.
 #
 
-SUBDIRS =
+./cleanup.sh
+if test -d lib/php/src/ext/thrift_protocol ; then
+    if phpize -v >/dev/null 2>/dev/null ; then
+        (cd lib/php/src/ext/thrift_protocol && phpize)
+    fi
+fi
 
-if WITH_CPP
-SUBDIRS += cpp
-endif
+set -e
 
-if WITH_C_GLIB
-SUBDIRS += c_glib
-endif
+# libtoolize is called "glibtoolize" on OSX.
+if libtoolize --version 1 >/dev/null 2>/dev/null; then
+  LIBTOOLIZE=libtoolize
+elif glibtoolize --version 1 >/dev/null 2>/dev/null; then
+  LIBTOOLIZE=glibtoolize
+else
+  echo >&2 "Couldn't find libtoolize!"
+  exit 1
+fi
 
-if WITH_MONO
-SUBDIRS += csharp
-endif
-
-if WITH_JAVA
-SUBDIRS += java
-# JavaScript unit test depends on java
-# so test only if java, ant & co is available
-SUBDIRS += js/test
-endif
-
-if WITH_PYTHON
-SUBDIRS += py
-endif
-
-if WITH_ERLANG
-SUBDIRS += erl
-endif
-
-if WITH_RUBY
-SUBDIRS += rb
-endif
-
-if WITH_HASKELL
-SUBDIRS += hs
-endif
-
-if WITH_PERL
-SUBDIRS += perl
-endif
-
-if WITH_PHP
-SUBDIRS += php
-endif
-
-if WITH_GO
-SUBDIRS += go
-endif
-
-# All of the libs that don't use Automake need to go in here
-# so they will end up in our release tarballs.
-EXTRA_DIST = \
-			as3 \
-			cocoa \
-			delphi \
-			javame \
-			js \
-			nodejs \
-			ocaml \
-			st
+autoscan
+$LIBTOOLIZE --copy --automake
+aclocal -I ./aclocal
+autoheader
+autoconf
+automake --copy --add-missing --foreign

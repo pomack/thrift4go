@@ -47,7 +47,7 @@ type TBase interface {
 	IsSet(field TField) bool
 
 	/**
-	 * Get a field's value by field variable. Primitive types will be wrapped in 
+	 * Get a field's value by field variable. Primitive types will be wrapped in
 	 * the appropriate "boxed" types.
 	 *
 	 * @param field

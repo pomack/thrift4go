@@ -1,0 +1,3 @@
+This test case is designed to test the integration of thrift4go into the Thrift
+stable release (presently 0.8.0).  Specifically, this purely verifies that it
+can be merged and that the resultant Thrift package can be compiled.
