@@ -13,24 +13,24 @@ import (
 
 type UndefinedValues int
 const (
-  Foo UndefinedValues = 0
-  Bar UndefinedValues = 1
-  Baz UndefinedValues = 2
+  UndefinedOne UndefinedValues = 0
+  UndefinedTwo UndefinedValues = 1
+  UndefinedThree UndefinedValues = 2
 )
 func (p UndefinedValues) String() string {
   switch p {
-  case Foo: return "Foo"
-  case Bar: return "Bar"
-  case Baz: return "Baz"
+  case UndefinedOne: return "UndefinedOne"
+  case UndefinedTwo: return "UndefinedTwo"
+  case UndefinedThree: return "UndefinedThree"
   }
   return ""
 }
 
 func FromUndefinedValuesString(s string) UndefinedValues {
   switch s {
-  case "Foo": return Foo
-  case "Bar": return Bar
-  case "Baz": return Baz
+  case "UndefinedOne": return UndefinedOne
+  case "UndefinedTwo": return UndefinedTwo
+  case "UndefinedThree": return UndefinedThree
   }
   return UndefinedValues(-10000)
 }
@@ -45,24 +45,24 @@ func (p UndefinedValues) IsEnum() bool {
 
 type DefinedValues int
 const (
-  Foo DefinedValues = 1
-  Bar DefinedValues = 2
-  Baz DefinedValues = 3
+  DefinedOne DefinedValues = 1
+  DefinedTwo DefinedValues = 2
+  DefinedThree DefinedValues = 3
 )
 func (p DefinedValues) String() string {
   switch p {
-  case Foo: return "Foo"
-  case Bar: return "Bar"
-  case Baz: return "Baz"
+  case DefinedOne: return "DefinedOne"
+  case DefinedTwo: return "DefinedTwo"
+  case DefinedThree: return "DefinedThree"
   }
   return ""
 }
 
 func FromDefinedValuesString(s string) DefinedValues {
   switch s {
-  case "Foo": return Foo
-  case "Bar": return Bar
-  case "Baz": return Baz
+  case "DefinedOne": return DefinedOne
+  case "DefinedTwo": return DefinedTwo
+  case "DefinedThree": return DefinedThree
   }
   return DefinedValues(-10000)
 }
@@ -77,27 +77,27 @@ func (p DefinedValues) IsEnum() bool {
 
 type HeterogeneousValues int
 const (
-  Foo HeterogeneousValues = 0
-  Bar HeterogeneousValues = 2
-  Baz HeterogeneousValues = 3
-  Qux HeterogeneousValues = 4
+  HeterogeneousOne HeterogeneousValues = 0
+  HeterogeneousTwo HeterogeneousValues = 2
+  HeterogeneousThree HeterogeneousValues = 3
+  HeterogeneousFour HeterogeneousValues = 4
 )
 func (p HeterogeneousValues) String() string {
   switch p {
-  case Foo: return "Foo"
-  case Bar: return "Bar"
-  case Baz: return "Baz"
-  case Qux: return "Qux"
+  case HeterogeneousOne: return "HeterogeneousOne"
+  case HeterogeneousTwo: return "HeterogeneousTwo"
+  case HeterogeneousThree: return "HeterogeneousThree"
+  case HeterogeneousFour: return "HeterogeneousFour"
   }
   return ""
 }
 
 func FromHeterogeneousValuesString(s string) HeterogeneousValues {
   switch s {
-  case "Foo": return Foo
-  case "Bar": return Bar
-  case "Baz": return Baz
-  case "Qux": return Qux
+  case "HeterogeneousOne": return HeterogeneousOne
+  case "HeterogeneousTwo": return HeterogeneousTwo
+  case "HeterogeneousThree": return HeterogeneousThree
+  case "HeterogeneousFour": return HeterogeneousFour
   }
   return HeterogeneousValues(-10000)
 }
@@ -108,6 +108,229 @@ func (p HeterogeneousValues) Value() int {
 
 func (p HeterogeneousValues) IsEnum() bool {
   return true
+}
+
+/**
+ * Attributes:
+ *  - First
+ *  - Second
+ *  - Third
+ */
+type ContainerOfEnums struct {
+  thrift.TStruct
+  First UndefinedValues "first"; // 1
+  Second DefinedValues "second"; // 2
+  Third HeterogeneousValues "third"; // 3
+}
+
+func NewContainerOfEnums() *ContainerOfEnums {
+  output := &ContainerOfEnums{
+    TStruct:thrift.NewTStruct("ContainerOfEnums", []thrift.TField{
+    thrift.NewTField("first", thrift.I32, 1),
+    thrift.NewTField("second", thrift.I32, 2),
+    thrift.NewTField("third", thrift.I32, 3),
+    }),
+  }
+  {
+  }
+  return output
+}
+
+func (p *ContainerOfEnums) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+  _, err = iprot.ReadStructBegin()
+  if err != nil { return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  for {
+    fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if fieldId < 0 {
+      fieldId = int16(p.FieldIdFromFieldName(fieldName))
+    } else if fieldName == "" {
+      fieldName = p.FieldNameFromFieldId(int(fieldId))
+    }
+    if fieldTypeId == thrift.GENERIC {
+      fieldTypeId = p.FieldFromFieldId(int(fieldId)).TypeId()
+    }
+    if err != nil {
+      return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    if fieldId == 1 || fieldName == "first" {
+      if fieldTypeId == thrift.I32 {
+        err = p.ReadField1(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == thrift.VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField1(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else if fieldId == 2 || fieldName == "second" {
+      if fieldTypeId == thrift.I32 {
+        err = p.ReadField2(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == thrift.VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField2(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else if fieldId == 3 || fieldName == "third" {
+      if fieldTypeId == thrift.I32 {
+        err = p.ReadField3(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == thrift.VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField3(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else {
+      err = iprot.Skip(fieldTypeId)
+      if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+    }
+    err = iprot.ReadFieldEnd()
+    if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+  }
+  err = iprot.ReadStructEnd()
+  if err != nil { return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
+  return err
+}
+
+func (p *ContainerOfEnums) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+  v0, err1 := iprot.ReadI32()
+  if err1 != nil { return thrift.NewTProtocolExceptionReadField(1, "first", p.ThriftName(), err1); }
+  p.First = UndefinedValues(v0)
+  return err
+}
+
+func (p *ContainerOfEnums) ReadFieldFirst(iprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.ReadField1(iprot)
+}
+
+func (p *ContainerOfEnums) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+  v2, err3 := iprot.ReadI32()
+  if err3 != nil { return thrift.NewTProtocolExceptionReadField(2, "second", p.ThriftName(), err3); }
+  p.Second = DefinedValues(v2)
+  return err
+}
+
+func (p *ContainerOfEnums) ReadFieldSecond(iprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.ReadField2(iprot)
+}
+
+func (p *ContainerOfEnums) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+  v4, err5 := iprot.ReadI32()
+  if err5 != nil { return thrift.NewTProtocolExceptionReadField(3, "third", p.ThriftName(), err5); }
+  p.Third = HeterogeneousValues(v4)
+  return err
+}
+
+func (p *ContainerOfEnums) ReadFieldThird(iprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.ReadField3(iprot)
+}
+
+func (p *ContainerOfEnums) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+  err = oprot.WriteStructBegin("ContainerOfEnums")
+  if err != nil { return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  err = p.WriteField1(oprot)
+  if err != nil { return err }
+  err = p.WriteField2(oprot)
+  if err != nil { return err }
+  err = p.WriteField3(oprot)
+  if err != nil { return err }
+  err = oprot.WriteFieldStop()
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
+  err = oprot.WriteStructEnd()
+  if err != nil { return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
+  return err
+}
+
+func (p *ContainerOfEnums) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+  err = oprot.WriteFieldBegin("first", thrift.I32, 1)
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
+  err = oprot.WriteI32(int32(p.First))
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
+  err = oprot.WriteFieldEnd()
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
+  return err
+}
+
+func (p *ContainerOfEnums) WriteFieldFirst(oprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.WriteField1(oprot)
+}
+
+func (p *ContainerOfEnums) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+  err = oprot.WriteFieldBegin("second", thrift.I32, 2)
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
+  err = oprot.WriteI32(int32(p.Second))
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
+  err = oprot.WriteFieldEnd()
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
+  return err
+}
+
+func (p *ContainerOfEnums) WriteFieldSecond(oprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.WriteField2(oprot)
+}
+
+func (p *ContainerOfEnums) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+  err = oprot.WriteFieldBegin("third", thrift.I32, 3)
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
+  err = oprot.WriteI32(int32(p.Third))
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
+  err = oprot.WriteFieldEnd()
+  if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
+  return err
+}
+
+func (p *ContainerOfEnums) WriteFieldThird(oprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.WriteField3(oprot)
+}
+
+func (p *ContainerOfEnums) TStructName() string {
+  return "ContainerOfEnums"
+}
+
+func (p *ContainerOfEnums) ThriftName() string {
+  return "ContainerOfEnums"
+}
+
+func (p *ContainerOfEnums) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("ContainerOfEnums(%+v)", *p)
+}
+
+func (p *ContainerOfEnums) CompareTo(other interface{}) (int, bool) {
+  if other == nil {
+    return 1, true
+  }
+  data, ok := other.(*ContainerOfEnums)
+  if !ok {
+    return 0, false
+  }
+  return thrift.TType(thrift.STRUCT).Compare(p, data)
+}
+
+func (p *ContainerOfEnums) AttributeByFieldId(id int) interface{} {
+  switch id {
+  default: return nil
+  case 1: return p.First
+  case 2: return p.Second
+  case 3: return p.Third
+  }
+  return nil
+}
+
+func (p *ContainerOfEnums) TStructFields() thrift.TFieldContainer {
+  return thrift.NewTFieldContainer([]thrift.TField{
+    thrift.NewTField("first", thrift.I32, 1),
+    thrift.NewTField("second", thrift.I32, 2),
+    thrift.NewTField("third", thrift.I32, 3),
+    })
 }
 
 func init() {
