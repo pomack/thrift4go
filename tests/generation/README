@@ -1,0 +1,2 @@
+This test is designed merely to exercise trivial generation of Go files from
+the Thrift command line tool.
