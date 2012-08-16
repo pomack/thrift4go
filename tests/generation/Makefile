@@ -3,6 +3,7 @@ export GOPATH  = $(CURDIR)/../../lib/go
 TEST_ARTIFACTS = \
   gen-go \
   test-compile-stamp \
+  test-exercise-stamp \
   test-generation-stamp \
   test-stamp \
   test-validate-stamp
@@ -13,7 +14,12 @@ all: test
 
 test: test-stamp
 
-test-stamp: test-compile-stamp
+test-stamp: test-exercise-stamp
+	touch $@
+
+test-exercise-stamp: test-compile-stamp
+	cp -f simple_test.go gen-go/simple
+	cd gen-go/simple && go test .
 	touch $@
 
 test-compile-stamp: test-validate-stamp
