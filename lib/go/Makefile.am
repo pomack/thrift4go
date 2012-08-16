@@ -38,8 +38,8 @@ nuke-local:
 
 install-exec-local: test
 	go install -v -x thrift
-	install -d "$(GOPATH)/pkg"
-	install -d "$(GOPATH)/src"
+	install -d "$(DESTINATION)/pkg"
+	install -d "$(DESTINATION)/src"
 	cp -av "$(GOPATH)/pkg/" "$(DESTINATION)/pkg/"
 	cp -av "$(GOPATH)/src/" "$(DESTINATION)/src/"
 

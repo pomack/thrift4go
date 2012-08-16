@@ -7,3 +7,4 @@ _obj
 _test
 _test*.go
 lib/go/pkg
+*-stamp
