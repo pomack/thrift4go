@@ -164,3 +164,85 @@ func TestContainerOfEnumsDefaultFieldsGet(t *testing.T) {
 		t.Fatalf("emission.OptionalSixth = %q, want %q", emission.OptionalSixth.String(), "HeterogeneousOne")
 	}
 }
+
+// To validate https://github.com/pomack/thrift4go/issues/16.
+func TestContainerOfEnumsOptionalFieldsAreSetStatusByDefault(t *testing.T) {
+	emission := NewContainerOfEnums()
+
+	var valueAndExpected = []struct {
+		value    bool
+		expected bool
+	}{
+		{emission.IsSetOptionalFourth(), false},
+		{emission.IsSetOptionalFifth(), false},
+		{emission.IsSetOptionalSixth(), false},
+	}
+
+	for i, definition := range valueAndExpected {
+		actual := definition.value
+		expected := definition.expected
+
+		if actual != expected {
+			t.Errorf("%d. %q.IsSet() => %q, want %q", i, definition, actual, expected)
+		}
+	}
+}
+
+// To validate https://github.com/pomack/thrift4go/issues/16.
+func TestContainerOfEnumsOptionalFieldsAreSetStatusAfterSet(t *testing.T) {
+	emission := NewContainerOfEnums()
+
+	emission.OptionalFourth = UndefinedOne
+
+	if emission.IsSetOptionalFourth() != false {
+		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), false)
+	}
+
+	emission.OptionalFourth = UndefinedTwo
+
+	if emission.IsSetOptionalFourth() != true {
+		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
+	}
+
+	emission.OptionalFourth = UndefinedThree
+
+	if emission.IsSetOptionalFourth() != true {
+		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
+	}
+
+	emission.OptionalFifth = DefinedOne
+
+	if emission.IsSetOptionalFifth() != true {
+		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+	}
+
+	emission.OptionalFifth = DefinedTwo
+
+	if emission.IsSetOptionalFifth() != true {
+		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+	}
+
+	emission.OptionalFifth = DefinedThree
+
+	if emission.IsSetOptionalFifth() != true {
+		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+	}
+
+	emission.OptionalSixth = HeterogeneousOne
+
+	if emission.IsSetOptionalSixth() != false {
+		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), false)
+	}
+
+	emission.OptionalSixth = HeterogeneousTwo
+
+	if emission.IsSetOptionalSixth() != true {
+		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+	}
+
+	emission.OptionalSixth = HeterogeneousThree
+
+	if emission.IsSetOptionalSixth() != true {
+		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+	}
+}
