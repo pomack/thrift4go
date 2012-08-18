@@ -2,6 +2,7 @@ package simple
 
 import (
 	"testing"
+	"thrift"
 )
 
 func TestUndefinedValuesString(t *testing.T) {
@@ -122,7 +123,7 @@ func TestContainerOfEnumsNew(t *testing.T) {
 	emission := NewContainerOfEnums()
 
 	if emission == nil {
-		t.Fatalf("NewContainerOfEnums emitted nil, not the struct.")
+		t.Errorf("NewContainerOfEnums emitted nil, not the struct.")
 	}
 }
 
@@ -140,28 +141,21 @@ func TestContainerOfEnumsFieldsSet(t *testing.T) {
 func TestContainerOfEnumsDefaultFieldsGet(t *testing.T) {
 	emission := NewContainerOfEnums()
 
-	if emission.First.String() != "UndefinedOne" {
-		t.Fatalf("emission.First = %q, want %q", emission.First.String(), "UndefinedOne")
+	definitions := []thrift.Enumer{
+		emission.First,
+		emission.Second,
+		emission.Third,
+		emission.OptionalFourth,
+		emission.OptionalFifth,
+		emission.OptionalSixth,
 	}
 
-	if emission.Second.String() != "" {
-		t.Fatalf("emission.Second = %q, want %q", emission.Second.String(), "")
-	}
+	for i, definition := range definitions {
+		actual := definition.String()
 
-	if emission.Third.String() != "HeterogeneousOne" {
-		t.Fatalf("emission.Third = %q, want %q", emission.Third.String(), "HeterogeneousOne")
-	}
-
-	if emission.OptionalFourth.String() != "UndefinedOne" {
-		t.Fatalf("emission.OptionalFourth = %q, want %q", emission.OptionalFourth.String(), "UndefinedOne")
-	}
-
-	if emission.OptionalFifth.String() != "" {
-		t.Fatalf("emission.OptionalFifth = %q, want %q", emission.OptionalFifth.String(), "")
-	}
-
-	if emission.OptionalSixth.String() != "HeterogeneousOne" {
-		t.Fatalf("emission.OptionalSixth = %q, want %q", emission.OptionalSixth.String(), "HeterogeneousOne")
+		if "<UNSET>" != actual {
+			t.Errorf("%d. %q.String() => %q, want %q", i, definition, actual, "<UNSET>")
+		}
 	}
 }
 
@@ -194,55 +188,55 @@ func TestContainerOfEnumsOptionalFieldsAreSetStatusAfterSet(t *testing.T) {
 
 	emission.OptionalFourth = UndefinedOne
 
-	if emission.IsSetOptionalFourth() != false {
-		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), false)
+	if emission.IsSetOptionalFourth() != true {
+		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
 	emission.OptionalFourth = UndefinedTwo
 
 	if emission.IsSetOptionalFourth() != true {
-		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
+		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
 	emission.OptionalFourth = UndefinedThree
 
 	if emission.IsSetOptionalFourth() != true {
-		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
+		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
 	emission.OptionalFifth = DefinedOne
 
 	if emission.IsSetOptionalFifth() != true {
-		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
 	emission.OptionalFifth = DefinedTwo
 
 	if emission.IsSetOptionalFifth() != true {
-		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
 	emission.OptionalFifth = DefinedThree
 
 	if emission.IsSetOptionalFifth() != true {
-		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
 	emission.OptionalSixth = HeterogeneousOne
 
-	if emission.IsSetOptionalSixth() != false {
-		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), false)
+	if emission.IsSetOptionalSixth() != true {
+		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 
 	emission.OptionalSixth = HeterogeneousTwo
 
 	if emission.IsSetOptionalSixth() != true {
-		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 
 	emission.OptionalSixth = HeterogeneousThree
 
 	if emission.IsSetOptionalSixth() != true {
-		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 }

@@ -489,10 +489,19 @@ string t_go_generator::go_package() {
 string t_go_generator::go_imports() {
   return
     string("import (\n"
-           "        \"thrift\"\n"
-//           "        \"strings\"\n"
-           "        \"fmt\"\n"
-           ")\n\n");
+           "\t\"fmt\"\n"
+           "\t\"math\"\n"
+           "\t\"thrift\"\n"
+           ")\n\n"
+           "// This is a temporary safety measure to ensure that the `math'\n"
+           "// import does not trip up any generated output that may not\n"
+           "// happen to use the math import due to not having emited enums.\n"
+           "//\n"
+           "// Future clean-ups will deprecate the need for this.\n"
+           "func init() {\n"
+           "\tvar temporaryAndUnused int32 = math.MinInt32\n"
+           "\ttemporaryAndUnused++\n"
+           "}\n\n");
 }
 
 /**
@@ -571,7 +580,7 @@ void t_go_generator::generate_enum(t_enum* tenum) {
   }
   to_string_mapping <<
     indent() << "  }" << endl <<
-    indent() << "  return \"\"" << endl <<
+    indent() << "  return \"<UNSET>\"" << endl <<
     indent() << "}" << endl;
   from_string_mapping <<
     indent() << "  }" << endl <<
@@ -1012,9 +1021,13 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
           throw "compiler error: no const of base type " + t_base_type::t_base_name(tbase);
         }
       } else if(type->is_enum()) {
-        i_check_value = (field_default_value == NULL) ? 0 : field_default_value->get_integer();
-        out <<
-          indent() << "return int64(p." << field_name << ") != " << i_check_value << endl;
+        out << indent() << "return int64(p." << field_name << ") != ";
+        if (field_default_value == NULL) {
+          out << "math.MinInt32 - 1";
+        } else {
+          out << field_default_value->get_integer();
+        }
+        out << endl;
       } else if(type->is_struct() || type->is_xception()) {
         out <<
           indent() << "return p." << field_name << " != nil" << endl;

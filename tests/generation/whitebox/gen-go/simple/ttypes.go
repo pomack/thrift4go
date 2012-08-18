@@ -5,13 +5,24 @@
 package simple;
 
 import (
-        "thrift"
-        "fmt"
+	"fmt"
+	"math"
+	"thrift"
 )
 
+// This is a temporary safety measure to ensure that the `math'
+// import does not trip up any generated output that may not
+// happen to use the math import due to not having emited enums.
+//
+// Future clean-ups will deprecate the need for this.
+func init() {
+	var temporaryAndUnused int32 = math.MinInt32
+	temporaryAndUnused++
+}
 
 
-type UndefinedValues int
+
+type UndefinedValues int64
 const (
   UndefinedOne UndefinedValues = 0
   UndefinedTwo UndefinedValues = 1
@@ -23,7 +34,7 @@ func (p UndefinedValues) String() string {
   case UndefinedTwo: return "UndefinedTwo"
   case UndefinedThree: return "UndefinedThree"
   }
-  return ""
+  return "<UNSET>"
 }
 
 func FromUndefinedValuesString(s string) UndefinedValues {
@@ -43,7 +54,7 @@ func (p UndefinedValues) IsEnum() bool {
   return true
 }
 
-type DefinedValues int
+type DefinedValues int64
 const (
   DefinedOne DefinedValues = 1
   DefinedTwo DefinedValues = 2
@@ -55,7 +66,7 @@ func (p DefinedValues) String() string {
   case DefinedTwo: return "DefinedTwo"
   case DefinedThree: return "DefinedThree"
   }
-  return ""
+  return "<UNSET>"
 }
 
 func FromDefinedValuesString(s string) DefinedValues {
@@ -75,7 +86,7 @@ func (p DefinedValues) IsEnum() bool {
   return true
 }
 
-type HeterogeneousValues int
+type HeterogeneousValues int64
 const (
   HeterogeneousOne HeterogeneousValues = 0
   HeterogeneousTwo HeterogeneousValues = 2
@@ -89,7 +100,7 @@ func (p HeterogeneousValues) String() string {
   case HeterogeneousThree: return "HeterogeneousThree"
   case HeterogeneousFour: return "HeterogeneousFour"
   }
-  return ""
+  return "<UNSET>"
 }
 
 func FromHeterogeneousValuesString(s string) HeterogeneousValues {
@@ -141,20 +152,26 @@ func NewContainerOfEnums() *ContainerOfEnums {
     }),
   }
   {
+    output.First = math.MinInt32 - 1
+    output.Second = math.MinInt32 - 1
+    output.Third = math.MinInt32 - 1
+    output.OptionalFourth = math.MinInt32 - 1
+    output.OptionalFifth = math.MinInt32 - 1
+    output.OptionalSixth = math.MinInt32 - 1
   }
   return output
 }
 
 func (p *ContainerOfEnums) IsSetOptionalFourth() bool {
-  return int64(p.OptionalFourth) != 0
+  return int64(p.OptionalFourth) != math.MinInt32 - 1
 }
 
 func (p *ContainerOfEnums) IsSetOptionalFifth() bool {
-  return int64(p.OptionalFifth) != 0
+  return int64(p.OptionalFifth) != math.MinInt32 - 1
 }
 
 func (p *ContainerOfEnums) IsSetOptionalSixth() bool {
-  return int64(p.OptionalSixth) != 0
+  return int64(p.OptionalSixth) != math.MinInt32 - 1
 }
 
 func (p *ContainerOfEnums) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
