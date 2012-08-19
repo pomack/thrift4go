@@ -1021,13 +1021,8 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
           throw "compiler error: no const of base type " + t_base_type::t_base_name(tbase);
         }
       } else if(type->is_enum()) {
-        out << indent() << "return int64(p." << field_name << ") != ";
-        if (field_default_value == NULL) {
-          out << "math.MinInt32 - 1";
-        } else {
-          out << field_default_value->get_integer();
-        }
-        out << endl;
+        out << indent() << "return int64(p." << field_name << ") != "
+            << "math.MinInt32 - 1" << endl;
       } else if(type->is_struct() || type->is_xception()) {
         out <<
           indent() << "return p." << field_name << " != nil" << endl;

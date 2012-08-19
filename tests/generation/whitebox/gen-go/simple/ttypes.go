@@ -129,6 +129,9 @@ func (p HeterogeneousValues) IsEnum() bool {
  *  - OptionalFourth
  *  - OptionalFifth
  *  - OptionalSixth
+ *  - DefaultSeventh
+ *  - DefaultEighth
+ *  - DefaultNineth
  */
 type ContainerOfEnums struct {
   thrift.TStruct
@@ -138,6 +141,9 @@ type ContainerOfEnums struct {
   OptionalFourth UndefinedValues "optional_fourth"; // 4
   OptionalFifth DefinedValues "optional_fifth"; // 5
   OptionalSixth HeterogeneousValues "optional_sixth"; // 6
+  DefaultSeventh UndefinedValues "default_seventh"; // 7
+  DefaultEighth DefinedValues "default_eighth"; // 8
+  DefaultNineth HeterogeneousValues "default_nineth"; // 9
 }
 
 func NewContainerOfEnums() *ContainerOfEnums {
@@ -149,6 +155,9 @@ func NewContainerOfEnums() *ContainerOfEnums {
     thrift.NewTField("optional_fourth", thrift.I32, 4),
     thrift.NewTField("optional_fifth", thrift.I32, 5),
     thrift.NewTField("optional_sixth", thrift.I32, 6),
+    thrift.NewTField("default_seventh", thrift.I32, 7),
+    thrift.NewTField("default_eighth", thrift.I32, 8),
+    thrift.NewTField("default_nineth", thrift.I32, 9),
     }),
   }
   {
@@ -158,6 +167,9 @@ func NewContainerOfEnums() *ContainerOfEnums {
     output.OptionalFourth = math.MinInt32 - 1
     output.OptionalFifth = math.MinInt32 - 1
     output.OptionalSixth = math.MinInt32 - 1
+    output.DefaultSeventh =     0
+    output.DefaultEighth =     1
+    output.DefaultNineth =     0
   }
   return output
 }
@@ -172,6 +184,18 @@ func (p *ContainerOfEnums) IsSetOptionalFifth() bool {
 
 func (p *ContainerOfEnums) IsSetOptionalSixth() bool {
   return int64(p.OptionalSixth) != math.MinInt32 - 1
+}
+
+func (p *ContainerOfEnums) IsSetDefaultSeventh() bool {
+  return int64(p.DefaultSeventh) != math.MinInt32 - 1
+}
+
+func (p *ContainerOfEnums) IsSetDefaultEighth() bool {
+  return int64(p.DefaultEighth) != math.MinInt32 - 1
+}
+
+func (p *ContainerOfEnums) IsSetDefaultNineth() bool {
+  return int64(p.DefaultNineth) != math.MinInt32 - 1
 }
 
 func (p *ContainerOfEnums) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
@@ -257,6 +281,39 @@ func (p *ContainerOfEnums) Read(iprot thrift.TProtocol) (err thrift.TProtocolExc
         err = p.ReadField6(iprot)
         if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
       }
+    } else if fieldId == 7 || fieldName == "default_seventh" {
+      if fieldTypeId == thrift.I32 {
+        err = p.ReadField7(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == thrift.VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField7(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else if fieldId == 8 || fieldName == "default_eighth" {
+      if fieldTypeId == thrift.I32 {
+        err = p.ReadField8(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == thrift.VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField8(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
+    } else if fieldId == 9 || fieldName == "default_nineth" {
+      if fieldTypeId == thrift.I32 {
+        err = p.ReadField9(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else if fieldTypeId == thrift.VOID {
+        err = iprot.Skip(fieldTypeId)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      } else {
+        err = p.ReadField9(iprot)
+        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
+      }
     } else {
       err = iprot.Skip(fieldTypeId)
       if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
@@ -335,6 +392,39 @@ func (p *ContainerOfEnums) ReadFieldOptionalSixth(iprot thrift.TProtocol) (thrif
   return p.ReadField6(iprot)
 }
 
+func (p *ContainerOfEnums) ReadField7(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+  v12, err13 := iprot.ReadI32()
+  if err13 != nil { return thrift.NewTProtocolExceptionReadField(7, "default_seventh", p.ThriftName(), err13); }
+  p.DefaultSeventh = UndefinedValues(v12)
+  return err
+}
+
+func (p *ContainerOfEnums) ReadFieldDefaultSeventh(iprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.ReadField7(iprot)
+}
+
+func (p *ContainerOfEnums) ReadField8(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+  v14, err15 := iprot.ReadI32()
+  if err15 != nil { return thrift.NewTProtocolExceptionReadField(8, "default_eighth", p.ThriftName(), err15); }
+  p.DefaultEighth = DefinedValues(v14)
+  return err
+}
+
+func (p *ContainerOfEnums) ReadFieldDefaultEighth(iprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.ReadField8(iprot)
+}
+
+func (p *ContainerOfEnums) ReadField9(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+  v16, err17 := iprot.ReadI32()
+  if err17 != nil { return thrift.NewTProtocolExceptionReadField(9, "default_nineth", p.ThriftName(), err17); }
+  p.DefaultNineth = HeterogeneousValues(v16)
+  return err
+}
+
+func (p *ContainerOfEnums) ReadFieldDefaultNineth(iprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.ReadField9(iprot)
+}
+
 func (p *ContainerOfEnums) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
   err = oprot.WriteStructBegin("ContainerOfEnums")
   if err != nil { return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
@@ -349,6 +439,12 @@ func (p *ContainerOfEnums) Write(oprot thrift.TProtocol) (err thrift.TProtocolEx
   err = p.WriteField5(oprot)
   if err != nil { return err }
   err = p.WriteField6(oprot)
+  if err != nil { return err }
+  err = p.WriteField7(oprot)
+  if err != nil { return err }
+  err = p.WriteField8(oprot)
+  if err != nil { return err }
+  err = p.WriteField9(oprot)
   if err != nil { return err }
   err = oprot.WriteFieldStop()
   if err != nil { return thrift.NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
@@ -447,6 +543,54 @@ func (p *ContainerOfEnums) WriteFieldOptionalSixth(oprot thrift.TProtocol) (thri
   return p.WriteField6(oprot)
 }
 
+func (p *ContainerOfEnums) WriteField7(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+  if p.IsSetDefaultSeventh() {
+    err = oprot.WriteFieldBegin("default_seventh", thrift.I32, 7)
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(7, "default_seventh", p.ThriftName(), err); }
+    err = oprot.WriteI32(int32(p.DefaultSeventh))
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(7, "default_seventh", p.ThriftName(), err); }
+    err = oprot.WriteFieldEnd()
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(7, "default_seventh", p.ThriftName(), err); }
+  }
+  return err
+}
+
+func (p *ContainerOfEnums) WriteFieldDefaultSeventh(oprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.WriteField7(oprot)
+}
+
+func (p *ContainerOfEnums) WriteField8(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+  if p.IsSetDefaultEighth() {
+    err = oprot.WriteFieldBegin("default_eighth", thrift.I32, 8)
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(8, "default_eighth", p.ThriftName(), err); }
+    err = oprot.WriteI32(int32(p.DefaultEighth))
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(8, "default_eighth", p.ThriftName(), err); }
+    err = oprot.WriteFieldEnd()
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(8, "default_eighth", p.ThriftName(), err); }
+  }
+  return err
+}
+
+func (p *ContainerOfEnums) WriteFieldDefaultEighth(oprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.WriteField8(oprot)
+}
+
+func (p *ContainerOfEnums) WriteField9(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+  if p.IsSetDefaultNineth() {
+    err = oprot.WriteFieldBegin("default_nineth", thrift.I32, 9)
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(9, "default_nineth", p.ThriftName(), err); }
+    err = oprot.WriteI32(int32(p.DefaultNineth))
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(9, "default_nineth", p.ThriftName(), err); }
+    err = oprot.WriteFieldEnd()
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(9, "default_nineth", p.ThriftName(), err); }
+  }
+  return err
+}
+
+func (p *ContainerOfEnums) WriteFieldDefaultNineth(oprot thrift.TProtocol) (thrift.TProtocolException) {
+  return p.WriteField9(oprot)
+}
+
 func (p *ContainerOfEnums) TStructName() string {
   return "ContainerOfEnums"
 }
@@ -482,6 +626,9 @@ func (p *ContainerOfEnums) AttributeByFieldId(id int) interface{} {
   case 4: return p.OptionalFourth
   case 5: return p.OptionalFifth
   case 6: return p.OptionalSixth
+  case 7: return p.DefaultSeventh
+  case 8: return p.DefaultEighth
+  case 9: return p.DefaultNineth
   }
   return nil
 }
@@ -494,6 +641,9 @@ func (p *ContainerOfEnums) TStructFields() thrift.TFieldContainer {
     thrift.NewTField("optional_fourth", thrift.I32, 4),
     thrift.NewTField("optional_fifth", thrift.I32, 5),
     thrift.NewTField("optional_sixth", thrift.I32, 6),
+    thrift.NewTField("default_seventh", thrift.I32, 7),
+    thrift.NewTField("default_eighth", thrift.I32, 8),
+    thrift.NewTField("default_nineth", thrift.I32, 9),
     })
 }
 

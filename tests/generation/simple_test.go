@@ -136,6 +136,9 @@ func TestContainerOfEnumsFieldsSet(t *testing.T) {
 	emission.OptionalFourth = UndefinedTwo
 	emission.OptionalFifth = DefinedTwo
 	emission.OptionalSixth = HeterogeneousTwo
+	emission.DefaultSeventh = UndefinedTwo
+	emission.DefaultEighth = DefinedTwo
+	emission.DefaultNineth = HeterogeneousTwo
 }
 
 func TestContainerOfEnumsDefaultFieldsGet(t *testing.T) {
@@ -157,6 +160,18 @@ func TestContainerOfEnumsDefaultFieldsGet(t *testing.T) {
 			t.Errorf("%d. %q.String() => %q, want %q", i, definition, actual, "<UNSET>")
 		}
 	}
+
+	if emission.DefaultSeventh.String() != "UndefinedOne" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultSeventh, emission.DefaultSeventh.String(), "UndefinedOne")
+	}
+
+	if emission.DefaultEighth.String() != "DefinedOne" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultEighth, emission.DefaultEighth.String(), "DefinedOne")
+	}
+
+	if emission.DefaultNineth.String() != "HeterogeneousOne" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultNineth, emission.DefaultNineth.String(), "HeterogeneousOne")
+	}
 }
 
 // To validate https://github.com/pomack/thrift4go/issues/16.
@@ -170,6 +185,9 @@ func TestContainerOfEnumsOptionalFieldsAreSetStatusByDefault(t *testing.T) {
 		{emission.IsSetOptionalFourth(), false},
 		{emission.IsSetOptionalFifth(), false},
 		{emission.IsSetOptionalSixth(), false},
+		{emission.IsSetDefaultSeventh(), true},
+		{emission.IsSetDefaultEighth(), true},
+		{emission.IsSetDefaultNineth(), true},
 	}
 
 	for i, definition := range valueAndExpected {
@@ -238,5 +256,59 @@ func TestContainerOfEnumsOptionalFieldsAreSetStatusAfterSet(t *testing.T) {
 
 	if emission.IsSetOptionalSixth() != true {
 		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+	}
+
+	emission.DefaultSeventh = UndefinedOne
+
+	if emission.IsSetDefaultSeventh() != true {
+		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
+	}
+
+	emission.DefaultSeventh = UndefinedTwo
+
+	if emission.IsSetDefaultSeventh() != true {
+		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
+	}
+
+	emission.DefaultSeventh = UndefinedThree
+
+	if emission.IsSetDefaultSeventh() != true {
+		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
+	}
+
+	emission.DefaultEighth = DefinedOne
+
+	if emission.IsSetDefaultEighth() != true {
+		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
+	}
+
+	emission.DefaultEighth = DefinedTwo
+
+	if emission.IsSetDefaultEighth() != true {
+		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
+	}
+
+	emission.DefaultEighth = DefinedThree
+
+	if emission.IsSetDefaultEighth() != true {
+		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
+	}
+
+	emission.DefaultNineth = HeterogeneousOne
+
+	if emission.IsSetDefaultNineth() != true {
+		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
+	}
+
+	emission.DefaultNineth = HeterogeneousTwo
+
+	if emission.IsSetDefaultNineth() != true {
+		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
+	}
+
+	emission.DefaultNineth = HeterogeneousThree
+
+	if emission.IsSetDefaultNineth() != true {
+		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
 	}
 }

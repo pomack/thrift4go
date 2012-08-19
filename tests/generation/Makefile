@@ -19,11 +19,11 @@ test-stamp: test-exercise-stamp
 
 test-exercise-stamp: test-compile-stamp
 	cp -f simple_test.go gen-go/simple
-	cd gen-go/simple && go test .
+	cd gen-go/simple && go test -v -x .
 	touch $@
 
 test-compile-stamp: test-validate-stamp
-	cd gen-go/simple && go build ttypes.go
+	cd gen-go/simple && go build -v -x ttypes.go
 	touch $@
 
 test-validate-stamp: test-generation-stamp
