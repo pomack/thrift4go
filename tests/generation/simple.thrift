@@ -28,3 +28,7 @@ struct ContainerOfEnums {
   8: optional DefinedValues default_eighth = DefinedValues.DefinedOne,
   9: optional HeterogeneousValues default_nineth = HeterogeneousValues.HeterogeneousOne,
 }
+
+service ContainerOfEnumsTestService {
+  ContainerOfEnums echo(1: ContainerOfEnums message);
+}
