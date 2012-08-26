@@ -1,3 +1,5 @@
+namespace java simple
+
 enum UndefinedValues {
   UndefinedOne,
   UndefinedTwo,
