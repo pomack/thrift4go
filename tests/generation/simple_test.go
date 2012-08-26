@@ -394,6 +394,18 @@ func TestWireFormatWithDefaultPayload(t *testing.T) {
 			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)\n", i, name, emission.OptionalSixth, incoming.OptionalSixth)
 		}
 
+		if emission.DefaultSeventh != incoming.DefaultSeventh {
+			t.Errorf("%d (%s) emission.DefaultSeventh (%q) != incoming.DefaultSeventh (%q)\n", i, name, emission.DefaultSeventh, incoming.DefaultSeventh)
+		}
+
+		if emission.DefaultEighth != incoming.DefaultEighth {
+			t.Errorf("%d (%s) emission.DefaultEighth (%q) != incoming.DefaultEighth (%q)\n", i, name, emission.DefaultEighth, incoming.DefaultEighth)
+		}
+
+		if emission.DefaultNineth != incoming.DefaultNineth {
+			t.Errorf("%d (%s) emission.DefaultNineth (%q) != incoming.DefaultNineth (%q)\n", i, name, emission.DefaultNineth, incoming.DefaultNineth)
+		}
+
 		if emission.IsSetOptionalFourth() != incoming.IsSetOptionalFourth() {
 			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)\n", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
 		}
@@ -404,6 +416,18 @@ func TestWireFormatWithDefaultPayload(t *testing.T) {
 
 		if emission.IsSetOptionalSixth() != incoming.IsSetOptionalSixth() {
 			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)\n", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
+		}
+
+		if emission.IsSetDefaultSeventh() != incoming.IsSetDefaultSeventh() {
+			t.Errorf("%d (%s) emission.IsSetDefaultSeventh (%q) != incoming.IsSetDefaultSeventh (%q)\n", i, name, emission.IsSetDefaultSeventh(), incoming.IsSetDefaultSeventh())
+		}
+
+		if emission.IsSetDefaultEighth() != incoming.IsSetDefaultEighth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultEighth (%q) != incoming.IsSetDefaultEighth (%q)\n", i, name, emission.IsSetDefaultEighth(), incoming.IsSetDefaultEighth())
+		}
+
+		if emission.IsSetDefaultNineth() != incoming.IsSetDefaultNineth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultNineth (%q) != incoming.IsSetDefaultNineth (%q)\n", i, name, emission.IsSetDefaultNineth(), incoming.IsSetDefaultNineth())
 		}
 	}
 }
@@ -493,6 +517,18 @@ func TestWireFormatWithSetPayload(t *testing.T) {
 			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)\n", i, name, emission.OptionalSixth, incoming.OptionalSixth)
 		}
 
+		if emission.DefaultSeventh != incoming.DefaultSeventh {
+			t.Errorf("%d (%s) emission.DefaultSeventh (%q) != incoming.DefaultSeventh (%q)\n", i, name, emission.DefaultSeventh, incoming.DefaultSeventh)
+		}
+
+		if emission.DefaultEighth != incoming.DefaultEighth {
+			t.Errorf("%d (%s) emission.DefaultEighth (%q) != incoming.DefaultEighth (%q)\n", i, name, emission.DefaultEighth, incoming.DefaultEighth)
+		}
+
+		if emission.DefaultNineth != incoming.DefaultNineth {
+			t.Errorf("%d (%s) emission.DefaultNineth (%q) != incoming.DefaultNineth (%q)\n", i, name, emission.DefaultNineth, incoming.DefaultNineth)
+		}
+
 		if emission.IsSetOptionalFourth() != incoming.IsSetOptionalFourth() {
 			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)\n", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
 		}
@@ -504,6 +540,17 @@ func TestWireFormatWithSetPayload(t *testing.T) {
 		if emission.IsSetOptionalSixth() != incoming.IsSetOptionalSixth() {
 			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)\n", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
 		}
-	}
 
+		if emission.IsSetDefaultSeventh() != incoming.IsSetDefaultSeventh() {
+			t.Errorf("%d (%s) emission.IsSetDefaultSeventh (%q) != incoming.IsSetDefaultSeventh (%q)\n", i, name, emission.IsSetDefaultSeventh(), incoming.IsSetDefaultSeventh())
+		}
+
+		if emission.IsSetDefaultEighth() != incoming.IsSetDefaultEighth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultEighth (%q) != incoming.IsSetDefaultEighth (%q)\n", i, name, emission.IsSetDefaultEighth(), incoming.IsSetDefaultEighth())
+		}
+
+		if emission.IsSetDefaultNineth() != incoming.IsSetDefaultNineth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultNineth (%q) != incoming.IsSetDefaultNineth (%q)\n", i, name, emission.IsSetDefaultNineth(), incoming.IsSetDefaultNineth())
+		}
+	}
 }
