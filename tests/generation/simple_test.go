@@ -2,6 +2,7 @@ package simple
 
 import (
 	"testing"
+	"thrift"
 )
 
 func TestUndefinedValuesString(t *testing.T) {
@@ -245,4 +246,199 @@ func TestContainerOfEnumsOptionalFieldsAreSetStatusAfterSet(t *testing.T) {
 	if emission.IsSetOptionalSixth() != true {
 		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
+}
+
+type protocolBuilder func() thrift.TProtocol
+
+func TestWireFormatWithDefaultPayload(t *testing.T) {
+	var transport thrift.TTransport
+
+	var protocols = []struct {
+		name    string
+		builder protocolBuilder
+	}{
+		{
+			"TBinaryProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTBinaryProtocolTransport(transport)
+			},
+		},
+		{
+			"TCompactProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTCompactProtocol(transport)
+			},
+		},
+		{
+			"TJSONProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTJSONProtocol(transport)
+			},
+		},
+		{
+			"TSimpleJSONProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTSimpleJSONProtocol(transport)
+			},
+		},
+	}
+
+	for i, definition := range protocols {
+		transport = thrift.NewTMemoryBuffer()
+		defer transport.Close()
+		protocol := definition.builder()
+		name := definition.name
+
+		emission := NewContainerOfEnums()
+
+		if err := emission.Write(protocol); err != nil {
+			t.Fatalf("%d (%s): Could not emit simple %q to JSON.", i, name, emission)
+		}
+
+		if err := protocol.Flush(); err != nil {
+			t.Fatalf("%d (%s): Could not flush emission.", i, name)
+		}
+
+		incoming := NewContainerOfEnums()
+
+		if err := incoming.Read(protocol); err != nil {
+			t.Fatalf("%d (%s): Could not read from buffer: %q\n", i, name, err)
+		}
+
+		if emission.First != incoming.First {
+			t.Errorf("%d (%s) emission.First (%q) != incoming.First (%q)\n", i, name, emission.First, incoming.First)
+		}
+
+		if emission.Second != incoming.Second {
+			t.Errorf("%d (%s) emission.Second (%q) != incoming.Second (%q)\n", i, name, emission.Second, incoming.Second)
+		}
+
+		if emission.Third != incoming.Third {
+			t.Errorf("%d (%s) emission.Third (%q) != incoming.Third (%q)\n", i, name, emission.Third, incoming.Third)
+		}
+
+		if emission.OptionalFourth != incoming.OptionalFourth {
+			t.Errorf("%d (%s) emission.OptionalFourth (%q) != incoming.OptionalFourth (%q)\n", i, name, emission.OptionalFourth, incoming.OptionalFourth)
+		}
+
+		if emission.OptionalFifth != incoming.OptionalFifth {
+			t.Errorf("%d (%s) emission.OptionalFifth (%q) != incoming.OptionalFifth (%q)\n", i, name, emission.OptionalFifth, incoming.OptionalFifth)
+		}
+
+		if emission.OptionalSixth != incoming.OptionalSixth {
+			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)\n", i, name, emission.OptionalSixth, incoming.OptionalSixth)
+		}
+
+		if emission.IsSetOptionalFourth() != incoming.IsSetOptionalFourth() {
+			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)\n", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
+		}
+
+		if emission.IsSetOptionalFifth() != incoming.IsSetOptionalFifth() {
+			t.Errorf("%d (%s) emission.IsSetOptionalFifth (%q) != incoming.IsSetOptionalFifth (%q)\n", i, name, emission.IsSetOptionalFifth(), incoming.IsSetOptionalFifth())
+		}
+
+		if emission.IsSetOptionalSixth() != incoming.IsSetOptionalSixth() {
+			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)\n", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
+		}
+	}
+}
+
+func TestWireFormatWithSetPayload(t *testing.T) {
+	var transport thrift.TTransport
+
+	var protocols = []struct {
+		name    string
+		builder protocolBuilder
+	}{
+		{
+			"TBinaryProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTBinaryProtocolTransport(transport)
+			},
+		},
+		{
+			"TCompactProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTCompactProtocol(transport)
+			},
+		},
+		{
+			"TJSONProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTJSONProtocol(transport)
+			},
+		},
+		{
+			"TSimpleJSONProtocol",
+			func() thrift.TProtocol {
+				return thrift.NewTSimpleJSONProtocol(transport)
+			},
+		},
+	}
+
+	for i, definition := range protocols {
+		transport = thrift.NewTMemoryBuffer()
+		defer transport.Close()
+		protocol := definition.builder()
+		name := definition.name
+
+		emission := NewContainerOfEnums()
+		emission.First = UndefinedTwo
+		emission.Second = DefinedTwo
+		emission.Third = HeterogeneousTwo
+		emission.OptionalFourth = UndefinedThree
+		emission.OptionalFifth = DefinedThree
+		emission.OptionalSixth = HeterogeneousThree
+
+		if err := emission.Write(protocol); err != nil {
+			t.Fatalf("%d (%s): Could not emit simple %q to JSON.", i, name, emission)
+		}
+
+		if err := protocol.Flush(); err != nil {
+			t.Fatalf("%d (%s): Could not flush emission.", i, name)
+		}
+
+		incoming := NewContainerOfEnums()
+
+		if err := incoming.Read(protocol); err != nil {
+			t.Fatalf("%d (%s): Could not read from buffer: %q\n", i, name, err)
+		}
+
+		if emission.First != incoming.First {
+			t.Errorf("%d (%s) emission.First (%q) != incoming.First (%q)\n", i, name, emission.First, incoming.First)
+		}
+
+		if emission.Second != incoming.Second {
+			t.Errorf("%d (%s) emission.Second (%q) != incoming.Second (%q)\n", i, name, emission.Second, incoming.Second)
+		}
+
+		if emission.Third != incoming.Third {
+			t.Errorf("%d (%s) emission.Third (%q) != incoming.Third (%q)\n", i, name, emission.Third, incoming.Third)
+		}
+
+		if emission.OptionalFourth != incoming.OptionalFourth {
+			t.Errorf("%d (%s) emission.OptionalFourth (%q) != incoming.OptionalFourth (%q)\n", i, name, emission.OptionalFourth, incoming.OptionalFourth)
+		}
+
+		if emission.OptionalFifth != incoming.OptionalFifth {
+			t.Errorf("%d (%s) emission.OptionalFifth (%q) != incoming.OptionalFifth (%q)\n", i, name, emission.OptionalFifth, incoming.OptionalFifth)
+		}
+
+		if emission.OptionalSixth != incoming.OptionalSixth {
+			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)\n", i, name, emission.OptionalSixth, incoming.OptionalSixth)
+		}
+
+		if emission.IsSetOptionalFourth() != incoming.IsSetOptionalFourth() {
+			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)\n", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
+		}
+
+		if emission.IsSetOptionalFifth() != incoming.IsSetOptionalFifth() {
+			t.Errorf("%d (%s) emission.IsSetOptionalFifth (%q) != incoming.IsSetOptionalFifth (%q)\n", i, name, emission.IsSetOptionalFifth(), incoming.IsSetOptionalFifth())
+		}
+
+		if emission.IsSetOptionalSixth() != incoming.IsSetOptionalSixth() {
+			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)\n", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
+		}
+	}
+
 }
