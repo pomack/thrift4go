@@ -975,13 +975,25 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
   vector<t_field*>::const_iterator f_iter;
   const string escaped_tstruct_name(escape_string(tstruct->get_name()));
   for (f_iter = fields.begin(); f_iter != fields.end(); ++f_iter) {
+    t_type* type = get_true_type((*f_iter)->get_type());
+    const string field_name(publicize((*f_iter)->get_name()));
+
+    if(type->is_enum()) {
+      out << "func (p *" << tstruct_name << ") IsSet" << field_name << "() bool {" << endl;
+      indent_up();
+      out << indent() << "return int64(p." << field_name << ") != "
+          << "math.MinInt32 - 1" << endl;
+      indent_down();
+      out << "}" << endl << endl;
+
+      continue;
+    }
+
     if((*f_iter)->get_req() == t_field::T_OPTIONAL) {
-      const string field_name(publicize((*f_iter)->get_name()));
       t_const_value* field_default_value = (*f_iter)->get_value();
       out <<
         indent() << "func (p *" << tstruct_name << ") IsSet" << field_name << "() bool {" << endl;
       indent_up();
-      t_type* type = get_true_type((*f_iter)->get_type());
       string s_check_value;
       int64_t i_check_value;
       double d_check_value;
@@ -1020,9 +1032,6 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
         default:
           throw "compiler error: no const of base type " + t_base_type::t_base_name(tbase);
         }
-      } else if(type->is_enum()) {
-        out << indent() << "return int64(p." << field_name << ") != "
-            << "math.MinInt32 - 1" << endl;
       } else if(type->is_struct() || type->is_xception()) {
         out <<
           indent() << "return p." << field_name << " != nil" << endl;
