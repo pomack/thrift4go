@@ -174,6 +174,18 @@ func NewContainerOfEnums() *ContainerOfEnums {
   return output
 }
 
+func (p *ContainerOfEnums) IsSetFirst() bool {
+  return int64(p.First) != math.MinInt32 - 1
+}
+
+func (p *ContainerOfEnums) IsSetSecond() bool {
+  return int64(p.Second) != math.MinInt32 - 1
+}
+
+func (p *ContainerOfEnums) IsSetThird() bool {
+  return int64(p.Third) != math.MinInt32 - 1
+}
+
 func (p *ContainerOfEnums) IsSetOptionalFourth() bool {
   return int64(p.OptionalFourth) != math.MinInt32 - 1
 }
