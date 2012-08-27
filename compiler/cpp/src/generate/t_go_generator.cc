@@ -974,21 +974,25 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
   const vector<t_field*>& fields = tstruct->get_members();
   vector<t_field*>::const_iterator f_iter;
   const string escaped_tstruct_name(escape_string(tstruct->get_name()));
+
   for (f_iter = fields.begin(); f_iter != fields.end(); ++f_iter) {
     t_type* type = get_true_type((*f_iter)->get_type());
 
     if((*f_iter)->get_req() == t_field::T_OPTIONAL || type->is_enum()) {
       const string field_name(publicize((*f_iter)->get_name()));
-
       t_const_value* field_default_value = (*f_iter)->get_value();
+
       out <<
         indent() << "func (p *" << tstruct_name << ") IsSet" << field_name << "() bool {" << endl;
       indent_up();
+
       string s_check_value;
       int64_t i_check_value;
       double d_check_value;
+
       if(type->is_base_type()) {
         t_base_type::t_base tbase = ((t_base_type*)type)->get_base();
+
         switch (tbase) {
         case t_base_type::TYPE_STRING:
           if (((t_base_type*)type)->is_binary()) {
@@ -1226,12 +1230,12 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
       field_name = (*f_iter)->get_name();
       escape_field_name = escape_string(field_name);
       fieldId = (*f_iter)->get_key();
+
       out <<
         indent() << "err = p.WriteField" << fieldId << "(oprot)" << endl <<
         indent() << "if err != nil { return err }" << endl;
     }
   }
-
   // Write the struct map
   out <<
     indent() << "err = oprot.WriteFieldStop()" << endl <<
@@ -1260,7 +1264,8 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
         indent() << "if p." << publicize(variable_name_to_go_name(field_name)) << " != nil {" << endl;
       indent_up();
     }
-    if(field_required == t_field::T_OPTIONAL) {
+
+    if(field_required == t_field::T_OPTIONAL || (*f_iter)->get_type()->is_enum()) {
       out <<
         indent() << "if p.IsSet" << publicize(variable_name_to_go_name(field_name)) << "() {" << endl;
       indent_up();
@@ -1285,7 +1290,7 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
                             fieldId << ", \"" <<
                             escape_field_name << "\", " <<
                             "p.ThriftName(), err); }" << endl;
-    if(field_required == t_field::T_OPTIONAL) {
+    if(field_required == t_field::T_OPTIONAL || (*f_iter)->get_type()->is_enum()) {
       indent_down();
       out <<
         indent() << "}" << endl;

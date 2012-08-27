@@ -466,12 +466,14 @@ func (p *ContainerOfEnums) Write(oprot thrift.TProtocol) (err thrift.TProtocolEx
 }
 
 func (p *ContainerOfEnums) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
-  err = oprot.WriteFieldBegin("first", thrift.I32, 1)
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
-  err = oprot.WriteI32(int32(p.First))
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
-  err = oprot.WriteFieldEnd()
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
+  if p.IsSetFirst() {
+    err = oprot.WriteFieldBegin("first", thrift.I32, 1)
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
+    err = oprot.WriteI32(int32(p.First))
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
+    err = oprot.WriteFieldEnd()
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "first", p.ThriftName(), err); }
+  }
   return err
 }
 
@@ -480,12 +482,14 @@ func (p *ContainerOfEnums) WriteFieldFirst(oprot thrift.TProtocol) (thrift.TProt
 }
 
 func (p *ContainerOfEnums) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
-  err = oprot.WriteFieldBegin("second", thrift.I32, 2)
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
-  err = oprot.WriteI32(int32(p.Second))
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
-  err = oprot.WriteFieldEnd()
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
+  if p.IsSetSecond() {
+    err = oprot.WriteFieldBegin("second", thrift.I32, 2)
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
+    err = oprot.WriteI32(int32(p.Second))
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
+    err = oprot.WriteFieldEnd()
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(2, "second", p.ThriftName(), err); }
+  }
   return err
 }
 
@@ -494,12 +498,14 @@ func (p *ContainerOfEnums) WriteFieldSecond(oprot thrift.TProtocol) (thrift.TPro
 }
 
 func (p *ContainerOfEnums) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
-  err = oprot.WriteFieldBegin("third", thrift.I32, 3)
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
-  err = oprot.WriteI32(int32(p.Third))
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
-  err = oprot.WriteFieldEnd()
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
+  if p.IsSetThird() {
+    err = oprot.WriteFieldBegin("third", thrift.I32, 3)
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
+    err = oprot.WriteI32(int32(p.Third))
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
+    err = oprot.WriteFieldEnd()
+    if err != nil { return thrift.NewTProtocolExceptionWriteField(3, "third", p.ThriftName(), err); }
+  }
   return err
 }
 
