@@ -1,6 +1,7 @@
 THRIFT_ARCHIVE_URL = https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz
 TEST_ARTIFACTS = \
   test-compilation-stamp \
+	test-configuration-stamp \
   test-installation-stamp \
   test-merge-stamp \
   test-stamp \
@@ -24,7 +25,7 @@ test-merge-stamp: thrift-extraction-stamp
 	cd $(THRIFT4GO) && bash ./scripts/merge_and_build.sh -b
 	touch $@
 
-test-compilation-stamp: test-merge-stamp
+test-configuration-stamp: test-merge-stamp
 	cd $(THRIFT) && ./configure \
 		--with-go \
 		--without-c_glib \
@@ -35,6 +36,9 @@ test-compilation-stamp: test-merge-stamp
 		--without-php \
 		--without-python \
 		--without-ruby
+	touch $@
+
+test-compilation-stamp: test-configuration-stamp
 	cd $(THRIFT) && make
 	touch $@
 

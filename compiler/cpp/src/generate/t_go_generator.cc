@@ -489,10 +489,19 @@ string t_go_generator::go_package() {
 string t_go_generator::go_imports() {
   return
     string("import (\n"
-           "        \"thrift\"\n"
-//           "        \"strings\"\n"
-           "        \"fmt\"\n"
-           ")\n\n");
+           "\t\"fmt\"\n"
+           "\t\"math\"\n"
+           "\t\"thrift\"\n"
+           ")\n\n"
+           "// This is a temporary safety measure to ensure that the `math'\n"
+           "// import does not trip up any generated output that may not\n"
+           "// happen to use the math import due to not having emited enums.\n"
+           "//\n"
+           "// Future clean-ups will deprecate the need for this.\n"
+           "func init() {\n"
+           "\tvar temporaryAndUnused int32 = math.MinInt32\n"
+           "\ttemporaryAndUnused++\n"
+           "}\n\n");
 }
 
 /**
@@ -534,7 +543,7 @@ void t_go_generator::generate_enum(t_enum* tenum) {
 
   generate_go_docstring(f_types_, tenum);
   f_types_ <<
-    "type " << tenum_name << " int" << endl <<
+    "type " << tenum_name << " int64" << endl <<
     "const (" << endl;
 
   to_string_mapping <<
@@ -571,7 +580,7 @@ void t_go_generator::generate_enum(t_enum* tenum) {
   }
   to_string_mapping <<
     indent() << "  }" << endl <<
-    indent() << "  return \"\"" << endl <<
+    indent() << "  return \"<UNSET>\"" << endl <<
     indent() << "}" << endl;
   from_string_mapping <<
     indent() << "  }" << endl <<
@@ -864,7 +873,12 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
     //t_type* type = (*m_iter)->get_type();
     string fieldName(publicize((*m_iter)->get_name()));
     string fullFieldName = "output." + fieldName;
-    if ((*m_iter)->get_value() != NULL) {
+    t_type* type = get_true_type((*m_iter)->get_type());
+
+    if (type->is_enum() && (*m_iter)->get_value() == NULL) {
+      out <<
+        indent() << fullFieldName << " = math.MinInt32 - 1" << endl;
+    } else if ((*m_iter)->get_value() != NULL) {
       out <<
         indent() << fullFieldName << " = " <<
         render_field_default_value(*m_iter, fullFieldName) << endl;
@@ -960,19 +974,25 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
   const vector<t_field*>& fields = tstruct->get_members();
   vector<t_field*>::const_iterator f_iter;
   const string escaped_tstruct_name(escape_string(tstruct->get_name()));
+
   for (f_iter = fields.begin(); f_iter != fields.end(); ++f_iter) {
-    if((*f_iter)->get_req() == t_field::T_OPTIONAL) {
+    t_type* type = get_true_type((*f_iter)->get_type());
+
+    if((*f_iter)->get_req() == t_field::T_OPTIONAL || type->is_enum()) {
       const string field_name(publicize((*f_iter)->get_name()));
       t_const_value* field_default_value = (*f_iter)->get_value();
+
       out <<
         indent() << "func (p *" << tstruct_name << ") IsSet" << field_name << "() bool {" << endl;
       indent_up();
-      t_type* type = get_true_type((*f_iter)->get_type());
+
       string s_check_value;
       int64_t i_check_value;
       double d_check_value;
+
       if(type->is_base_type()) {
         t_base_type::t_base tbase = ((t_base_type*)type)->get_base();
+
         switch (tbase) {
         case t_base_type::TYPE_STRING:
           if (((t_base_type*)type)->is_binary()) {
@@ -1006,10 +1026,9 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
         default:
           throw "compiler error: no const of base type " + t_base_type::t_base_name(tbase);
         }
-      } else if(type->is_enum()) {
-        i_check_value = (field_default_value == NULL) ? 0 : field_default_value->get_integer();
-        out <<
-          indent() << "return int64(p." << field_name << ") != " << i_check_value << endl;
+      } else if (type->is_enum()) {
+        out << indent() << "return int64(p." << field_name << ") != "
+            << "math.MinInt32 - 1" << endl;
       } else if(type->is_struct() || type->is_xception()) {
         out <<
           indent() << "return p." << field_name << " != nil" << endl;
@@ -1211,12 +1230,12 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
       field_name = (*f_iter)->get_name();
       escape_field_name = escape_string(field_name);
       fieldId = (*f_iter)->get_key();
+
       out <<
         indent() << "err = p.WriteField" << fieldId << "(oprot)" << endl <<
         indent() << "if err != nil { return err }" << endl;
     }
   }
-
   // Write the struct map
   out <<
     indent() << "err = oprot.WriteFieldStop()" << endl <<
@@ -1245,7 +1264,8 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
         indent() << "if p." << publicize(variable_name_to_go_name(field_name)) << " != nil {" << endl;
       indent_up();
     }
-    if(field_required == t_field::T_OPTIONAL) {
+
+    if(field_required == t_field::T_OPTIONAL || (*f_iter)->get_type()->is_enum()) {
       out <<
         indent() << "if p.IsSet" << publicize(variable_name_to_go_name(field_name)) << "() {" << endl;
       indent_up();
@@ -1270,7 +1290,7 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
                             fieldId << ", \"" <<
                             escape_field_name << "\", " <<
                             "p.ThriftName(), err); }" << endl;
-    if(field_required == t_field::T_OPTIONAL) {
+    if(field_required == t_field::T_OPTIONAL || (*f_iter)->get_type()->is_enum()) {
       indent_down();
       out <<
         indent() << "}" << endl;
@@ -1317,7 +1337,6 @@ void t_go_generator::generate_service(t_service* tservice) {
 
   f_service_ << endl;
 
-  // Generate the three main parts of the service (well, two for now in PHP)
   generate_service_interface(tservice);
   generate_service_client(tservice);
   generate_service_server(tservice);
@@ -1696,6 +1715,7 @@ void t_go_generator::generate_service_remote(t_service* tservice) {
     indent() << "import (" << endl <<
     indent() << "        \"flag\"" << endl <<
     indent() << "        \"fmt\"" << endl <<
+    indent() << "        \"math\"" << endl <<
     indent() << "        \"net\"" << endl <<
     indent() << "        \"net/url\"" << endl <<
     indent() << "        \"os\"" << endl <<
@@ -2640,7 +2660,7 @@ void t_go_generator::generate_serialize_field(ofstream &out,
         out << "WriteDouble(float64(" << name << "))";
         break;
       default:
-        throw "compiler error: no PHP name for base type " + t_base_type::t_base_name(tbase);
+        throw "compiler error: no Go name for base type " + t_base_type::t_base_name(tbase);
       }
     } else if (type->is_enum()) {
       out << "WriteI32(int32(" << name << "))";
