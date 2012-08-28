@@ -123,7 +123,7 @@ func TestContainerOfEnumsNew(t *testing.T) {
 	emission := NewContainerOfEnums()
 
 	if emission == nil {
-		t.Fatalf("NewContainerOfEnums emitted nil, not the struct.")
+		t.Errorf("NewContainerOfEnums emitted nil, not the struct.")
 	}
 }
 
@@ -136,33 +136,41 @@ func TestContainerOfEnumsFieldsSet(t *testing.T) {
 	emission.OptionalFourth = UndefinedTwo
 	emission.OptionalFifth = DefinedTwo
 	emission.OptionalSixth = HeterogeneousTwo
+	emission.DefaultSeventh = UndefinedTwo
+	emission.DefaultEighth = DefinedTwo
+	emission.DefaultNineth = HeterogeneousTwo
 }
 
 func TestContainerOfEnumsDefaultFieldsGet(t *testing.T) {
 	emission := NewContainerOfEnums()
 
-	if emission.First.String() != "UndefinedOne" {
-		t.Fatalf("emission.First = %q, want %q", emission.First.String(), "UndefinedOne")
+	definitions := []thrift.Enumer{
+		emission.First,
+		emission.Second,
+		emission.Third,
+		emission.OptionalFourth,
+		emission.OptionalFifth,
+		emission.OptionalSixth,
 	}
 
-	if emission.Second.String() != "" {
-		t.Fatalf("emission.Second = %q, want %q", emission.Second.String(), "")
+	for i, definition := range definitions {
+		actual := definition.String()
+
+		if "<UNSET>" != actual {
+			t.Errorf("%d. %q.String() => %q, want %q", i, definition, actual, "<UNSET>")
+		}
 	}
 
-	if emission.Third.String() != "HeterogeneousOne" {
-		t.Fatalf("emission.Third = %q, want %q", emission.Third.String(), "HeterogeneousOne")
+	if emission.DefaultSeventh.String() != "UndefinedOne" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultSeventh, emission.DefaultSeventh.String(), "UndefinedOne")
 	}
 
-	if emission.OptionalFourth.String() != "UndefinedOne" {
-		t.Fatalf("emission.OptionalFourth = %q, want %q", emission.OptionalFourth.String(), "UndefinedOne")
+	if emission.DefaultEighth.String() != "DefinedOne" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultEighth, emission.DefaultEighth.String(), "DefinedOne")
 	}
 
-	if emission.OptionalFifth.String() != "" {
-		t.Fatalf("emission.OptionalFifth = %q, want %q", emission.OptionalFifth.String(), "")
-	}
-
-	if emission.OptionalSixth.String() != "HeterogeneousOne" {
-		t.Fatalf("emission.OptionalSixth = %q, want %q", emission.OptionalSixth.String(), "HeterogeneousOne")
+	if emission.DefaultNineth.String() != "HeterogeneousOne" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultNineth, emission.DefaultNineth.String(), "HeterogeneousOne")
 	}
 }
 
@@ -177,6 +185,9 @@ func TestContainerOfEnumsOptionalFieldsAreSetStatusByDefault(t *testing.T) {
 		{emission.IsSetOptionalFourth(), false},
 		{emission.IsSetOptionalFifth(), false},
 		{emission.IsSetOptionalSixth(), false},
+		{emission.IsSetDefaultSeventh(), true},
+		{emission.IsSetDefaultEighth(), true},
+		{emission.IsSetDefaultNineth(), true},
 	}
 
 	for i, definition := range valueAndExpected {
@@ -195,63 +206,117 @@ func TestContainerOfEnumsOptionalFieldsAreSetStatusAfterSet(t *testing.T) {
 
 	emission.OptionalFourth = UndefinedOne
 
-	if emission.IsSetOptionalFourth() != false {
-		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), false)
+	if emission.IsSetOptionalFourth() != true {
+		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
 	emission.OptionalFourth = UndefinedTwo
 
 	if emission.IsSetOptionalFourth() != true {
-		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
+		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
 	emission.OptionalFourth = UndefinedThree
 
 	if emission.IsSetOptionalFourth() != true {
-		t.Fatalf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
+		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
 	emission.OptionalFifth = DefinedOne
 
 	if emission.IsSetOptionalFifth() != true {
-		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
 	emission.OptionalFifth = DefinedTwo
 
 	if emission.IsSetOptionalFifth() != true {
-		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
 	emission.OptionalFifth = DefinedThree
 
 	if emission.IsSetOptionalFifth() != true {
-		t.Fatalf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
+		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
 	emission.OptionalSixth = HeterogeneousOne
 
-	if emission.IsSetOptionalSixth() != false {
-		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), false)
+	if emission.IsSetOptionalSixth() != true {
+		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 
 	emission.OptionalSixth = HeterogeneousTwo
 
 	if emission.IsSetOptionalSixth() != true {
-		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 
 	emission.OptionalSixth = HeterogeneousThree
 
 	if emission.IsSetOptionalSixth() != true {
-		t.Fatalf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
+	}
+
+	emission.DefaultSeventh = UndefinedOne
+
+	if emission.IsSetDefaultSeventh() != true {
+		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
+	}
+
+	emission.DefaultSeventh = UndefinedTwo
+
+	if emission.IsSetDefaultSeventh() != true {
+		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
+	}
+
+	emission.DefaultSeventh = UndefinedThree
+
+	if emission.IsSetDefaultSeventh() != true {
+		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
+	}
+
+	emission.DefaultEighth = DefinedOne
+
+	if emission.IsSetDefaultEighth() != true {
+		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
+	}
+
+	emission.DefaultEighth = DefinedTwo
+
+	if emission.IsSetDefaultEighth() != true {
+		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
+	}
+
+	emission.DefaultEighth = DefinedThree
+
+	if emission.IsSetDefaultEighth() != true {
+		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
+	}
+
+	emission.DefaultNineth = HeterogeneousOne
+
+	if emission.IsSetDefaultNineth() != true {
+		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
+	}
+
+	emission.DefaultNineth = HeterogeneousTwo
+
+	if emission.IsSetDefaultNineth() != true {
+		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
+	}
+
+	emission.DefaultNineth = HeterogeneousThree
+
+	if emission.IsSetDefaultNineth() != true {
+		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
 	}
 }
 
 type protocolBuilder func() thrift.TProtocol
 
 func TestWireFormatWithDefaultPayload(t *testing.T) {
-	var transport thrift.TTransport
+	var transport *thrift.TMemoryBuffer
 
 	var protocols = []struct {
 		name    string
@@ -302,49 +367,73 @@ func TestWireFormatWithDefaultPayload(t *testing.T) {
 		incoming := NewContainerOfEnums()
 
 		if err := incoming.Read(protocol); err != nil {
-			t.Fatalf("%d (%s): Could not read from buffer: %q\n", i, name, err)
+			t.Fatalf("%d (%s): Could not read from buffer: %q", i, name, err)
 		}
 
 		if emission.First != incoming.First {
-			t.Errorf("%d (%s) emission.First (%q) != incoming.First (%q)\n", i, name, emission.First, incoming.First)
+			t.Errorf("%d (%s) emission.First (%q) != incoming.First (%q)", i, name, emission.First, incoming.First)
 		}
 
 		if emission.Second != incoming.Second {
-			t.Errorf("%d (%s) emission.Second (%q) != incoming.Second (%q)\n", i, name, emission.Second, incoming.Second)
+			t.Errorf("%d (%s) emission.Second (%q) != incoming.Second (%q)", i, name, emission.Second, incoming.Second)
 		}
 
 		if emission.Third != incoming.Third {
-			t.Errorf("%d (%s) emission.Third (%q) != incoming.Third (%q)\n", i, name, emission.Third, incoming.Third)
+			t.Errorf("%d (%s) emission.Third (%q) != incoming.Third (%q)", i, name, emission.Third, incoming.Third)
 		}
 
 		if emission.OptionalFourth != incoming.OptionalFourth {
-			t.Errorf("%d (%s) emission.OptionalFourth (%q) != incoming.OptionalFourth (%q)\n", i, name, emission.OptionalFourth, incoming.OptionalFourth)
+			t.Errorf("%d (%s) emission.OptionalFourth (%q) != incoming.OptionalFourth (%q)", i, name, emission.OptionalFourth, incoming.OptionalFourth)
 		}
 
 		if emission.OptionalFifth != incoming.OptionalFifth {
-			t.Errorf("%d (%s) emission.OptionalFifth (%q) != incoming.OptionalFifth (%q)\n", i, name, emission.OptionalFifth, incoming.OptionalFifth)
+			t.Errorf("%d (%s) emission.OptionalFifth (%q) != incoming.OptionalFifth (%q)", i, name, emission.OptionalFifth, incoming.OptionalFifth)
 		}
 
 		if emission.OptionalSixth != incoming.OptionalSixth {
-			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)\n", i, name, emission.OptionalSixth, incoming.OptionalSixth)
+			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)", i, name, emission.OptionalSixth, incoming.OptionalSixth)
+		}
+
+		if emission.DefaultSeventh != incoming.DefaultSeventh {
+			t.Errorf("%d (%s) emission.DefaultSeventh (%q) != incoming.DefaultSeventh (%q)", i, name, emission.DefaultSeventh, incoming.DefaultSeventh)
+		}
+
+		if emission.DefaultEighth != incoming.DefaultEighth {
+			t.Errorf("%d (%s) emission.DefaultEighth (%q) != incoming.DefaultEighth (%q)", i, name, emission.DefaultEighth, incoming.DefaultEighth)
+		}
+
+		if emission.DefaultNineth != incoming.DefaultNineth {
+			t.Errorf("%d (%s) emission.DefaultNineth (%q) != incoming.DefaultNineth (%q)", i, name, emission.DefaultNineth, incoming.DefaultNineth)
 		}
 
 		if emission.IsSetOptionalFourth() != incoming.IsSetOptionalFourth() {
-			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)\n", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
+			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
 		}
 
 		if emission.IsSetOptionalFifth() != incoming.IsSetOptionalFifth() {
-			t.Errorf("%d (%s) emission.IsSetOptionalFifth (%q) != incoming.IsSetOptionalFifth (%q)\n", i, name, emission.IsSetOptionalFifth(), incoming.IsSetOptionalFifth())
+			t.Errorf("%d (%s) emission.IsSetOptionalFifth (%q) != incoming.IsSetOptionalFifth (%q)", i, name, emission.IsSetOptionalFifth(), incoming.IsSetOptionalFifth())
 		}
 
 		if emission.IsSetOptionalSixth() != incoming.IsSetOptionalSixth() {
-			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)\n", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
+			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
+		}
+
+		if emission.IsSetDefaultSeventh() != incoming.IsSetDefaultSeventh() {
+			t.Errorf("%d (%s) emission.IsSetDefaultSeventh (%q) != incoming.IsSetDefaultSeventh (%q)", i, name, emission.IsSetDefaultSeventh(), incoming.IsSetDefaultSeventh())
+		}
+
+		if emission.IsSetDefaultEighth() != incoming.IsSetDefaultEighth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultEighth (%q) != incoming.IsSetDefaultEighth (%q)", i, name, emission.IsSetDefaultEighth(), incoming.IsSetDefaultEighth())
+		}
+
+		if emission.IsSetDefaultNineth() != incoming.IsSetDefaultNineth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultNineth (%q) != incoming.IsSetDefaultNineth (%q)", i, name, emission.IsSetDefaultNineth(), incoming.IsSetDefaultNineth())
 		}
 	}
 }
 
 func TestWireFormatWithSetPayload(t *testing.T) {
-	var transport thrift.TTransport
+	var transport *thrift.TMemoryBuffer
 
 	var protocols = []struct {
 		name    string
@@ -401,44 +490,67 @@ func TestWireFormatWithSetPayload(t *testing.T) {
 		incoming := NewContainerOfEnums()
 
 		if err := incoming.Read(protocol); err != nil {
-			t.Fatalf("%d (%s): Could not read from buffer: %q\n", i, name, err)
+			t.Fatalf("%d (%s): Could not read from buffer: %q", i, name, err)
 		}
 
 		if emission.First != incoming.First {
-			t.Errorf("%d (%s) emission.First (%q) != incoming.First (%q)\n", i, name, emission.First, incoming.First)
+			t.Errorf("%d (%s) emission.First (%q) != incoming.First (%q)", i, name, emission.First, incoming.First)
 		}
 
 		if emission.Second != incoming.Second {
-			t.Errorf("%d (%s) emission.Second (%q) != incoming.Second (%q)\n", i, name, emission.Second, incoming.Second)
+			t.Errorf("%d (%s) emission.Second (%q) != incoming.Second (%q)", i, name, emission.Second, incoming.Second)
 		}
 
 		if emission.Third != incoming.Third {
-			t.Errorf("%d (%s) emission.Third (%q) != incoming.Third (%q)\n", i, name, emission.Third, incoming.Third)
+			t.Errorf("%d (%s) emission.Third (%q) != incoming.Third (%q)", i, name, emission.Third, incoming.Third)
 		}
 
 		if emission.OptionalFourth != incoming.OptionalFourth {
-			t.Errorf("%d (%s) emission.OptionalFourth (%q) != incoming.OptionalFourth (%q)\n", i, name, emission.OptionalFourth, incoming.OptionalFourth)
+			t.Errorf("%d (%s) emission.OptionalFourth (%q) != incoming.OptionalFourth (%q)", i, name, emission.OptionalFourth, incoming.OptionalFourth)
 		}
 
 		if emission.OptionalFifth != incoming.OptionalFifth {
-			t.Errorf("%d (%s) emission.OptionalFifth (%q) != incoming.OptionalFifth (%q)\n", i, name, emission.OptionalFifth, incoming.OptionalFifth)
+			t.Errorf("%d (%s) emission.OptionalFifth (%q) != incoming.OptionalFifth (%q)", i, name, emission.OptionalFifth, incoming.OptionalFifth)
 		}
 
 		if emission.OptionalSixth != incoming.OptionalSixth {
-			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)\n", i, name, emission.OptionalSixth, incoming.OptionalSixth)
+			t.Errorf("%d (%s) emission.OptionalSixth (%q) != incoming.OptionalSixth (%q)", i, name, emission.OptionalSixth, incoming.OptionalSixth)
+		}
+
+		if emission.DefaultSeventh != incoming.DefaultSeventh {
+			t.Errorf("%d (%s) emission.DefaultSeventh (%q) != incoming.DefaultSeventh (%q)", i, name, emission.DefaultSeventh, incoming.DefaultSeventh)
+		}
+
+		if emission.DefaultEighth != incoming.DefaultEighth {
+			t.Errorf("%d (%s) emission.DefaultEighth (%q) != incoming.DefaultEighth (%q)", i, name, emission.DefaultEighth, incoming.DefaultEighth)
+		}
+
+		if emission.DefaultNineth != incoming.DefaultNineth {
+			t.Errorf("%d (%s) emission.DefaultNineth (%q) != incoming.DefaultNineth (%q)", i, name, emission.DefaultNineth, incoming.DefaultNineth)
 		}
 
 		if emission.IsSetOptionalFourth() != incoming.IsSetOptionalFourth() {
-			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)\n", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
+			t.Errorf("%d (%s) emission.IsSetOptionalFourth (%q) != incoming.IsSetOptionalFourth (%q)", i, name, emission.IsSetOptionalFourth(), incoming.IsSetOptionalFourth())
 		}
 
 		if emission.IsSetOptionalFifth() != incoming.IsSetOptionalFifth() {
-			t.Errorf("%d (%s) emission.IsSetOptionalFifth (%q) != incoming.IsSetOptionalFifth (%q)\n", i, name, emission.IsSetOptionalFifth(), incoming.IsSetOptionalFifth())
+			t.Errorf("%d (%s) emission.IsSetOptionalFifth (%q) != incoming.IsSetOptionalFifth (%q)", i, name, emission.IsSetOptionalFifth(), incoming.IsSetOptionalFifth())
 		}
 
 		if emission.IsSetOptionalSixth() != incoming.IsSetOptionalSixth() {
-			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)\n", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
+			t.Errorf("%d (%s) emission.IsSetOptionalSixth (%q) != incoming.IsSetOptionalSixth (%q)", i, name, emission.IsSetOptionalSixth(), incoming.IsSetOptionalSixth())
+		}
+
+		if emission.IsSetDefaultSeventh() != incoming.IsSetDefaultSeventh() {
+			t.Errorf("%d (%s) emission.IsSetDefaultSeventh (%q) != incoming.IsSetDefaultSeventh (%q)", i, name, emission.IsSetDefaultSeventh(), incoming.IsSetDefaultSeventh())
+		}
+
+		if emission.IsSetDefaultEighth() != incoming.IsSetDefaultEighth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultEighth (%q) != incoming.IsSetDefaultEighth (%q)", i, name, emission.IsSetDefaultEighth(), incoming.IsSetDefaultEighth())
+		}
+
+		if emission.IsSetDefaultNineth() != incoming.IsSetDefaultNineth() {
+			t.Errorf("%d (%s) emission.IsSetDefaultNineth (%q) != incoming.IsSetDefaultNineth (%q)", i, name, emission.IsSetDefaultNineth(), incoming.IsSetDefaultNineth())
 		}
 	}
-
 }

@@ -1,3 +1,5 @@
+namespace java simple
+
 enum UndefinedValues {
   UndefinedOne,
   UndefinedTwo,
@@ -24,4 +26,11 @@ struct ContainerOfEnums {
   4: optional UndefinedValues optional_fourth,
   5: optional DefinedValues optional_fifth,
   6: optional HeterogeneousValues optional_sixth,
+  7: optional UndefinedValues default_seventh = UndefinedValues.UndefinedOne,
+  8: optional DefinedValues default_eighth = DefinedValues.DefinedOne,
+  9: optional HeterogeneousValues default_nineth = HeterogeneousValues.HeterogeneousOne,
+}
+
+service ContainerOfEnumsTestService {
+  ContainerOfEnums echo(1: ContainerOfEnums message);
 }

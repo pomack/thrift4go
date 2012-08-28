@@ -18,12 +18,12 @@ test-stamp: test-exercise-stamp
 	touch $@
 
 test-exercise-stamp: test-compile-stamp
-	cp -f simple_test.go gen-go/simple
-	cd gen-go/simple && go test .
+	cp -f *_test.go gen-go/simple
+	cd gen-go/simple && go test -v -x .
 	touch $@
 
 test-compile-stamp: test-validate-stamp
-	cd gen-go/simple && go build ttypes.go
+	cd gen-go/simple && go build -v -x .
 	touch $@
 
 test-validate-stamp: test-generation-stamp
