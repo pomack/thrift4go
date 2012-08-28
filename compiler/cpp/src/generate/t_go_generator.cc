@@ -449,32 +449,6 @@ void t_go_generator::init_generator()
     f_consts_ << "func init() {" << endl;
     vector<t_service*> services = program_->get_services();
     vector<t_service*>::iterator sv_iter;
-    string f_init_name = package_dir_ + "/Makefile";
-    ofstream f_init;
-    f_init.open(f_init_name.c_str());
-    f_init  <<
-            endl <<
-            "include $(GOROOT)/src/Make.inc" << endl << endl <<
-            "all: install" << endl << endl <<
-            "TARG=thriftlib/" << target << endl << endl <<
-            "DIRS=\\" << endl;
-
-    for (sv_iter = services.begin(); sv_iter != services.end(); ++sv_iter) {
-        f_init << "  " << (*sv_iter)->get_name() << "\\" << endl;
-    }
-
-    f_init << endl <<
-           "GOFILES=\\" << endl <<
-           "  ttypes.go\\" << endl;
-
-    //  "   constants.go\\" << endl;
-    for (sv_iter = services.begin(); sv_iter != services.end(); ++sv_iter) {
-        f_init << "  " << (*sv_iter)->get_name() << ".go\\" << endl;
-    }
-
-    f_init << endl << endl <<
-           "include $(GOROOT)/src/Make.pkg" << endl << endl;
-    f_init.close();
 
     for (sv_iter = services.begin(); sv_iter != services.end(); ++sv_iter) {
         string service_dir = package_dir_ + "/" + (*sv_iter)->get_name();
@@ -483,19 +457,6 @@ void t_go_generator::init_generator()
 #else
         mkdir(service_dir.c_str(), 0755);
 #endif
-        string f_init_name = service_dir + "/Makefile";
-        ofstream f_init;
-        f_init.open(f_init_name.c_str());
-        f_init  <<
-                endl <<
-                "include $(GOROOT)/src/Make.inc" << endl << endl <<
-                "all: install" << endl << endl <<
-                "TARG=" << publicize((*sv_iter)->get_name()) << "-remote" << endl << endl <<
-                "DIRS=\\" << endl << endl <<
-                "GOFILES=\\" << endl <<
-                "  " << (*sv_iter)->get_name() << "-remote.go\\" << endl << endl <<
-                "include $(GOROOT)/src/Make.cmd" << endl << endl;
-        f_init.close();
     }
 
     // Print header
