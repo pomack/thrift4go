@@ -2,7 +2,7 @@
  *
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  */
-package simple;
+package simple
 
 import (
 	"fmt"
@@ -20,39 +20,38 @@ func init() {
 	temporaryAndUnused++
 }
 
-
 type IContainerOfEnumsTestService interface {
-  /**
-   * Parameters:
-   *  - Message
-   */
-  Echo(message *ContainerOfEnums) (retval18 *ContainerOfEnums, err error)
+	/**
+	 * Parameters:
+	 *  - Message
+	 */
+	Echo(message *ContainerOfEnums) (retval18 *ContainerOfEnums, err error)
 }
 
 type ContainerOfEnumsTestServiceClient struct {
-  Transport thrift.TTransport
-  ProtocolFactory thrift.TProtocolFactory
-  InputProtocol thrift.TProtocol
-  OutputProtocol thrift.TProtocol
-  SeqId int32
+	Transport       thrift.TTransport
+	ProtocolFactory thrift.TProtocolFactory
+	InputProtocol   thrift.TProtocol
+	OutputProtocol  thrift.TProtocol
+	SeqId           int32
 }
 
 func NewContainerOfEnumsTestServiceClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *ContainerOfEnumsTestServiceClient {
-  return &ContainerOfEnumsTestServiceClient{Transport: t,
-    ProtocolFactory: f,
-    InputProtocol: f.GetProtocol(t),
-    OutputProtocol: f.GetProtocol(t),
-    SeqId: 0,
-  }
+	return &ContainerOfEnumsTestServiceClient{Transport: t,
+		ProtocolFactory: f,
+		InputProtocol:   f.GetProtocol(t),
+		OutputProtocol:  f.GetProtocol(t),
+		SeqId:           0,
+	}
 }
 
 func NewContainerOfEnumsTestServiceClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *ContainerOfEnumsTestServiceClient {
-  return &ContainerOfEnumsTestServiceClient{Transport: t,
-    ProtocolFactory: nil,
-    InputProtocol: iprot,
-    OutputProtocol: oprot,
-    SeqId: 0,
-  }
+	return &ContainerOfEnumsTestServiceClient{Transport: t,
+		ProtocolFactory: nil,
+		InputProtocol:   iprot,
+		OutputProtocol:  oprot,
+		SeqId:           0,
+	}
 }
 
 /**
@@ -60,152 +59,153 @@ func NewContainerOfEnumsTestServiceClientProtocol(t thrift.TTransport, iprot thr
  *  - Message
  */
 func (p *ContainerOfEnumsTestServiceClient) Echo(message *ContainerOfEnums) (retval19 *ContainerOfEnums, err error) {
-  err = p.SendEcho(message)
-  if err != nil { return }
-  return p.RecvEcho()
+	err = p.SendEcho(message)
+	if err != nil {
+		return
+	}
+	return p.RecvEcho()
 }
 
-func (p *ContainerOfEnumsTestServiceClient) SendEcho(message *ContainerOfEnums)(err error) {
-  oprot := p.OutputProtocol
-  if oprot != nil {
-    oprot = p.ProtocolFactory.GetProtocol(p.Transport)
-    p.OutputProtocol = oprot
-  }
-  p.SeqId++
-  oprot.WriteMessageBegin("echo", thrift.CALL, p.SeqId)
-  args20 := NewEchoArgs()
-  args20.Message = message
-  err = args20.Write(oprot)
-  oprot.WriteMessageEnd()
-  oprot.Transport().Flush()
-  return
+func (p *ContainerOfEnumsTestServiceClient) SendEcho(message *ContainerOfEnums) (err error) {
+	oprot := p.OutputProtocol
+	if oprot != nil {
+		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
+		p.OutputProtocol = oprot
+	}
+	p.SeqId++
+	oprot.WriteMessageBegin("echo", thrift.CALL, p.SeqId)
+	args20 := NewEchoArgs()
+	args20.Message = message
+	err = args20.Write(oprot)
+	oprot.WriteMessageEnd()
+	oprot.Transport().Flush()
+	return
 }
-
 
 func (p *ContainerOfEnumsTestServiceClient) RecvEcho() (value *ContainerOfEnums, err error) {
-  iprot := p.InputProtocol
-  if iprot == nil {
-    iprot = p.ProtocolFactory.GetProtocol(p.Transport)
-    p.InputProtocol = iprot
-  }
-  _, mTypeId, seqId, err := iprot.ReadMessageBegin()
-  if err != nil {
-    return
-  }
-  if mTypeId == thrift.EXCEPTION {
-    error22 := thrift.NewTApplicationExceptionDefault()
-    var error23 error
-    error23, err = error22.Read(iprot)
-    if err != nil {
-      return
-    }
-    if err = iprot.ReadMessageEnd(); err != nil {
-      return
-    }
-    err = error23
-    return
-  }
-  if p.SeqId != seqId {
-    err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "ping failed: out of sequence response")
-    return
-  }
-  result21 := NewEchoResult()
-  err = result21.Read(iprot)
-  iprot.ReadMessageEnd()
-  value = result21.Success
-  return
+	iprot := p.InputProtocol
+	if iprot == nil {
+		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
+		p.InputProtocol = iprot
+	}
+	_, mTypeId, seqId, err := iprot.ReadMessageBegin()
+	if err != nil {
+		return
+	}
+	if mTypeId == thrift.EXCEPTION {
+		error22 := thrift.NewTApplicationExceptionDefault()
+		var error23 error
+		error23, err = error22.Read(iprot)
+		if err != nil {
+			return
+		}
+		if err = iprot.ReadMessageEnd(); err != nil {
+			return
+		}
+		err = error23
+		return
+	}
+	if p.SeqId != seqId {
+		err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "ping failed: out of sequence response")
+		return
+	}
+	result21 := NewEchoResult()
+	err = result21.Read(iprot)
+	iprot.ReadMessageEnd()
+	value = result21.Success
+	return
 }
 
-
 type ContainerOfEnumsTestServiceProcessor struct {
-  handler IContainerOfEnumsTestService
-  processorMap map[string]thrift.TProcessorFunction
+	handler      IContainerOfEnumsTestService
+	processorMap map[string]thrift.TProcessorFunction
 }
 
 func (p *ContainerOfEnumsTestServiceProcessor) Handler() IContainerOfEnumsTestService {
-  return p.handler
+	return p.handler
 }
 
 func (p *ContainerOfEnumsTestServiceProcessor) AddToProcessorMap(key string, processor thrift.TProcessorFunction) {
-  p.processorMap[key] = processor
+	p.processorMap[key] = processor
 }
 
 func (p *ContainerOfEnumsTestServiceProcessor) GetProcessorFunction(key string) (processor thrift.TProcessorFunction, exists bool) {
-  processor, exists = p.processorMap[key]
-  return processor, exists
+	processor, exists = p.processorMap[key]
+	return processor, exists
 }
 
 func (p *ContainerOfEnumsTestServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
-  return p.processorMap
+	return p.processorMap
 }
 
 func NewContainerOfEnumsTestServiceProcessor(handler IContainerOfEnumsTestService) *ContainerOfEnumsTestServiceProcessor {
 
-  self24 := &ContainerOfEnumsTestServiceProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
-  self24.processorMap["echo"] = &containerOfEnumsTestServiceProcessorEcho{handler:handler}
-return self24
+	self24 := &ContainerOfEnumsTestServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self24.processorMap["echo"] = &containerOfEnumsTestServiceProcessorEcho{handler: handler}
+	return self24
 }
 
 func (p *ContainerOfEnumsTestServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  name, _, seqId, err := iprot.ReadMessageBegin()
-  if err != nil { return }
-  process, nameFound := p.GetProcessorFunction(name)
-  if !nameFound || process == nil {
-    iprot.Skip(thrift.STRUCT)
-    iprot.ReadMessageEnd()
-    x25 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
-    oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-    x25.Write(oprot)
-    oprot.WriteMessageEnd()
-    oprot.Transport().Flush()
-    return false, x25
-  }
-  return process.Process(seqId, iprot, oprot)
+	name, _, seqId, err := iprot.ReadMessageBegin()
+	if err != nil {
+		return
+	}
+	process, nameFound := p.GetProcessorFunction(name)
+	if !nameFound || process == nil {
+		iprot.Skip(thrift.STRUCT)
+		iprot.ReadMessageEnd()
+		x25 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
+		oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
+		x25.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Transport().Flush()
+		return false, x25
+	}
+	return process.Process(seqId, iprot, oprot)
 }
 
 type containerOfEnumsTestServiceProcessorEcho struct {
-  handler IContainerOfEnumsTestService
+	handler IContainerOfEnumsTestService
 }
 
 func (p *containerOfEnumsTestServiceProcessorEcho) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  args := NewEchoArgs()
-  if err = args.Read(iprot); err != nil {
-    iprot.ReadMessageEnd()
-    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-    oprot.WriteMessageBegin("echo", thrift.EXCEPTION, seqId)
-    x.Write(oprot)
-    oprot.WriteMessageEnd()
-    oprot.Transport().Flush()
-    return
-  }
-  iprot.ReadMessageEnd()
-  result := NewEchoResult()
-  if result.Success, err = p.handler.Echo(args.Message); err != nil {
-    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing echo: " + err.Error())
-    oprot.WriteMessageBegin("echo", thrift.EXCEPTION, seqId)
-    x.Write(oprot)
-    oprot.WriteMessageEnd()
-    oprot.Transport().Flush()
-    return
-  }
-  if err2 := oprot.WriteMessageBegin("echo", thrift.REPLY, seqId); err2 != nil {
-    err = err2
-  }
-  if err2 := result.Write(oprot); err == nil && err2 != nil {
-    err = err2
-  }
-  if err2 := oprot.WriteMessageEnd(); err == nil && err2 != nil {
-    err = err2
-  }
-  if err2 := oprot.Transport().Flush(); err == nil && err2 != nil {
-    err = err2
-  }
-  if err != nil {
-    return
-  }
-  return true, err
+	args := NewEchoArgs()
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("echo", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Transport().Flush()
+		return
+	}
+	iprot.ReadMessageEnd()
+	result := NewEchoResult()
+	if result.Success, err = p.handler.Echo(args.Message); err != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing echo: "+err.Error())
+		oprot.WriteMessageBegin("echo", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Transport().Flush()
+		return
+	}
+	if err2 := oprot.WriteMessageBegin("echo", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 := result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 := oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 := oprot.Transport().Flush(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
 }
-
 
 // HELPER FUNCTIONS AND STRUCTURES
 
@@ -214,138 +214,172 @@ func (p *containerOfEnumsTestServiceProcessorEcho) Process(seqId int32, iprot, o
  *  - Message
  */
 type EchoArgs struct {
-  thrift.TStruct
-  Message *ContainerOfEnums "message"; // 1
+	thrift.TStruct
+	Message *ContainerOfEnums "message" // 1
 }
 
 func NewEchoArgs() *EchoArgs {
-  output := &EchoArgs{
-    TStruct:thrift.NewTStruct("echo_args", []thrift.TField{
-    thrift.NewTField("message", thrift.STRUCT, 1),
-    }),
-  }
-  {
-  }
-  return output
+	output := &EchoArgs{
+		TStruct: thrift.NewTStruct("echo_args", []thrift.TField{
+			thrift.NewTField("message", thrift.STRUCT, 1),
+		}),
+	}
+	{
+	}
+	return output
 }
 
 func (p *EchoArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-  _, err = iprot.ReadStructBegin()
-  if err != nil { return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
-  for {
-    fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
-    if fieldId < 0 {
-      fieldId = int16(p.FieldIdFromFieldName(fieldName))
-    } else if fieldName == "" {
-      fieldName = p.FieldNameFromFieldId(int(fieldId))
-    }
-    if fieldTypeId == thrift.GENERIC {
-      fieldTypeId = p.FieldFromFieldId(int(fieldId)).TypeId()
-    }
-    if err != nil {
-      return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    if fieldId == 1 || fieldName == "message" {
-      if fieldTypeId == thrift.STRUCT {
-        err = p.ReadField1(iprot)
-        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-      } else if fieldTypeId == thrift.VOID {
-        err = iprot.Skip(fieldTypeId)
-        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-      } else {
-        err = p.ReadField1(iprot)
-        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-      }
-    } else {
-      err = iprot.Skip(fieldTypeId)
-      if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-    }
-    err = iprot.ReadFieldEnd()
-    if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-  }
-  err = iprot.ReadStructEnd()
-  if err != nil { return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
-  return err
+	_, err = iprot.ReadStructBegin()
+	if err != nil {
+		return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+	}
+	for {
+		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+		if fieldId < 0 {
+			fieldId = int16(p.FieldIdFromFieldName(fieldName))
+		} else if fieldName == "" {
+			fieldName = p.FieldNameFromFieldId(int(fieldId))
+		}
+		if fieldTypeId == thrift.GENERIC {
+			fieldTypeId = p.FieldFromFieldId(int(fieldId)).TypeId()
+		}
+		if err != nil {
+			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if fieldId == 1 || fieldName == "message" {
+			if fieldTypeId == thrift.STRUCT {
+				err = p.ReadField1(iprot)
+				if err != nil {
+					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+				}
+			} else if fieldTypeId == thrift.VOID {
+				err = iprot.Skip(fieldTypeId)
+				if err != nil {
+					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+				}
+			} else {
+				err = p.ReadField1(iprot)
+				if err != nil {
+					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+				}
+			}
+		} else {
+			err = iprot.Skip(fieldTypeId)
+			if err != nil {
+				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+			}
+		}
+		err = iprot.ReadFieldEnd()
+		if err != nil {
+			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+		}
+	}
+	err = iprot.ReadStructEnd()
+	if err != nil {
+		return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+	}
+	return err
 }
 
 func (p *EchoArgs) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-  p.Message = NewContainerOfEnums()
-  err28 := p.Message.Read(iprot)
-  if err28 != nil { return thrift.NewTProtocolExceptionReadStruct("p.MessageContainerOfEnums", err28); }
-  return err
+	p.Message = NewContainerOfEnums()
+	err28 := p.Message.Read(iprot)
+	if err28 != nil {
+		return thrift.NewTProtocolExceptionReadStruct("p.MessageContainerOfEnums", err28)
+	}
+	return err
 }
 
-func (p *EchoArgs) ReadFieldMessage(iprot thrift.TProtocol) (thrift.TProtocolException) {
-  return p.ReadField1(iprot)
+func (p *EchoArgs) ReadFieldMessage(iprot thrift.TProtocol) thrift.TProtocolException {
+	return p.ReadField1(iprot)
 }
 
 func (p *EchoArgs) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
-  err = oprot.WriteStructBegin("echo_args")
-  if err != nil { return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
-  err = p.WriteField1(oprot)
-  if err != nil { return err }
-  err = oprot.WriteFieldStop()
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
-  err = oprot.WriteStructEnd()
-  if err != nil { return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
-  return err
+	err = oprot.WriteStructBegin("echo_args")
+	if err != nil {
+		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+	}
+	err = p.WriteField1(oprot)
+	if err != nil {
+		return err
+	}
+	err = oprot.WriteFieldStop()
+	if err != nil {
+		return thrift.NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err)
+	}
+	err = oprot.WriteStructEnd()
+	if err != nil {
+		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+	}
+	return err
 }
 
 func (p *EchoArgs) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
-  if p.Message != nil {
-    err = oprot.WriteFieldBegin("message", thrift.STRUCT, 1)
-    if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "message", p.ThriftName(), err); }
-    err = p.Message.Write(oprot)
-    if err != nil { return thrift.NewTProtocolExceptionWriteStruct("ContainerOfEnums", err); }
-    err = oprot.WriteFieldEnd()
-    if err != nil { return thrift.NewTProtocolExceptionWriteField(1, "message", p.ThriftName(), err); }
-  }
-  return err
+	if p.Message != nil {
+		err = oprot.WriteFieldBegin("message", thrift.STRUCT, 1)
+		if err != nil {
+			return thrift.NewTProtocolExceptionWriteField(1, "message", p.ThriftName(), err)
+		}
+		err = p.Message.Write(oprot)
+		if err != nil {
+			return thrift.NewTProtocolExceptionWriteStruct("ContainerOfEnums", err)
+		}
+		err = oprot.WriteFieldEnd()
+		if err != nil {
+			return thrift.NewTProtocolExceptionWriteField(1, "message", p.ThriftName(), err)
+		}
+	}
+	return err
 }
 
-func (p *EchoArgs) WriteFieldMessage(oprot thrift.TProtocol) (thrift.TProtocolException) {
-  return p.WriteField1(oprot)
+func (p *EchoArgs) WriteFieldMessage(oprot thrift.TProtocol) thrift.TProtocolException {
+	return p.WriteField1(oprot)
 }
 
 func (p *EchoArgs) TStructName() string {
-  return "EchoArgs"
+	return "EchoArgs"
 }
 
 func (p *EchoArgs) ThriftName() string {
-  return "echo_args"
+	return "echo_args"
 }
 
 func (p *EchoArgs) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("EchoArgs(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("EchoArgs(%+v)", *p)
 }
 
 func (p *EchoArgs) CompareTo(other interface{}) (int, bool) {
-  if other == nil {
-    return 1, true
-  }
-  data, ok := other.(*EchoArgs)
-  if !ok {
-    return 0, false
-  }
-  return thrift.TType(thrift.STRUCT).Compare(p, data)
+	if other == nil {
+		return 1, true
+	}
+	data, ok := other.(*EchoArgs)
+	if !ok {
+		return 0, false
+	}
+	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *EchoArgs) AttributeByFieldId(id int) interface{} {
-  switch id {
-  default: return nil
-  case 1: return p.Message
-  }
-  return nil
+	switch id {
+	default:
+		return nil
+	case 1:
+		return p.Message
+	}
+	return nil
 }
 
 func (p *EchoArgs) TStructFields() thrift.TFieldContainer {
-  return thrift.NewTFieldContainer([]thrift.TField{
-    thrift.NewTField("message", thrift.STRUCT, 1),
-    })
+	return thrift.NewTFieldContainer([]thrift.TField{
+		thrift.NewTField("message", thrift.STRUCT, 1),
+	})
 }
 
 /**
@@ -353,142 +387,172 @@ func (p *EchoArgs) TStructFields() thrift.TFieldContainer {
  *  - Success
  */
 type EchoResult struct {
-  thrift.TStruct
-  Success *ContainerOfEnums "success"; // 0
+	thrift.TStruct
+	Success *ContainerOfEnums "success" // 0
 }
 
 func NewEchoResult() *EchoResult {
-  output := &EchoResult{
-    TStruct:thrift.NewTStruct("echo_result", []thrift.TField{
-    thrift.NewTField("success", thrift.STRUCT, 0),
-    }),
-  }
-  {
-  }
-  return output
+	output := &EchoResult{
+		TStruct: thrift.NewTStruct("echo_result", []thrift.TField{
+			thrift.NewTField("success", thrift.STRUCT, 0),
+		}),
+	}
+	{
+	}
+	return output
 }
 
 func (p *EchoResult) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-  _, err = iprot.ReadStructBegin()
-  if err != nil { return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
-  for {
-    fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
-    if fieldId < 0 {
-      fieldId = int16(p.FieldIdFromFieldName(fieldName))
-    } else if fieldName == "" {
-      fieldName = p.FieldNameFromFieldId(int(fieldId))
-    }
-    if fieldTypeId == thrift.GENERIC {
-      fieldTypeId = p.FieldFromFieldId(int(fieldId)).TypeId()
-    }
-    if err != nil {
-      return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    if fieldId == 0 || fieldName == "success" {
-      if fieldTypeId == thrift.STRUCT {
-        err = p.ReadField0(iprot)
-        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-      } else if fieldTypeId == thrift.VOID {
-        err = iprot.Skip(fieldTypeId)
-        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-      } else {
-        err = p.ReadField0(iprot)
-        if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-      }
-    } else {
-      err = iprot.Skip(fieldTypeId)
-      if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-    }
-    err = iprot.ReadFieldEnd()
-    if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }
-  }
-  err = iprot.ReadStructEnd()
-  if err != nil { return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err); }
-  return err
+	_, err = iprot.ReadStructBegin()
+	if err != nil {
+		return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+	}
+	for {
+		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+		if fieldId < 0 {
+			fieldId = int16(p.FieldIdFromFieldName(fieldName))
+		} else if fieldName == "" {
+			fieldName = p.FieldNameFromFieldId(int(fieldId))
+		}
+		if fieldTypeId == thrift.GENERIC {
+			fieldTypeId = p.FieldFromFieldId(int(fieldId)).TypeId()
+		}
+		if err != nil {
+			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if fieldId == 0 || fieldName == "success" {
+			if fieldTypeId == thrift.STRUCT {
+				err = p.ReadField0(iprot)
+				if err != nil {
+					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+				}
+			} else if fieldTypeId == thrift.VOID {
+				err = iprot.Skip(fieldTypeId)
+				if err != nil {
+					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+				}
+			} else {
+				err = p.ReadField0(iprot)
+				if err != nil {
+					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+				}
+			}
+		} else {
+			err = iprot.Skip(fieldTypeId)
+			if err != nil {
+				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+			}
+		}
+		err = iprot.ReadFieldEnd()
+		if err != nil {
+			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+		}
+	}
+	err = iprot.ReadStructEnd()
+	if err != nil {
+		return thrift.NewTProtocolExceptionReadStruct(p.ThriftName(), err)
+	}
+	return err
 }
 
 func (p *EchoResult) ReadField0(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-  p.Success = NewContainerOfEnums()
-  err31 := p.Success.Read(iprot)
-  if err31 != nil { return thrift.NewTProtocolExceptionReadStruct("p.SuccessContainerOfEnums", err31); }
-  return err
+	p.Success = NewContainerOfEnums()
+	err31 := p.Success.Read(iprot)
+	if err31 != nil {
+		return thrift.NewTProtocolExceptionReadStruct("p.SuccessContainerOfEnums", err31)
+	}
+	return err
 }
 
-func (p *EchoResult) ReadFieldSuccess(iprot thrift.TProtocol) (thrift.TProtocolException) {
-  return p.ReadField0(iprot)
+func (p *EchoResult) ReadFieldSuccess(iprot thrift.TProtocol) thrift.TProtocolException {
+	return p.ReadField0(iprot)
 }
 
 func (p *EchoResult) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
-  err = oprot.WriteStructBegin("echo_result")
-  if err != nil { return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
-  switch {
-  default:
-    if err = p.WriteField0(oprot); err != nil {
-      return err
-    }
-  }
-  err = oprot.WriteFieldStop()
-  if err != nil { return thrift.NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err); }
-  err = oprot.WriteStructEnd()
-  if err != nil { return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err); }
-  return err
+	err = oprot.WriteStructBegin("echo_result")
+	if err != nil {
+		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+	}
+	switch {
+	default:
+		if err = p.WriteField0(oprot); err != nil {
+			return err
+		}
+	}
+	err = oprot.WriteFieldStop()
+	if err != nil {
+		return thrift.NewTProtocolExceptionWriteField(-1, "STOP", p.ThriftName(), err)
+	}
+	err = oprot.WriteStructEnd()
+	if err != nil {
+		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
+	}
+	return err
 }
 
 func (p *EchoResult) WriteField0(oprot thrift.TProtocol) (err thrift.TProtocolException) {
-  if p.Success != nil {
-    err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0)
-    if err != nil { return thrift.NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err); }
-    err = p.Success.Write(oprot)
-    if err != nil { return thrift.NewTProtocolExceptionWriteStruct("ContainerOfEnums", err); }
-    err = oprot.WriteFieldEnd()
-    if err != nil { return thrift.NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err); }
-  }
-  return err
+	if p.Success != nil {
+		err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0)
+		if err != nil {
+			return thrift.NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err)
+		}
+		err = p.Success.Write(oprot)
+		if err != nil {
+			return thrift.NewTProtocolExceptionWriteStruct("ContainerOfEnums", err)
+		}
+		err = oprot.WriteFieldEnd()
+		if err != nil {
+			return thrift.NewTProtocolExceptionWriteField(0, "success", p.ThriftName(), err)
+		}
+	}
+	return err
 }
 
-func (p *EchoResult) WriteFieldSuccess(oprot thrift.TProtocol) (thrift.TProtocolException) {
-  return p.WriteField0(oprot)
+func (p *EchoResult) WriteFieldSuccess(oprot thrift.TProtocol) thrift.TProtocolException {
+	return p.WriteField0(oprot)
 }
 
 func (p *EchoResult) TStructName() string {
-  return "EchoResult"
+	return "EchoResult"
 }
 
 func (p *EchoResult) ThriftName() string {
-  return "echo_result"
+	return "echo_result"
 }
 
 func (p *EchoResult) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("EchoResult(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("EchoResult(%+v)", *p)
 }
 
 func (p *EchoResult) CompareTo(other interface{}) (int, bool) {
-  if other == nil {
-    return 1, true
-  }
-  data, ok := other.(*EchoResult)
-  if !ok {
-    return 0, false
-  }
-  return thrift.TType(thrift.STRUCT).Compare(p, data)
+	if other == nil {
+		return 1, true
+	}
+	data, ok := other.(*EchoResult)
+	if !ok {
+		return 0, false
+	}
+	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *EchoResult) AttributeByFieldId(id int) interface{} {
-  switch id {
-  default: return nil
-  case 0: return p.Success
-  }
-  return nil
+	switch id {
+	default:
+		return nil
+	case 0:
+		return p.Success
+	}
+	return nil
 }
 
 func (p *EchoResult) TStructFields() thrift.TFieldContainer {
-  return thrift.NewTFieldContainer([]thrift.TField{
-    thrift.NewTField("success", thrift.STRUCT, 0),
-    })
+	return thrift.NewTFieldContainer([]thrift.TField{
+		thrift.NewTField("success", thrift.STRUCT, 0),
+	})
 }
-
-

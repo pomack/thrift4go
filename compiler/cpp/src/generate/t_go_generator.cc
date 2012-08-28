@@ -41,6 +41,16 @@
 
 using namespace std;
 
+/**
+ * A helper for automatically formatting the emitted Go code from the Thrift
+ * IDL per the Go style guide.
+ *
+ * Returns:
+ *  - true, if the formatting process succeeded.
+ *  - false, if the formatting process failed, which means the basic output was
+ *           still generated.
+ */
+bool format_go_output(const string &file_path);
 
 /**
  * Go code generator.
@@ -222,6 +232,7 @@ private:
      */
 
     std::ofstream f_types_;
+    std::string f_types_name_;
     std::stringstream f_consts_;
     std::ofstream f_service_;
 
@@ -444,8 +455,8 @@ void t_go_generator::init_generator()
     }
 
     // Make output file
-    string f_types_name = package_dir_ + "/" + "ttypes.go";
-    f_types_.open(f_types_name.c_str());
+    f_types_name_ = package_dir_ + "/" + "ttypes.go";
+    f_types_.open(f_types_name_.c_str());
     f_consts_ << "func init() {" << endl;
     vector<t_service*> services = program_->get_services();
     vector<t_service*>::iterator sv_iter;
@@ -513,8 +524,7 @@ string t_go_generator::go_autogen_comment()
  */
 string t_go_generator::go_package()
 {
-    return
-        string("package ") + package_name_ + ";\n\n";
+    return string("package ") + package_name_ + ";\n\n";
 }
 
 /**
@@ -548,6 +558,7 @@ void t_go_generator::close_generator()
     f_consts_ << "}" << endl;
     f_types_ << f_consts_.str() << endl;
     f_types_.close();
+    format_go_output(f_types_name_);
     f_consts_.clear();
 }
 
@@ -1412,6 +1423,7 @@ void t_go_generator::generate_service(t_service* tservice)
     // Close service file
     f_service_ << endl;
     f_service_.close();
+    format_go_output(f_service_name);
 }
 
 /**
@@ -2144,6 +2156,7 @@ void t_go_generator::generate_service_remote(t_service* tservice)
              indent() << "}" << endl;
     // Close service file
     f_remote.close();
+    format_go_output(f_remote_name);
     // Make file executable, love that bitwise OR action
     chmod(f_remote_name.c_str(),
           S_IRUSR
@@ -3373,6 +3386,18 @@ string t_go_generator::type_to_spec_args(t_type* ttype)
     }
 
     throw "INVALID TYPE IN type_to_spec_args: " + ttype->get_name();
+}
+
+bool format_go_output(const string &file_path)
+{
+    const string command = "gofmt -w " + file_path;
+
+    if (system(command.c_str()) == 0) {
+        return true;
+    }
+
+    fprintf(stderr, "WARNING - Running '%s' failed.\n", command.c_str());
+    return false;
 }
 
 
