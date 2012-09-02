@@ -13,7 +13,7 @@ TEST_ARTIFACTS = \
 	test-start-compact-server-stamp \
 	test-start-json-server-stamp
 
-THRIFT = $(CURDIR)/../merge/thrift-0.8.0/compiler/cpp/thrift
+THRIFT = $(CURDIR)/../merge/thrift-$(THRIFT_VERSION)/compiler/cpp/thrift
 IDL = $(CURDIR)/../generation/simple.thrift
 GENERATED = gen-java/thrift4go/generated/*.java
 GENERATED_TARGET = src/main/java/thrift4go/generated

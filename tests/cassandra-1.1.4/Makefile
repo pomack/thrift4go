@@ -6,7 +6,7 @@ TEST_ARTIFACTS = \
 	test-generation-stamp \
 	test-stamp
 
-THRIFT = $(CURDIR)/../merge/thrift-0.8.0/compiler/cpp/thrift
+THRIFT = $(CURDIR)/../merge/thrift-$(THRIFT_VERSION)/compiler/cpp/thrift
 IDL = $(CURDIR)/cassandra.thrift
 
 all: test
