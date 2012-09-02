@@ -1,4 +1,4 @@
-SUB_DIRECTORIES = generation merge
+SUB_DIRECTORIES = generation interoperability merge
 CLEAN_DIRECTORIES = $(SUB_DIRECTORIES:%=%-clean)
 TEST_STAMPS = $(SUB_DIRECTORIES:%=%-stamp)
 TEST_ARTIFACTS =$(TEST_STAMPS)
@@ -11,6 +11,12 @@ generation: generation-stamp
 
 generation-stamp: merge-stamp
 	$(MAKE) -C generation test
+	touch $@
+
+interoperability: interoperability-stamp
+
+interoperability-stamp: generation-stamp
+	$(MAKE) -C interoperability test
 	touch $@
 
 merge: merge-stamp
