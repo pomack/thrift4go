@@ -54,6 +54,7 @@ test-compile-stamp: test-generation-stamp
 test-generation-stamp:
 	"$(THRIFT)" --gen java "$(IDL)"
 	"$(THRIFT)" --gen go "$(IDL)"
+	mkdir -vp "$(GENERATED_TARGET)"
 	mv $(GENERATED) "$(GENERATED_TARGET)"
 	touch $@
 
