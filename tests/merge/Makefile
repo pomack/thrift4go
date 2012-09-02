@@ -51,7 +51,7 @@ tree-stamp:
 	touch $@
 
 thrift-0.8.0.tar.gz:
-	wget https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz
+	wget -c https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz
 
 thrift-extraction-stamp: thrift-0.8.0.tar.gz
 	tar xzvf thrift-0.8.0.tar.gz

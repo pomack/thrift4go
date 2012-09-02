@@ -928,9 +928,9 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
     indent_up();
 
     for (m_iter = members.begin(); m_iter != members.end(); ++m_iter) {
-        string thrift_name((*m_iter)->get_name());
+        const string thrift_name = escape_string((*m_iter)->get_name());
         out <<
-            indent() << "thrift.NewTField(\"" << escape_string(thrift_name) << "\", " << type_to_enum((*m_iter)->get_type()) << ", " << (*m_iter)->get_key() << ")," << endl;
+            indent() << "thrift.NewTField(\"" << thrift_name << "\", " << type_to_enum((*m_iter)->get_type()) << ", " << (*m_iter)->get_key() << ")," << endl;
     }
 
     out <<
@@ -943,18 +943,19 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
 
     for (m_iter = members.begin(); m_iter != members.end(); ++m_iter) {
         // Initialize fields
-        //t_type* type = (*m_iter)->get_type();
-        string fieldName(publicize((*m_iter)->get_name()));
-        string fullFieldName = "output." + fieldName;
-        t_type* type = get_true_type((*m_iter)->get_type());
+        const string base_field_name = (*m_iter)->get_name();
+        const string escaped_field_name = escape_string(base_field_name);
+        const string go_safe_name = variable_name_to_go_name(escaped_field_name);
+        const string publicized_name = publicize(go_safe_name);
+        const string full_field_name = "output." + publicized_name;
+        const t_type* type = get_true_type((*m_iter)->get_type());
+        const bool has_default_value = (*m_iter)->get_value() != NULL;
+        const bool type_is_enum = type->is_enum();
 
-        if (type->is_enum() && (*m_iter)->get_value() == NULL) {
-            out <<
-                indent() << fullFieldName << " = math.MinInt32 - 1" << endl;
-        } else if ((*m_iter)->get_value() != NULL) {
-            out <<
-                indent() << fullFieldName << " = " <<
-                render_field_default_value(*m_iter, fullFieldName) << endl;
+        if (has_default_value) {
+            out << indent() << full_field_name << " = " << render_field_default_value(*m_iter, base_field_name) << endl;
+        } else if (type_is_enum) {
+            out << indent() << full_field_name << " = math.MinInt32 - 1" << endl;
         }
     }
 
@@ -1005,7 +1006,10 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
     indent_up();
 
     for (m_iter = members.begin(); m_iter != members.end(); ++m_iter) {
-        string field_name(publicize(variable_name_to_go_name((*m_iter)->get_name())));
+        const string base_field_name = (*m_iter)->get_name();
+        const string escaped_field_name = escape_string(base_field_name);
+        const string go_safe_name = variable_name_to_go_name(escaped_field_name);
+        const string field_name = publicize(go_safe_name);
         out <<
             indent() << "case " << (*m_iter)->get_key() << ": return p." << field_name << endl;
     }
@@ -1051,7 +1055,7 @@ void t_go_generator::generate_isset_helpers(ofstream& out,
         t_type* type = get_true_type((*f_iter)->get_type());
 
         if ((*f_iter)->get_req() == t_field::T_OPTIONAL || type->is_enum()) {
-            const string field_name(publicize((*f_iter)->get_name()));
+            const string field_name(publicize(variable_name_to_go_name(escape_string((*f_iter)->get_name()))));
             t_const_value* field_default_value = (*f_iter)->get_value();
             out <<
                 indent() << "func (p *" << tstruct_name << ") IsSet" << field_name << "() bool {" << endl;
