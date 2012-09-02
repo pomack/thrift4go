@@ -27,7 +27,7 @@ test-compile-stamp: test-validate-stamp
 	touch $@
 
 test-validate-stamp: test-generation-stamp
-	diff -Nru whitebox/gen-go/ gen-go/
+	diff -Nru golden/gen-go/ gen-go/
 	touch $@
 
 test-generation-stamp:
