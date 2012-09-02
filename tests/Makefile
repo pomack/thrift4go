@@ -1,4 +1,4 @@
-SUB_DIRECTORIES = generation interoperability merge
+SUB_DIRECTORIES = cassandra-1.0.11 cassandra-1.1.4 generation interoperability merge
 CLEAN_DIRECTORIES = $(SUB_DIRECTORIES:%=%-clean)
 TEST_STAMPS = $(SUB_DIRECTORIES:%=%-stamp)
 TEST_ARTIFACTS =$(TEST_STAMPS)
@@ -6,6 +6,18 @@ TEST_ARTIFACTS =$(TEST_STAMPS)
 all: test
 
 test: $(SUB_DIRECTORIES)
+
+cassandra-1.0.11: cassandra-1.0.11-stamp
+
+cassandra-1.0.11-stamp: interoperability-stamp
+	$(MAKE) -C cassandra-1.0.11 test
+	touch $@
+
+cassandra-1.1.4: cassandra-1.1.4-stamp
+
+cassandra-1.1.4-stamp: interoperability-stamp
+	$(MAKE) -C cassandra-1.1.4 test
+	touch $@
 
 generation: generation-stamp
 
