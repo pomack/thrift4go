@@ -1,12 +1,12 @@
 export GOPATH  = $(CURDIR)/../../lib/go
 
 TEST_ARTIFACTS = \
-  gen-go \
-  test-compile-stamp \
-  test-exercise-stamp \
-  test-generation-stamp \
-  test-stamp \
-  test-validate-stamp
+	gen-go \
+	test-compile-stamp \
+	test-exercise-stamp \
+	test-generation-stamp \
+	test-stamp \
+	test-validate-stamp
 
 THRIFT=$(CURDIR)/../merge/thrift-0.8.0/compiler/cpp/thrift
 
@@ -17,8 +17,8 @@ test: test-stamp
 test-stamp: test-exercise-stamp
 	touch $@
 
-test-exercise-stamp: test-compile-stamp
-	cp -f *_test.go gen-go/simple
+test-exercise-stamp: test-compile-stamp simple_test.go
+	cp -f simple_test.go gen-go/simple
 	cd gen-go/simple && go test -v -x .
 	touch $@
 
@@ -27,7 +27,7 @@ test-compile-stamp: test-validate-stamp
 	touch $@
 
 test-validate-stamp: test-generation-stamp
-	diff -Nru whitebox/gen-go/ gen-go/
+	diff -Nru golden/gen-go/ gen-go/
 	touch $@
 
 test-generation-stamp:

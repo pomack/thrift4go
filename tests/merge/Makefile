@@ -1,15 +1,15 @@
 THRIFT_ARCHIVE_URL = https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz
 TEST_ARTIFACTS = \
-  test-compilation-stamp \
+	test-compilation-stamp \
 	test-configuration-stamp \
-  test-installation-stamp \
-  test-merge-stamp \
-  test-stamp \
-  thrift-0.8.0 \
-  thrift-0.8.0.tar.gz \
-  thrift-extraction-stamp \
-  tree \
-  tree-stamp
+	test-installation-stamp \
+	test-merge-stamp \
+	test-stamp \
+	thrift-0.8.0 \
+	thrift-0.8.0.tar.gz \
+	thrift-extraction-stamp \
+	tree \
+	tree-stamp
 
 export THRIFT=$(CURDIR)/thrift-0.8.0
 export THRIFT4GO=$(CURDIR)/../..

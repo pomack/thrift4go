@@ -1,4 +1,4 @@
-namespace java simple
+namespace java thrift4go.generated
 
 enum UndefinedValues {
   UndefinedOne,
