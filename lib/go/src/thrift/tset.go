@@ -78,12 +78,16 @@ func (p *tSet) Contains(data interface{}) bool {
 
 func (p *tSet) Add(other interface{}) {
 	if data, ok := p.elemType.CoerceData(other); ok {
-		for elem := p.l.Front(); elem != nil; elem = elem.Next() {
-			if cmp, ok := p.elemType.Compare(data, elem.Value); ok && cmp >= 0 {
-				if cmp > 0 {
-					p.l.InsertBefore(data, elem)
+		if p.l.Front() == nil {
+			p.l.PushFront(data)
+		} else {
+			for elem := p.l.Front(); elem != nil; elem = elem.Next() {
+				if cmp, ok := p.elemType.Compare(data, elem.Value); ok && cmp >= 0 {
+					if cmp > 0 {
+						p.l.InsertBefore(data, elem)
+					}
+					return
 				}
-				return
 			}
 		}
 	}
