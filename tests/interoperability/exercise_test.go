@@ -192,7 +192,7 @@ func TestCompactProtocol(t *testing.T) {
 	pf := thrift.NewTCompactProtocolFactory()
 	tf := thrift.NewTTransportFactory()
 
-	addr, _ := net.ResolveTCPAddr("tcp", "localhost:8083")
+	addr, _ := net.ResolveTCPAddr("tcp", "localhost:8082")
 
 	channel := thrift.NewTSocketAddr(addr)
 	defer channel.Close()

@@ -5,13 +5,13 @@ TEST_ARTIFACTS = \
 	test-installation-stamp \
 	test-merge-stamp \
 	test-stamp \
-	thrift-0.8.0 \
-	thrift-0.8.0.tar.gz \
+	thrift-$(THRIFT_VERSION) \
+	thrift-$(THRIFT_VERSION).tar.gz \
 	thrift-extraction-stamp \
 	tree \
 	tree-stamp
 
-export THRIFT=$(CURDIR)/thrift-0.8.0
+export THRIFT=$(CURDIR)/thrift-$(THRIFT_VERSION)
 export THRIFT4GO=$(CURDIR)/../..
 
 all: test
@@ -50,11 +50,11 @@ tree-stamp:
 	mkdir -vp tree
 	touch $@
 
-thrift-0.8.0.tar.gz:
-	wget https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz
+thrift-$(THRIFT_VERSION).tar.gz:
+	wget -c https://dist.apache.org/repos/dist/release/thrift/$(THRIFT_VERSION)/thrift-$(THRIFT_VERSION).tar.gz
 
-thrift-extraction-stamp: thrift-0.8.0.tar.gz
-	tar xzvf thrift-0.8.0.tar.gz
+thrift-extraction-stamp: thrift-$(THRIFT_VERSION).tar.gz
+	tar xzvf thrift-$(THRIFT_VERSION).tar.gz
 	touch $@
 
 clean:

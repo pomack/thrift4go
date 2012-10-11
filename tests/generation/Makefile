@@ -8,7 +8,7 @@ TEST_ARTIFACTS = \
 	test-stamp \
 	test-validate-stamp
 
-THRIFT=$(CURDIR)/../merge/thrift-0.8.0/compiler/cpp/thrift
+THRIFT=$(CURDIR)/../merge/thrift-$(THRIFT_VERSION)/compiler/cpp/thrift
 
 all: test
 
