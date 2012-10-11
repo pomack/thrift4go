@@ -1,3 +1,5 @@
+include Makefile.environment
+
 SUB_DIRECTORIES = lib tests
 CLEAN_DIRECTORIES = $(SUB_DIRECTORIES:%=clean-%)
 TEST_DIRECTORIES = $(SUB_DIRECTORIES:%=test-%)
