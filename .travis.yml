@@ -14,6 +14,7 @@ language: erlang
 #                   hermeticness of the test environment and are thusly
 #                   removed.
 before_install:
+ - export REPO="$(pwd | sed s,^/home/travis/builds/,,g)" && echo "${REPO}"
  - sudo apt-get remove -y --force-yes --purge golang || true
  - sudo apt-get remove -y --force-yes --purge golang-stable || true
  - sudo apt-get remove -y --force-yes --purge golang-weekly || true
@@ -29,10 +30,10 @@ install:
  - mkdir -p "${HOME}/pkg" || true
  - export GOPATH="${HOME}"
  - export PATH=${PATH}:${HOME}/go/bin
- - ln -s "${HOME}/builds/pomack/thrift4go" "${HOME}/src/thrift4go"
- - mkdir -p "${HOME}/github.com/pomack/thrift4go"
- - git clone https://github.com/pomack/thrift4go.git "${HOME}/github.com/pomack/thrift4go"
+ - ln -s "${HOME}/builds/${REPO}" "${HOME}/src/thrift4go"
+ - mkdir -p "${HOME}/github.com/${REPO}"
+ - git clone https://github.com/${REPO}.git "${HOME}/github.com/${REPO}"
 
 script:
- - cd "${HOME}/github.com/pomack/thrift4go"
+ - cd "${HOME}/github.com/${REPO}"
  - make test
