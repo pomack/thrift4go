@@ -488,7 +488,7 @@ string t_go_generator::render_includes()
     string result = "";
 
     for (size_t i = 0; i < includes.size(); ++i) {
-        result += "import \"thriftlib/" + get_real_go_module(includes[i]) + "\"\n";
+        result += "import \"" + get_real_go_module(includes[i]) + "\"\n";
     }
 
     if (includes.size() > 0) {
@@ -1410,7 +1410,7 @@ void t_go_generator::generate_service(t_service* tservice)
 
     if (tservice->get_extends() != NULL) {
         f_service_ <<
-                   "import \"thriftlib/" << get_real_go_module(tservice->get_extends()->get_program()) << "\"" << endl;
+                   "import \"" << get_real_go_module(tservice->get_extends()->get_program()) << "\"" << endl;
     }
 
     f_service_ <<
@@ -1819,7 +1819,7 @@ void t_go_generator::generate_service_remote(t_service* tservice)
              indent() << "        \"os\"" << endl <<
              indent() << "        \"strconv\"" << endl <<
              indent() << "        \"thrift\"" << endl <<
-             indent() << "        \"thriftlib/" << service_module << "\"" << endl <<
+             indent() << "        \"" << service_module << "\"" << endl <<
              indent() << ")" << endl <<
              indent() << endl <<
              indent() << "func Usage() {" << endl <<
