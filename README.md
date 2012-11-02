@@ -23,6 +23,11 @@ Tested on Mac OS X 10.6 (Snow Leopard) and Linux ca. 2010 derivatives.
 To install locally, perform the following:
   ``go get github.com/pomack/thrift4go/lib/go/thrift``
 
+Or, to build manually:
+
+    cp -R <thrift_src_dir>/lib/go/src/thrift <go_package_src_directory>/
+    go install thrift
+
 Four files for thrift compiler (last tested on August 12, 2012):
 
 1. ``configure.ac``
