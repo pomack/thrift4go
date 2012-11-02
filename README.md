@@ -89,6 +89,8 @@ is 0.8.0.  Please give the ``merge_and_build.sh`` script a run for more
 information.  It will perform the grungework of merging a local checkout of
 Thrift stable and thrift4go.
 
+Also, ``GOROOT`` must be set to the directory that contains the ``go`` binary when configuring thrift.
+
 # Areas for Future Assistance
 
 - Providing qualification tests that automatically build against Thrift stable
