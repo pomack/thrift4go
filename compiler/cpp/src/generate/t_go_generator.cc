@@ -2626,7 +2626,7 @@ void t_go_generator::generate_deserialize_container(ofstream &out,
             indent() << "  return thrift.NewTProtocolExceptionReadField(" <<
             -1 << ", \"" <<
             escape_string(prefix) << "\", \"\", " <<
-            err << "); }" << endl <<
+            err << ")" << endl <<
             indent() << "}" << endl <<
             indent() << prefix << eq << "thrift.NewTSet(" << etype << ", " << size << ")" << endl;
     } else if (ttype->is_list()) {
