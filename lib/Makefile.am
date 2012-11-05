@@ -62,6 +62,10 @@ if WITH_PHP
 SUBDIRS += php
 endif
 
+if WITH_D
+SUBDIRS += d
+endif
+
 if WITH_GO
 SUBDIRS += go
 endif
@@ -71,7 +75,9 @@ endif
 EXTRA_DIST = \
 			as3 \
 			cocoa \
+			d \
 			delphi \
+			go \
 			javame \
 			js \
 			nodejs \
