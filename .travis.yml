@@ -15,6 +15,7 @@ language: erlang
 #                   removed.
 before_install:
  - export REPO="$(pwd | sed s,^/home/travis/builds/,,g)" && echo "${REPO}"
+ - export COMMITID="$(git log -1 --pretty="%H")" && echo "${COMMITID}"
  - sudo apt-get remove -y --force-yes --purge golang || true
  - sudo apt-get remove -y --force-yes --purge golang-stable || true
  - sudo apt-get remove -y --force-yes --purge golang-weekly || true
@@ -33,7 +34,8 @@ install:
  - ln -s "${HOME}/builds/${REPO}" "${HOME}/src/thrift4go"
  - mkdir -p "${HOME}/github.com/${REPO}"
  - git clone https://github.com/${REPO}.git "${HOME}/github.com/${REPO}"
+ - cd "${HOME}/github.com/${REPO}"
+ - git checkout -qf ${COMMITID}
 
 script:
- - cd "${HOME}/github.com/${REPO}"
  - make test
