@@ -1,4 +1,4 @@
-THRIFT_ARCHIVE_URL = https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz
+THRIFT_ARCHIVE_URL = https://dist.apache.org/repos/dist/release/thrift/$(THRIFT_VERSION)/thrift-$(THRIFT_VERSION).tar.gz
 TEST_ARTIFACTS = \
 	test-compilation-stamp \
 	test-configuration-stamp \
