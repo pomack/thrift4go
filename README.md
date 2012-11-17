@@ -20,7 +20,67 @@ Currently generates code for the following protocols:
 
 Tested on Mac OS X 10.6 (Snow Leopard) and Linux ca. 2010 derivatives.
 
-To install locally, perform the following:
+# Manual installation
+
+Install build-essential, maven, libtool and autoconf. For a debian (derived) linux distribution run:
+``sudo apt-get install build-essential maven libtool autoconf``
+
+Get the master branch for thrift4go:
+
+``git clone https://github.com/pomack/thrift4go.git``
+
+
+Get the thrift-0.9.0.tar.gz and extract it:
+
+``wget -c https://dist.apache.org/repos/dist/release/thrift/0.9.0/thrift-0.9.0.tar.gz``
+
+``tar xzvf thrift-0.9.0.tar.gz``
+
+
+Set environment variables (used by the script) and execute the merge script:
+
+``export THRIFT=$(pwd)/thrift-0.9.0``
+
+``export THRIFT4GO=$(pwd)/thrift4go``
+
+``bash ./thrift4go/scripts/merge_and_build.sh -b``
+
+
+Configure and make thrift:
+
+``cd thrift-0.9.0``
+
+``./configure --with-go``
+
+``make``
+
+
+The compiler is located at thrift-0.9.0/compiler/cpp/thrift.
+Install the Go library.
+
+``ln -s $(pwd)/lib/go/src/thrift $GOPATH/src/thrift``
+
+``go install thrift``
+
+<!-- Get the master branch for thrift4go.
+``git clone https://github.com/pomack/thrift4go.git``
+
+Build the thrift with thrift4go compiler:
+``cd thrift4go``
+``make``
+
+Build the thrift4go Go library (package thrift).
+``ln -s $(pwd)/lib/go/src/thrift $GOPATH/src/thrift``
+``go install thrift``
+
+Your compiler is located at
+thrift4go/compiler/cpp/ -->
+
+
+
+
+
+<!-- To install locally, perform the following:
   ``go get github.com/pomack/thrift4go/lib/go/thrift``
 
 Or, to build manually:
@@ -33,7 +93,9 @@ Four files for thrift compiler (last tested on August 12, 2012):
 1. ``configure.ac``
 2. ``lib/Makefile.am``
 3. ``lib/go/Makefile.am``
-4. ``compiler/cpp/src/generate/t_go_generator.cc``
+4. ``compiler/cpp/src/generate/t_go_generator.cc`` -->
+
+# Tutorial files
 
 A tutorial has been created in the thrift4go/tutorial/go/src directory.
 
