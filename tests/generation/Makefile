@@ -24,6 +24,7 @@ test-exercise-stamp: test-compile-stamp simple_test.go
 
 test-compile-stamp: test-validate-stamp
 	cd gen-go/simple && go build -v -x .
+	cd gen-go/enumsiblings && go build -v -x .
 	touch $@
 
 test-validate-stamp: test-generation-stamp
@@ -32,6 +33,7 @@ test-validate-stamp: test-generation-stamp
 
 test-generation-stamp:
 	$(THRIFT) --gen go simple.thrift
+	$(THRIFT) --gen go enumsiblings.thrift
 	touch $@
 
 clean:
