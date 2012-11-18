@@ -615,17 +615,17 @@ void t_go_generator::generate_enum(t_enum* tenum)
         string iter_std_name(escape_string((*c_iter)->get_name()));
         string iter_name((*c_iter)->get_name());
         f_types_ <<
-                 indent() << "  " << iter_name << ' ' << tenum_name << " = " << value << endl;
+                 indent() << "  " << tenum_name << "_" << iter_name << ' ' << tenum_name << " = " << value << endl;
         // Dictionaries to/from string names of enums
         to_string_mapping <<
-                          indent() << "  case " << iter_name << ": return \"" << iter_std_name << "\"" << endl;
+                          indent() << "  case " << tenum_name << "_" << iter_name << ": return \"" << tenum_name << "_" << iter_std_name << "\"" << endl;
 
         if (iter_std_name != escape_string(iter_name)) {
             from_string_mapping <<
-                                indent() << "  case \"" << iter_std_name << "\", \"" << escape_string(iter_name) << "\": return " << iter_name << endl;
+                                indent() << "  case \"" << tenum_name << "_" << iter_std_name << "\", \"" << escape_string(iter_name) << "\": return " << tenum_name << "_" << iter_name << endl;
         } else {
             from_string_mapping <<
-                                indent() << "  case \"" << iter_std_name << "\": return " << iter_name << endl;
+                                indent() << "  case \"" << tenum_name << "_" << iter_std_name << "\": return " << tenum_name << "_" << iter_name << endl;
         }
     }
 
@@ -654,7 +654,7 @@ void t_go_generator::generate_enum(t_enum* tenum)
 void t_go_generator::generate_const(t_const* tconst)
 {
     t_type* type = tconst->get_type();
-    string name = publicize(tconst->get_name());
+    string name = publicize(type->get_name()) + "_" + publicize(tconst->get_name());
     t_const_value* value = tconst->get_value();
 
     if (type->is_base_type() || type->is_enum()) {

@@ -23,31 +23,31 @@ func init() {
 type UndefinedValues int64
 
 const (
-	UndefinedOne   UndefinedValues = 0
-	UndefinedTwo   UndefinedValues = 1
-	UndefinedThree UndefinedValues = 2
+	UndefinedValues_One   UndefinedValues = 0
+	UndefinedValues_Two   UndefinedValues = 1
+	UndefinedValues_Three UndefinedValues = 2
 )
 
 func (p UndefinedValues) String() string {
 	switch p {
-	case UndefinedOne:
-		return "UndefinedOne"
-	case UndefinedTwo:
-		return "UndefinedTwo"
-	case UndefinedThree:
-		return "UndefinedThree"
+	case UndefinedValues_One:
+		return "UndefinedValues_One"
+	case UndefinedValues_Two:
+		return "UndefinedValues_Two"
+	case UndefinedValues_Three:
+		return "UndefinedValues_Three"
 	}
 	return "<UNSET>"
 }
 
 func FromUndefinedValuesString(s string) UndefinedValues {
 	switch s {
-	case "UndefinedOne":
-		return UndefinedOne
-	case "UndefinedTwo":
-		return UndefinedTwo
-	case "UndefinedThree":
-		return UndefinedThree
+	case "UndefinedValues_One":
+		return UndefinedValues_One
+	case "UndefinedValues_Two":
+		return UndefinedValues_Two
+	case "UndefinedValues_Three":
+		return UndefinedValues_Three
 	}
 	return UndefinedValues(-10000)
 }
@@ -63,31 +63,31 @@ func (p UndefinedValues) IsEnum() bool {
 type DefinedValues int64
 
 const (
-	DefinedOne   DefinedValues = 1
-	DefinedTwo   DefinedValues = 2
-	DefinedThree DefinedValues = 3
+	DefinedValues_One   DefinedValues = 1
+	DefinedValues_Two   DefinedValues = 2
+	DefinedValues_Three DefinedValues = 3
 )
 
 func (p DefinedValues) String() string {
 	switch p {
-	case DefinedOne:
-		return "DefinedOne"
-	case DefinedTwo:
-		return "DefinedTwo"
-	case DefinedThree:
-		return "DefinedThree"
+	case DefinedValues_One:
+		return "DefinedValues_One"
+	case DefinedValues_Two:
+		return "DefinedValues_Two"
+	case DefinedValues_Three:
+		return "DefinedValues_Three"
 	}
 	return "<UNSET>"
 }
 
 func FromDefinedValuesString(s string) DefinedValues {
 	switch s {
-	case "DefinedOne":
-		return DefinedOne
-	case "DefinedTwo":
-		return DefinedTwo
-	case "DefinedThree":
-		return DefinedThree
+	case "DefinedValues_One":
+		return DefinedValues_One
+	case "DefinedValues_Two":
+		return DefinedValues_Two
+	case "DefinedValues_Three":
+		return DefinedValues_Three
 	}
 	return DefinedValues(-10000)
 }
@@ -103,36 +103,36 @@ func (p DefinedValues) IsEnum() bool {
 type HeterogeneousValues int64
 
 const (
-	HeterogeneousOne   HeterogeneousValues = 0
-	HeterogeneousTwo   HeterogeneousValues = 2
-	HeterogeneousThree HeterogeneousValues = 3
-	HeterogeneousFour  HeterogeneousValues = 4
+	HeterogeneousValues_One   HeterogeneousValues = 0
+	HeterogeneousValues_Two   HeterogeneousValues = 2
+	HeterogeneousValues_Three HeterogeneousValues = 3
+	HeterogeneousValues_Four  HeterogeneousValues = 4
 )
 
 func (p HeterogeneousValues) String() string {
 	switch p {
-	case HeterogeneousOne:
-		return "HeterogeneousOne"
-	case HeterogeneousTwo:
-		return "HeterogeneousTwo"
-	case HeterogeneousThree:
-		return "HeterogeneousThree"
-	case HeterogeneousFour:
-		return "HeterogeneousFour"
+	case HeterogeneousValues_One:
+		return "HeterogeneousValues_One"
+	case HeterogeneousValues_Two:
+		return "HeterogeneousValues_Two"
+	case HeterogeneousValues_Three:
+		return "HeterogeneousValues_Three"
+	case HeterogeneousValues_Four:
+		return "HeterogeneousValues_Four"
 	}
 	return "<UNSET>"
 }
 
 func FromHeterogeneousValuesString(s string) HeterogeneousValues {
 	switch s {
-	case "HeterogeneousOne":
-		return HeterogeneousOne
-	case "HeterogeneousTwo":
-		return HeterogeneousTwo
-	case "HeterogeneousThree":
-		return HeterogeneousThree
-	case "HeterogeneousFour":
-		return HeterogeneousFour
+	case "HeterogeneousValues_One":
+		return HeterogeneousValues_One
+	case "HeterogeneousValues_Two":
+		return HeterogeneousValues_Two
+	case "HeterogeneousValues_Three":
+		return HeterogeneousValues_Three
+	case "HeterogeneousValues_Four":
+		return HeterogeneousValues_Four
 	}
 	return HeterogeneousValues(-10000)
 }

@@ -104,12 +104,12 @@ func TestBinaryProtocol(t *testing.T) {
 		t.Errorf("request.IsSetDefaultNineth() (%q) != response.IsSetDefaultNineth() (%q).", request.IsSetDefaultNineth(), response.IsSetDefaultNineth())
 	}
 
-	request.First = UndefinedTwo
-	request.Second = DefinedTwo
-	request.Third = HeterogeneousTwo
-	request.OptionalFourth = UndefinedThree
-	request.OptionalFifth = DefinedThree
-	request.OptionalSixth = HeterogeneousThree
+	request.First = UndefinedValues_Two
+	request.Second = DefinedValues_Two
+	request.Third = HeterogeneousValues_Two
+	request.OptionalFourth = UndefinedValues_Three
+	request.OptionalFifth = DefinedValues_Three
+	request.OptionalSixth = HeterogeneousValues_Three
 
 	if response, anomaly = client.Echo(request); anomaly != nil {
 		t.Fatalf("Could not get response due to '%q'.", anomaly)
@@ -286,12 +286,12 @@ func TestCompactProtocol(t *testing.T) {
 		t.Errorf("request.IsSetDefaultNineth() (%q) != response.IsSetDefaultNineth() (%q).", request.IsSetDefaultNineth(), response.IsSetDefaultNineth())
 	}
 
-	request.First = UndefinedTwo
-	request.Second = DefinedTwo
-	request.Third = HeterogeneousTwo
-	request.OptionalFourth = UndefinedThree
-	request.OptionalFifth = DefinedThree
-	request.OptionalSixth = HeterogeneousThree
+	request.First = UndefinedValues_Two
+	request.Second = DefinedValues_Two
+	request.Third = HeterogeneousValues_Two
+	request.OptionalFourth = UndefinedValues_Three
+	request.OptionalFifth = DefinedValues_Three
+	request.OptionalSixth = HeterogeneousValues_Three
 
 	if response, anomaly = client.Echo(request); anomaly != nil {
 		t.Fatalf("Could not get response due to '%q'.", anomaly)
@@ -468,12 +468,12 @@ func TestJSONProtocol(t *testing.T) {
 		t.Errorf("request.IsSetDefaultNineth() (%q) != response.IsSetDefaultNineth() (%q).", request.IsSetDefaultNineth(), response.IsSetDefaultNineth())
 	}
 
-	request.First = UndefinedTwo
-	request.Second = DefinedTwo
-	request.Third = HeterogeneousTwo
-	request.OptionalFourth = UndefinedThree
-	request.OptionalFifth = DefinedThree
-	request.OptionalSixth = HeterogeneousThree
+	request.First = UndefinedValues_Two
+	request.Second = DefinedValues_Two
+	request.Third = HeterogeneousValues_Two
+	request.OptionalFourth = UndefinedValues_Three
+	request.OptionalFifth = DefinedValues_Three
+	request.OptionalSixth = HeterogeneousValues_Three
 
 	if response, anomaly = client.Echo(request); anomaly != nil {
 		t.Fatalf("Could not get response due to '%q'.", anomaly)
