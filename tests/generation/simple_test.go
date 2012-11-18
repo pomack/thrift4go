@@ -10,9 +10,9 @@ func TestUndefinedValuesString(t *testing.T) {
 		in  UndefinedValues
 		out string
 	}{
-		{UndefinedOne, "UndefinedOne"},
-		{UndefinedTwo, "UndefinedTwo"},
-		{UndefinedThree, "UndefinedThree"},
+		{UndefinedValues_One, "UndefinedValues_One"},
+		{UndefinedValues_Two, "UndefinedValues_Two"},
+		{UndefinedValues_Three, "UndefinedValues_Three"},
 	}
 
 	for i, definition := range inputAndExpected {
@@ -29,9 +29,9 @@ func TestDefinedValuesString(t *testing.T) {
 		in  DefinedValues
 		out string
 	}{
-		{DefinedOne, "DefinedOne"},
-		{DefinedTwo, "DefinedTwo"},
-		{DefinedThree, "DefinedThree"},
+		{DefinedValues_One, "DefinedValues_One"},
+		{DefinedValues_Two, "DefinedValues_Two"},
+		{DefinedValues_Three, "DefinedValues_Three"},
 	}
 
 	for i, definition := range inputAndExpected {
@@ -48,9 +48,9 @@ func TestHeterogeneousValuesString(t *testing.T) {
 		in  HeterogeneousValues
 		out string
 	}{
-		{HeterogeneousOne, "HeterogeneousOne"},
-		{HeterogeneousTwo, "HeterogeneousTwo"},
-		{HeterogeneousThree, "HeterogeneousThree"},
+		{HeterogeneousValues_One, "HeterogeneousValues_One"},
+		{HeterogeneousValues_Two, "HeterogeneousValues_Two"},
+		{HeterogeneousValues_Three, "HeterogeneousValues_Three"},
 	}
 
 	for i, definition := range inputAndExpected {
@@ -67,9 +67,9 @@ func TestUndefinedValuesValue(t *testing.T) {
 		in  UndefinedValues
 		out int
 	}{
-		{UndefinedOne, 0},
-		{UndefinedTwo, 1},
-		{UndefinedThree, 2},
+		{UndefinedValues_One, 0},
+		{UndefinedValues_Two, 1},
+		{UndefinedValues_Three, 2},
 	}
 
 	for i, definition := range inputAndExpected {
@@ -86,9 +86,9 @@ func TestDefinedValuesValue(t *testing.T) {
 		in  DefinedValues
 		out int
 	}{
-		{DefinedOne, 1},
-		{DefinedTwo, 2},
-		{DefinedThree, 3},
+		{DefinedValues_One, 1},
+		{DefinedValues_Two, 2},
+		{DefinedValues_Three, 3},
 	}
 
 	for i, definition := range inputAndExpected {
@@ -105,9 +105,9 @@ func TestHeterogeneousValuesValue(t *testing.T) {
 		in  HeterogeneousValues
 		out int
 	}{
-		{HeterogeneousOne, 0},
-		{HeterogeneousTwo, 2},
-		{HeterogeneousThree, 3},
+		{HeterogeneousValues_One, 0},
+		{HeterogeneousValues_Two, 2},
+		{HeterogeneousValues_Three, 3},
 	}
 
 	for i, definition := range inputAndExpected {
@@ -130,15 +130,15 @@ func TestContainerOfEnumsNew(t *testing.T) {
 func TestContainerOfEnumsFieldsSet(t *testing.T) {
 	emission := NewContainerOfEnums()
 
-	emission.First = UndefinedOne
-	emission.Second = DefinedOne
-	emission.Third = HeterogeneousOne
-	emission.OptionalFourth = UndefinedTwo
-	emission.OptionalFifth = DefinedTwo
-	emission.OptionalSixth = HeterogeneousTwo
-	emission.DefaultSeventh = UndefinedTwo
-	emission.DefaultEighth = DefinedTwo
-	emission.DefaultNineth = HeterogeneousTwo
+	emission.First = UndefinedValues_One
+	emission.Second = DefinedValues_One
+	emission.Third = HeterogeneousValues_One
+	emission.OptionalFourth = UndefinedValues_Two
+	emission.OptionalFifth = DefinedValues_Two
+	emission.OptionalSixth = HeterogeneousValues_Two
+	emission.DefaultSeventh = UndefinedValues_Two
+	emission.DefaultEighth = DefinedValues_Two
+	emission.DefaultNineth = HeterogeneousValues_Two
 }
 
 func TestContainerOfEnumsDefaultFieldsGet(t *testing.T) {
@@ -161,16 +161,16 @@ func TestContainerOfEnumsDefaultFieldsGet(t *testing.T) {
 		}
 	}
 
-	if emission.DefaultSeventh.String() != "UndefinedOne" {
-		t.Errorf("%q.String() => %q, want %q", emission.DefaultSeventh, emission.DefaultSeventh.String(), "UndefinedOne")
+	if emission.DefaultSeventh.String() != "UndefinedValues_One" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultSeventh, emission.DefaultSeventh.String(), "UndefinedValues_One")
 	}
 
-	if emission.DefaultEighth.String() != "DefinedOne" {
-		t.Errorf("%q.String() => %q, want %q", emission.DefaultEighth, emission.DefaultEighth.String(), "DefinedOne")
+	if emission.DefaultEighth.String() != "DefinedValues_One" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultEighth, emission.DefaultEighth.String(), "DefinedValues_One")
 	}
 
-	if emission.DefaultNineth.String() != "HeterogeneousOne" {
-		t.Errorf("%q.String() => %q, want %q", emission.DefaultNineth, emission.DefaultNineth.String(), "HeterogeneousOne")
+	if emission.DefaultNineth.String() != "HeterogeneousValues_One" {
+		t.Errorf("%q.String() => %q, want %q", emission.DefaultNineth, emission.DefaultNineth.String(), "HeterogeneousValues_One")
 	}
 }
 
@@ -204,109 +204,109 @@ func TestContainerOfEnumsOptionalFieldsAreSetStatusByDefault(t *testing.T) {
 func TestContainerOfEnumsOptionalFieldsAreSetStatusAfterSet(t *testing.T) {
 	emission := NewContainerOfEnums()
 
-	emission.OptionalFourth = UndefinedOne
+	emission.OptionalFourth = UndefinedValues_One
 
 	if emission.IsSetOptionalFourth() != true {
 		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
-	emission.OptionalFourth = UndefinedTwo
+	emission.OptionalFourth = UndefinedValues_Two
 
 	if emission.IsSetOptionalFourth() != true {
 		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
-	emission.OptionalFourth = UndefinedThree
+	emission.OptionalFourth = UndefinedValues_Three
 
 	if emission.IsSetOptionalFourth() != true {
 		t.Errorf("emission.OptionalFourth = %q; emission.IsSetOptionalFourth() => %s, want %s", emission.OptionalFourth, emission.IsSetOptionalFourth(), true)
 	}
 
-	emission.OptionalFifth = DefinedOne
+	emission.OptionalFifth = DefinedValues_One
 
 	if emission.IsSetOptionalFifth() != true {
 		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
-	emission.OptionalFifth = DefinedTwo
+	emission.OptionalFifth = DefinedValues_Two
 
 	if emission.IsSetOptionalFifth() != true {
 		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
-	emission.OptionalFifth = DefinedThree
+	emission.OptionalFifth = DefinedValues_Three
 
 	if emission.IsSetOptionalFifth() != true {
 		t.Errorf("emission.OptionalFifth = %q; emission.IsSetOptionalFifth() => %s, want %s", emission.OptionalFifth, emission.IsSetOptionalFifth(), true)
 	}
 
-	emission.OptionalSixth = HeterogeneousOne
+	emission.OptionalSixth = HeterogeneousValues_One
 
 	if emission.IsSetOptionalSixth() != true {
 		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 
-	emission.OptionalSixth = HeterogeneousTwo
+	emission.OptionalSixth = HeterogeneousValues_Two
 
 	if emission.IsSetOptionalSixth() != true {
 		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 
-	emission.OptionalSixth = HeterogeneousThree
+	emission.OptionalSixth = HeterogeneousValues_Three
 
 	if emission.IsSetOptionalSixth() != true {
 		t.Errorf("emission.OptionalSixth = %q; emission.IsSetOptionalSixth() => %s, want %s", emission.OptionalSixth, emission.IsSetOptionalSixth(), true)
 	}
 
-	emission.DefaultSeventh = UndefinedOne
+	emission.DefaultSeventh = UndefinedValues_One
 
 	if emission.IsSetDefaultSeventh() != true {
 		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
 	}
 
-	emission.DefaultSeventh = UndefinedTwo
+	emission.DefaultSeventh = UndefinedValues_Two
 
 	if emission.IsSetDefaultSeventh() != true {
 		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
 	}
 
-	emission.DefaultSeventh = UndefinedThree
+	emission.DefaultSeventh = UndefinedValues_Three
 
 	if emission.IsSetDefaultSeventh() != true {
 		t.Errorf("emission.DefaultSeventh = %q; emission.IsSetDefaultSeventh() => %s, want %s", emission.DefaultSeventh, emission.IsSetDefaultSeventh(), true)
 	}
 
-	emission.DefaultEighth = DefinedOne
+	emission.DefaultEighth = DefinedValues_One
 
 	if emission.IsSetDefaultEighth() != true {
 		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
 	}
 
-	emission.DefaultEighth = DefinedTwo
+	emission.DefaultEighth = DefinedValues_Two
 
 	if emission.IsSetDefaultEighth() != true {
 		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
 	}
 
-	emission.DefaultEighth = DefinedThree
+	emission.DefaultEighth = DefinedValues_Three
 
 	if emission.IsSetDefaultEighth() != true {
 		t.Errorf("emission.DefaultEighth = %q; emission.IsSetDefaultEighth() => %s, want %s", emission.DefaultEighth, emission.IsSetDefaultEighth(), true)
 	}
 
-	emission.DefaultNineth = HeterogeneousOne
+	emission.DefaultNineth = HeterogeneousValues_One
 
 	if emission.IsSetDefaultNineth() != true {
 		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
 	}
 
-	emission.DefaultNineth = HeterogeneousTwo
+	emission.DefaultNineth = HeterogeneousValues_Two
 
 	if emission.IsSetDefaultNineth() != true {
 		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
 	}
 
-	emission.DefaultNineth = HeterogeneousThree
+	emission.DefaultNineth = HeterogeneousValues_Three
 
 	if emission.IsSetDefaultNineth() != true {
 		t.Errorf("emission.DefaultNineth = %q; emission.IsSetDefaultNineth() => %s, want %s", emission.DefaultNineth, emission.IsSetDefaultNineth(), true)
@@ -472,12 +472,12 @@ func TestWireFormatWithSetPayload(t *testing.T) {
 		name := definition.name
 
 		emission := NewContainerOfEnums()
-		emission.First = UndefinedTwo
-		emission.Second = DefinedTwo
-		emission.Third = HeterogeneousTwo
-		emission.OptionalFourth = UndefinedThree
-		emission.OptionalFifth = DefinedThree
-		emission.OptionalSixth = HeterogeneousThree
+		emission.First = UndefinedValues_Two
+		emission.Second = DefinedValues_Two
+		emission.Third = HeterogeneousValues_Two
+		emission.OptionalFourth = UndefinedValues_Three
+		emission.OptionalFifth = DefinedValues_Three
+		emission.OptionalSixth = HeterogeneousValues_Three
 
 		if err := emission.Write(protocol); err != nil {
 			t.Fatalf("%d (%s): Could not emit simple %q to JSON.", i, name, emission)

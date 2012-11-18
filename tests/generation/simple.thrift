@@ -1,22 +1,22 @@
 namespace java thrift4go.generated
 
 enum UndefinedValues {
-  UndefinedOne,
-  UndefinedTwo,
-  UndefinedThree,
+  One,
+  Two,
+  Three,
 }
 
 enum DefinedValues {
-  DefinedOne = 1,
-  DefinedTwo = 2,
-  DefinedThree = 3,
+  One = 1,
+  Two = 2,
+  Three = 3,
 }
 
 enum HeterogeneousValues {
-  HeterogeneousOne,
-  HeterogeneousTwo = 2,
-  HeterogeneousThree,
-  HeterogeneousFour = 4,
+  One,
+  Two = 2,
+  Three,
+  Four = 4,
 }
 
 struct ContainerOfEnums {
@@ -26,9 +26,9 @@ struct ContainerOfEnums {
   4: optional UndefinedValues optional_fourth,
   5: optional DefinedValues optional_fifth,
   6: optional HeterogeneousValues optional_sixth,
-  7: optional UndefinedValues default_seventh = UndefinedValues.UndefinedOne,
-  8: optional DefinedValues default_eighth = DefinedValues.DefinedOne,
-  9: optional HeterogeneousValues default_nineth = HeterogeneousValues.HeterogeneousOne,
+  7: optional UndefinedValues default_seventh = UndefinedValues.One,
+  8: optional DefinedValues default_eighth = DefinedValues.One,
+  9: optional HeterogeneousValues default_nineth = HeterogeneousValues.One,
 }
 
 service ContainerOfEnumsTestService {
