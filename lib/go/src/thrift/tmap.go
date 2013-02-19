@@ -57,7 +57,7 @@ type tMap struct {
 	size      int
 	l         *list.List
 	b         map[bool]interface{}
-	i08       map[byte]interface{}
+	i08       map[int8]interface{}
 	i16       map[int16]interface{}
 	i32       map[int32]interface{}
 	i64       map[int64]interface{}
@@ -159,7 +159,7 @@ func (p *tMap) Get(key interface{}) (interface{}, bool) {
 		return nil, true
 	case BYTE:
 		m := p.i08
-		if v, ok := m[useKey.(byte)]; ok {
+		if v, ok := m[useKey.(int8)]; ok {
 			return v, true
 		}
 		return nil, false
@@ -358,9 +358,9 @@ func (p *tMap) Set(key, value interface{}) {
 		p.b[b] = value
 	case BYTE:
 		if p.i08 == nil {
-			p.i08 = make(map[byte]interface{})
+			p.i08 = make(map[int8]interface{})
 		}
-		b := coercedKey.(byte)
+		b := coercedKey.(int8)
 		p.i08[b] = value
 	case DOUBLE:
 		if p.f64 == nil {
@@ -434,7 +434,7 @@ func (p *tMap) Contains(key interface{}) bool {
 		return ok
 	case BYTE:
 		m := p.i08
-		_, ok := m[coercedKey.(byte)]
+		_, ok := m[coercedKey.(int8)]
 		return ok
 	case DOUBLE:
 		m := p.f64
@@ -604,7 +604,7 @@ func (p *tMap) iterate(c chan<- TMapElem) {
 			c <- NewTMapElem(k, v)
 		}
 		close(c)
-	case BINARY, STRUCT, LIST, SET:
+	case BINARY, STRUCT, LIST, SET, MAP:
 		for v := p.l.Front(); v != nil; v = v.Next() {
 			c <- v.Value.(TMapElem)
 		}

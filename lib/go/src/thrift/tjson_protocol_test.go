@@ -17,15 +17,18 @@
  * under the License.
  */
 
-package thrift
+package thrift_test
 
 import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"math"
+	"reflect"
 	"strconv"
 	"testing"
+	. "thrift"
+	. "thrift/gen-go/tutorial"
 )
 
 func TestWriteJSONProtocolBool(t *testing.T) {
@@ -94,7 +97,7 @@ func TestWriteJSONProtocolByte(t *testing.T) {
 		if s != fmt.Sprint(value) {
 			t.Fatalf("Bad value for %s %v: %s", thetype, value, s)
 		}
-		v := byte(0)
+		v := int8(0)
 		if err := json.Unmarshal([]byte(s), &v); err != nil || v != value {
 			t.Fatalf("Bad json-decoded value for %s %v, wrote: '%s', expected: '%v'", thetype, value, s, v)
 		}
@@ -645,7 +648,7 @@ func TestReadWriteJSONStruct(t *testing.T) {
 	orig := NewWork()
 	orig.Num1 = 25
 	orig.Num2 = 102
-	orig.Op = ADD
+	orig.Op = Operation_ADD
 	orig.Comment = "Add: 25 + 102"
 	if e := orig.Write(p); e != nil {
 		t.Fatalf("Unable to write %s value %#v due to error: %s", thetype, orig, e.Error())
@@ -662,7 +665,7 @@ func TestReadWriteJSONStruct(t *testing.T) {
 	if e != nil {
 		t.Fatalf("Unable to read %s due to error: %s", thetype, e.Error())
 	}
-	if !orig.Equals(read) {
+	if !reflect.DeepEqual(orig, read) {
 		t.Fatalf("Original Write != Read: %#v != %#v ", orig, read)
 	}
 }

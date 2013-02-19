@@ -17,12 +17,13 @@
  * under the License.
  */
 
-package thrift
+package thrift_test
 
 import (
 	"testing"
+	"thrift"
 )
 
 func TestReadWriteBinaryProtocol(t *testing.T) {
-	ReadWriteProtocolTest(t, NewTBinaryProtocolFactoryDefault())
+	ReadWriteProtocolTest(t, thrift.NewTBinaryProtocolFactoryDefault())
 }

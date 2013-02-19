@@ -543,10 +543,9 @@ string t_go_generator::go_imports()
                "// happen to use the math import due to not having emited enums.\n"
                "//\n"
                "// Future clean-ups will deprecate the need for this.\n"
-               "func init() {\n"
-               "\tvar temporaryAndUnused int32 = math.MinInt32\n"
-               "\ttemporaryAndUnused++\n"
-               "}\n\n");
+               "var _ = fmt.Print\n"
+               "var _ = math.MinInt32\n"
+               "\n\n");
 }
 
 /**
@@ -763,12 +762,14 @@ string t_go_generator::render_const_value(t_type* type, t_const_value* value, co
         indent_up();
         map<t_const_value*, t_const_value*>::const_iterator v_iter;
 
+        string kGoType(type_to_go_type(ktype));
+        string vGoType(type_to_go_type(vtype));
         for (v_iter = val.begin(); v_iter != val.end(); ++v_iter) {
             string k(tmp("k"));
             string v(tmp("v"));
             out <<
-                indent() << k << " := " << render_const_value(ktype, v_iter->first, k) << endl <<
-                indent() << v << " := " << render_const_value(vtype, v_iter->second, v) << endl <<
+                indent() <<"var "<< k << " " <<kGoType << " = " << render_const_value(ktype, v_iter->first, k) << endl <<
+                indent() <<"var "<< v << " " <<vGoType << " = " << render_const_value(vtype, v_iter->second, v) << endl <<
                 indent() << name << ".Set(" << k << ", " << v << ")" << endl;
         }
 
@@ -784,10 +785,11 @@ string t_go_generator::render_const_value(t_type* type, t_const_value* value, co
         indent_up();
         vector<t_const_value*>::const_iterator v_iter;
 
+        string goType(type_to_go_type(etype));
         for (v_iter = val.begin(); v_iter != val.end(); ++v_iter) {
             string v(tmp("v"));
             out <<
-                indent() << v << " := " << render_const_value(etype, *v_iter, v) << endl <<
+                indent() <<"var "<< v << " " <<goType << " = " << render_const_value(etype, *v_iter, v) << endl <<
                 indent() << name << ".Push(" << v << ")" << endl;
         }
 
@@ -803,10 +805,11 @@ string t_go_generator::render_const_value(t_type* type, t_const_value* value, co
         indent_up();
         vector<t_const_value*>::const_iterator v_iter;
 
+        string goType(type_to_go_type(etype));
         for (v_iter = val.begin(); v_iter != val.end(); ++v_iter) {
             string v(tmp("v"));
             out <<
-                indent() << v << " := " << render_const_value(etype, *v_iter, v) << endl <<
+				indent() <<"var "<< v << " " <<goType << " = " << render_const_value(etype, *v_iter, v) << endl <<
                 indent() << name << ".Add(" << v << ")" << endl;
         }
 
@@ -864,8 +867,8 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
     generate_go_docstring(out, tstruct);
     std::string tstruct_name(publicize(tstruct->get_name()));
     out <<
-        indent() << "type " << tstruct_name << " struct {" << endl <<
-        indent() << "  thrift.TStruct" << endl;
+        indent() << "type " << tstruct_name << " struct {" << endl;
+    //    indent() << "  thrift.TStruct" << endl;
     /*
        Here we generate the structure specification for the fastbinary codec.
        These specifications have the following structure:
@@ -921,9 +924,7 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
     indent_down();
     out <<
         indent() << "}" << endl << endl <<
-        indent() << "func New" << tstruct_name << "() *" << tstruct_name << " {" << endl <<
-        indent() << "  output := &" << tstruct_name << "{" << endl <<
-        indent() << "    TStruct:thrift.NewTStruct(\"" << escape_string(tstruct->get_name()) << "\", []thrift.TField{" << endl;
+        indent() << "var tstruct"<<tstruct_name << " = thrift.NewTStruct(\"" << escape_string(tstruct->get_name()) << "\", []thrift.TField{" << endl;
     indent_up();
     indent_up();
 
@@ -934,8 +935,13 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
     }
 
     out <<
-        indent() << "})," << endl;
+        indent() << "})" << endl;
     indent_down();
+    out <<
+        indent() << "func (*"<< tstruct_name<<")GetTStruct() thrift.TStruct { return tstruct"<<tstruct_name <<"; }"<<endl <<
+        indent() << "func New" << tstruct_name << "() *" << tstruct_name << " {" << endl <<
+        indent() << "  output := &" << tstruct_name << "{" << endl;
+
     out <<
         indent() << "}" << endl <<
         indent() << "{" << endl;
@@ -953,7 +959,7 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
         const bool type_is_enum = type->is_enum();
 
         if (has_default_value) {
-            out << indent() << full_field_name << " = " << render_field_default_value(*m_iter, base_field_name) << endl;
+            out << indent() << full_field_name << " = " << render_field_default_value(*m_iter, full_field_name) << endl;
         } else if (type_is_enum) {
             out << indent() << full_field_name << " = math.MinInt32 - 1" << endl;
         }
@@ -1162,12 +1168,12 @@ void t_go_generator::generate_go_struct_reader(ofstream& out,
     out <<
         indent() << "fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()" << endl <<
         indent() << "if fieldId < 0 {" << endl <<
-        indent() << "  fieldId = int16(p.FieldIdFromFieldName(fieldName))" << endl <<
+        indent() << "  fieldId = int16(tstruct"<<tstruct_name<<".FieldIdFromFieldName(fieldName))" << endl <<
         indent() << "} else if fieldName == \"\" {" << endl <<
-        indent() << "  fieldName = p.FieldNameFromFieldId(int(fieldId))" << endl <<
+        indent() << "  fieldName = tstruct"<<tstruct_name<<".FieldNameFromFieldId(int(fieldId))" << endl <<
         indent() << "}" << endl <<
         indent() << "if fieldTypeId == thrift.GENERIC {" << endl <<
-        indent() << "  fieldTypeId = p.FieldFromFieldId(int(fieldId)).TypeId()" << endl <<
+        indent() << "  fieldTypeId = tstruct"<<tstruct_name<<".FieldFromFieldId(int(fieldId)).TypeId()" << endl <<
         indent() << "}" << endl <<
         indent() << "if err != nil {" << endl <<
         indent() << "  return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)" << endl <<
@@ -1408,10 +1414,10 @@ void t_go_generator::generate_service(t_service* tservice)
                go_package() <<
                go_imports();
 
-    if (tservice->get_extends() != NULL) {
-        f_service_ <<
-                   "import \"" << get_real_go_module(tservice->get_extends()->get_program()) << "\"" << endl;
-    }
+    // if (tservice->get_extends() != NULL) {
+    //     f_service_ <<
+    //                "import \"" << get_real_go_module(tservice->get_extends()->get_program()) << "\"" << endl;
+    // }
 
     f_service_ <<
                //             "import (" << endl <<
@@ -2795,7 +2801,7 @@ void t_go_generator::generate_serialize_field(ofstream &out,
                 break;
 
             case t_base_type::TYPE_BYTE:
-                out << "WriteByte(byte(" << name << "))";
+                out << "WriteByte(int8(" << name << "))";
                 break;
 
             case t_base_type::TYPE_I16:
@@ -3275,7 +3281,7 @@ string t_go_generator::type_to_go_type(t_type* type)
             return "bool";
 
         case t_base_type::TYPE_BYTE:
-            return "byte";
+            return "int8";
 
         case t_base_type::TYPE_I16:
             return "int16";

@@ -83,7 +83,7 @@ func (p *TBinaryProtocol) WriteMessageBegin(name string, typeId TMessageType, se
 		if e != nil {
 			return e
 		}
-		e = p.WriteByte(byte(typeId))
+		e = p.WriteByte(int8(typeId))
 		if e != nil {
 			return e
 		}
@@ -173,8 +173,8 @@ func (p *TBinaryProtocol) WriteBool(value bool) TProtocolException {
 	return p.WriteByte(0)
 }
 
-func (p *TBinaryProtocol) WriteByte(value byte) TProtocolException {
-	v := []byte{value}
+func (p *TBinaryProtocol) WriteByte(value int8) TProtocolException {
+	v := []byte{byte(value)}
 	_, e := p.trans.Write(v)
 	return NewTProtocolExceptionFromOsError(e)
 }
@@ -384,10 +384,10 @@ func (p *TBinaryProtocol) ReadBool() (bool, TProtocolException) {
 	return v, e
 }
 
-func (p *TBinaryProtocol) ReadByte() (value byte, err TProtocolException) {
+func (p *TBinaryProtocol) ReadByte() (value int8, err TProtocolException) {
 	buf := []byte{0}
 	err = p.readAll(buf)
-	return buf[0], err
+	return int8(buf[0]), err
 }
 
 func (p *TBinaryProtocol) ReadI16() (value int16, err TProtocolException) {

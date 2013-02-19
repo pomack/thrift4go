@@ -28,19 +28,20 @@ import (
 /**
  * Type constants in the Thrift protocol.
  */
-type TType byte
+type TType int8
 
 const (
-	STOP    = 0
-	VOID    = 1
-	BOOL    = 2
-	BYTE    = 3
-	I08     = 3
-	DOUBLE  = 4
-	I16     = 6
-	I32     = 8
-	I64     = 10
-	STRING  = 11
+	STOP   = 0
+	VOID   = 1
+	BOOL   = 2
+	BYTE   = 3
+	I08    = 3
+	DOUBLE = 4
+	I16    = 6
+	I32    = 8
+	I64    = 10
+	STRING = 11
+	// BINARY = 11
 	UTF7    = 11
 	STRUCT  = 12
 	MAP     = 13
@@ -53,14 +54,8 @@ const (
 	GENERIC = 127
 )
 
-func (p TType) ThriftTypeId() byte {
-	switch p {
-	default:
-		return byte(p)
-	case BINARY:
-		return byte(STRING)
-	}
-	return byte(0)
+func (p TType) ThriftTypeId() int8 {
+	return int8(p)
 }
 
 func (p TType) String() string {
@@ -563,7 +558,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		case BOOL:
 			return false, true
 		case BYTE:
-			return byte(0), true
+			return int8(0), true
 		case DOUBLE:
 			return float64(0), true
 		case I16:
@@ -640,7 +635,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 			return true, true
 		}
 	case BYTE:
-		if b, ok := data.(byte); ok {
+		if b, ok := data.(int8); ok {
 			return b, true
 		}
 		if b, ok := data.(Numeric); ok {
@@ -648,45 +643,45 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		}
 		if b, ok := data.(bool); ok {
 			if b {
-				return byte(1), true
+				return int8(1), true
 			}
-			return byte(0), true
+			return int8(0), true
 		}
 		if b, ok := data.(int); ok {
-			return byte(b), true
+			return int8(b), true
 		}
-		if b, ok := data.(int8); ok {
-			return byte(b), true
+		if b, ok := data.(byte); ok {
+			return int8(b), true
 		}
 		if b, ok := data.(int16); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(int32); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(int64); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(uint); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(uint8); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(uint16); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(uint32); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(uint64); ok {
-			return byte(b), true
+			return int8(b), true
 		}
 		if b, ok := data.(float32); ok {
-			return byte(int(b)), true
+			return int8(int(b)), true
 		}
 		if b, ok := data.(float64); ok {
-			return byte(int(b)), true
+			return int8(int(b)), true
 		}
 		if b, ok := data.([]byte); ok {
 			if len(b) > 0 {
@@ -1071,10 +1066,7 @@ func (p TType) CoerceData(data interface{}) (interface{}, bool) {
 		}
 		return "", false
 	case STRUCT:
-		if b, ok := data.(TStruct); ok {
-			return b, true
-		}
-		return NewTStructEmpty(""), true
+		return data, true
 	case MAP:
 		if b, ok := data.(TMap); ok {
 			return b, true

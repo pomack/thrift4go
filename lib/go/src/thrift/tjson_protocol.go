@@ -75,7 +75,7 @@ func (p *TJSONProtocol) WriteMessageBegin(name string, typeId TMessageType, seqI
 	if e := p.WriteString(name); e != nil {
 		return e
 	}
-	if e := p.WriteByte(byte(typeId)); e != nil {
+	if e := p.WriteByte(int8(typeId)); e != nil {
 		return e
 	}
 	if e := p.WriteI32(seqId); e != nil {
@@ -155,7 +155,7 @@ func (p *TJSONProtocol) WriteBool(b bool) TProtocolException {
 	return p.OutputBool(b)
 }
 
-func (p *TJSONProtocol) WriteByte(b byte) TProtocolException {
+func (p *TJSONProtocol) WriteByte(b int8) TProtocolException {
 	return p.WriteI32(int32(b))
 }
 
@@ -347,9 +347,9 @@ func (p *TJSONProtocol) ReadBool() (bool, TProtocolException) {
 	return value, p.ParsePostValue()
 }
 
-func (p *TJSONProtocol) ReadByte() (byte, TProtocolException) {
+func (p *TJSONProtocol) ReadByte() (int8, TProtocolException) {
 	v, err := p.ReadI64()
-	return byte(v), err
+	return int8(v), err
 }
 
 func (p *TJSONProtocol) ReadI16() (int16, TProtocolException) {

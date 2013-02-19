@@ -4,6 +4,35 @@ import (
 	"testing"
 )
 
+func TestMapSetByte(t *testing.T) {
+	tm := NewTMap(BYTE, BOOL, 1)
+	tm.Set(15, true)
+	tm.Set(32, false)
+	if !tm.Contains(15) {
+		t.Errorf("Expected a key of 15, but not found in set")
+	}
+	if !tm.Contains(32) {
+		t.Errorf("Expected a key of 32, but not found in set")
+	}
+	if tm.Contains(37) {
+		t.Errorf("Expected not to find a key of 37, but found in set")
+	}
+	if v, found := tm.Get(15); !v.(bool) || !found {
+		t.Errorf("Expected key of 15 => true, true, but was %v, %v", v, found)
+	}
+	if v, found := tm.Get(32); v.(bool) || !found {
+		t.Errorf("Expected key of 32 => false, true, but was %v, %v", v, found)
+	}
+	if v, found := tm.Get(37); found {
+		t.Errorf("Expected key of 37 => false, false, but was %v, %v", v, found)
+	}
+	for iter := range tm.Iter() {
+		var k int8 = iter.Key().(int8)
+		var v bool = iter.Value().(bool)
+		_, _ = k, v
+	}
+}
+
 func TestMapSetI32(t *testing.T) {
 	tm := NewTMap(I32, BOOL, 1)
 	tm.Set(15, true)

@@ -52,25 +52,25 @@ const (
 )
 
 var (
-	_TTypeToCompactType []TCompactType
-	_TSTOP              TField
+	_TTypeToCompactType = []TCompactType{
+		STOP:   STOP,
+		BOOL:   COMPACT_BOOLEAN_TRUE,
+		BYTE:   COMPACT_BYTE,
+		I16:    COMPACT_I16,
+		I32:    COMPACT_I32,
+		I64:    COMPACT_I64,
+		DOUBLE: COMPACT_DOUBLE,
+		STRING: COMPACT_BINARY,
+		LIST:   COMPACT_LIST,
+		SET:    COMPACT_SET,
+		MAP:    COMPACT_MAP,
+		STRUCT: COMPACT_STRUCT,
+	}
+	_TSTOP TField
 )
 
 func init() {
 	_TSTOP = NewTField("", STOP, 0)
-	_TTypeToCompactType = make([]TCompactType, int(UTF16)+1)
-	_TTypeToCompactType[int(STOP)] = STOP
-	_TTypeToCompactType[int(BOOL)] = COMPACT_BOOLEAN_TRUE
-	_TTypeToCompactType[int(BYTE)] = COMPACT_BYTE
-	_TTypeToCompactType[int(I16)] = COMPACT_I16
-	_TTypeToCompactType[int(I32)] = COMPACT_I32
-	_TTypeToCompactType[int(I64)] = COMPACT_I64
-	_TTypeToCompactType[int(DOUBLE)] = COMPACT_DOUBLE
-	_TTypeToCompactType[int(STRING)] = COMPACT_BINARY
-	_TTypeToCompactType[int(LIST)] = COMPACT_LIST
-	_TTypeToCompactType[int(SET)] = COMPACT_SET
-	_TTypeToCompactType[int(MAP)] = COMPACT_MAP
-	_TTypeToCompactType[int(STRUCT)] = COMPACT_STRUCT
 }
 
 type TCompactProtocolFactory struct{}
@@ -279,8 +279,8 @@ func (p *TCompactProtocol) WriteBool(value bool) TProtocolException {
 /**
  * Write a byte. Nothing to see here!
  */
-func (p *TCompactProtocol) WriteByte(value byte) TProtocolException {
-	_, err := p.writeByteDirect(value)
+func (p *TCompactProtocol) WriteByte(value int8) TProtocolException {
+	_, err := p.writeByteDirect(byte(value))
 	return NewTProtocolExceptionFromOsError(err)
 }
 
@@ -288,7 +288,7 @@ func (p *TCompactProtocol) WriteByte(value byte) TProtocolException {
  * Write an I16 as a zigzag varint.
  */
 func (p *TCompactProtocol) WriteI16(value int16) TProtocolException {
-	_, err := p.writeVarint32(p.int32ToZigzag(int32(value)))
+	_, err := p.writeVarint32(int32ToZigzag(int32(value)))
 	return NewTProtocolExceptionFromOsError(err)
 }
 
@@ -296,7 +296,7 @@ func (p *TCompactProtocol) WriteI16(value int16) TProtocolException {
  * Write an i32 as a zigzag varint.
  */
 func (p *TCompactProtocol) WriteI32(value int32) TProtocolException {
-	_, err := p.writeVarint32(p.int32ToZigzag(value))
+	_, err := p.writeVarint32(int32ToZigzag(value))
 	return NewTProtocolExceptionFromOsError(err)
 }
 
@@ -304,7 +304,7 @@ func (p *TCompactProtocol) WriteI32(value int32) TProtocolException {
  * Write an i64 as a zigzag varint.
  */
 func (p *TCompactProtocol) WriteI64(value int64) TProtocolException {
-	_, err := p.writeVarint64(p.int64ToZigzag(value))
+	_, err := p.writeVarint64(int64ToZigzag(value))
 	return NewTProtocolExceptionFromOsError(err)
 }
 
@@ -351,7 +351,7 @@ func (p *TCompactProtocol) WriteBinary(bin []byte) TProtocolException {
  */
 func (p *TCompactProtocol) ReadMessageBegin() (name string, typeId TMessageType, seqId int32, err TProtocolException) {
 	protocolId, err := p.ReadByte()
-	if protocolId != COMPACT_PROTOCOL_ID {
+	if byte(protocolId) != COMPACT_PROTOCOL_ID {
 		s := fmt.Sprintf("Expected protocol id %02x but got %02x", COMPACT_PROTOCOL_ID, protocolId)
 		return "", typeId, seqId, NewTProtocolException(BAD_VERSION, s)
 	}
@@ -412,7 +412,7 @@ func (p *TCompactProtocol) ReadFieldBegin() (name string, typeId TType, id int16
 	}
 
 	// mask off the 4 MSB of the type header. it could contain a field id delta.
-	modifier := int16((t & 0xf0) >> 4)
+	modifier := int16((byte(t) & 0xf0) >> 4)
 	if modifier == 0 {
 		// not a delta. look ahead for the zigzag varint field id.
 		id, err = p.ReadI16()
@@ -455,7 +455,7 @@ func (p *TCompactProtocol) ReadMapBegin() (keyType TType, valueType TType, size 
 		err = NewTProtocolExceptionFromOsError(e)
 		return
 	}
-	keyAndValueType := byte(STOP)
+	keyAndValueType := int8(STOP)
 	if size != 0 {
 		keyAndValueType, err = p.ReadByte()
 		if err != nil {
@@ -528,13 +528,13 @@ func (p *TCompactProtocol) ReadBool() (value bool, err TProtocolException) {
 /**
  * Read a single byte off the wire. Nothing interesting here.
  */
-func (p *TCompactProtocol) ReadByte() (value byte, err TProtocolException) {
+func (p *TCompactProtocol) ReadByte() (value int8, err TProtocolException) {
 	buf := []byte{0}
 	_, e := p.trans.ReadAll(buf)
 	if e != nil {
 		return 0, NewTProtocolExceptionFromOsError(e)
 	}
-	return buf[0], nil
+	return int8(buf[0]), nil
 }
 
 /**
@@ -688,7 +688,7 @@ func (p *TCompactProtocol) writeVarint64(n int64) (int, error) {
  * Convert l into a zigzag long. This allows negative numbers to be
  * represented compactly as a varint.
  */
-func (p *TCompactProtocol) int64ToZigzag(l int64) int64 {
+func int64ToZigzag(l int64) int64 {
 	return (l << 1) ^ (l >> 63)
 }
 
@@ -696,17 +696,17 @@ func (p *TCompactProtocol) int64ToZigzag(l int64) int64 {
  * Convert l into a zigzag long. This allows negative numbers to be
  * represented compactly as a varint.
  */
-func (p *TCompactProtocol) int32ToZigzag(n int32) int32 {
+func int32ToZigzag(n int32) int32 {
 	return (n << 1) ^ (n >> 31)
 }
 
-func (p *TCompactProtocol) fixedUint64ToBytes(n uint64, buf []byte) {
-	binary.LittleEndian.PutUint64(buf, n)
-}
+// func fixedUint64ToBytes(n uint64, buf []byte) {
+// 	binary.LittleEndian.PutUint64(buf, n)
+// }
 
-func (p *TCompactProtocol) fixedInt64ToBytes(n int64, buf []byte) {
-	binary.LittleEndian.PutUint64(buf, uint64(n))
-}
+// func fixedInt64ToBytes(n int64, buf []byte) {
+// 	binary.LittleEndian.PutUint64(buf, uint64(n))
+// }
 
 /**
  * Writes a byte without any possiblity of all that field header nonsense.
@@ -751,7 +751,7 @@ func (p *TCompactProtocol) readVarint64() (int64, error) {
 			return 0, err
 		}
 		result |= int64(b&0x7f) << shift
-		if (b & 0x80) != 0x80 {
+		if (byte(b) & 0x80) != 0x80 {
 			break
 		}
 		shift += 7
@@ -801,7 +801,7 @@ func (p *TCompactProtocol) bytesToUint64(b []byte) uint64 {
 // type testing and converting
 //
 
-func (p *TCompactProtocol) isBoolType(b byte) bool {
+func (p *TCompactProtocol) isBoolType(b int8) bool {
 	return (b&0x0f) == COMPACT_BOOLEAN_TRUE || (b&0x0f) == COMPACT_BOOLEAN_FALSE
 }
 

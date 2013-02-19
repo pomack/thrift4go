@@ -28,7 +28,7 @@ type Numeric interface {
 	Int64() int64
 	Int32() int32
 	Int16() int16
-	Byte() byte
+	Byte() int8
 	Int() int
 	Float64() float64
 	Float32() float32
@@ -131,8 +131,8 @@ func (p *numeric) Int16() int16 {
 	return int16(p.iValue)
 }
 
-func (p *numeric) Byte() byte {
-	return byte(p.iValue)
+func (p *numeric) Byte() int8 {
+	return int8(p.iValue)
 }
 
 func (p *numeric) Int() int {
