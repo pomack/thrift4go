@@ -6,8 +6,8 @@ package librarytest
 
 import (
 	"fmt"
+	"github.com/apesternikov/thrift4go/lib/go/src/thrift"
 	"math"
-	"thrift"
 )
 
 // This is a temporary safety measure to ensure that the `math'

@@ -17,11 +17,11 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
+	. "github.com/apesternikov/thrift4go/lib/go/src/thrift"
 	"testing"
-	. "thrift"
 )
 
 func TestReadWriteCompactProtocol(t *testing.T) {

@@ -17,19 +17,19 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
+	"./gen-go/librarytest"
+	"./gen-go/tutorial"
 	"bytes"
+	. "github.com/apesternikov/thrift4go/lib/go/src/thrift"
 	"io/ioutil"
 	"math"
 	"net"
 	"net/http"
 	"reflect"
 	"testing"
-	. "thrift"
-	"thrift/gen-go/librarytest"
-	"thrift/gen-go/tutorial"
 )
 
 const PROTOCOL_BINARY_DATA_SIZE = 155

@@ -20,11 +20,18 @@
 package thrift
 
 import (
-	"bytes"
+	. "github.com/apesternikov/thrift4go/lib/go/src/thrift"
+	"io"
 	"testing"
 )
 
-func TestIOStreamTransport(t *testing.T) {
-	trans := NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 1024)))
-	TransportTest(t, trans, trans)
+func TestTException(t *testing.T) {
+	exc := NewTException("")
+	if exc.Error() != "" {
+		t.Fatalf("Expected empty string for exception but found '%s'", exc.Error())
+	}
+	exc = NewTExceptionFromOsError(io.EOF)
+	if exc.Error() != io.EOF.Error() {
+		t.Fatalf("Expected '%s', but found '%s'", io.EOF.Error(), exc.Error())
+	}
 }

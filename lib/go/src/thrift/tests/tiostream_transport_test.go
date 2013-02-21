@@ -20,10 +20,12 @@
 package thrift
 
 import (
+	"bytes"
+	. "github.com/apesternikov/thrift4go/lib/go/src/thrift"
 	"testing"
 )
 
-func TestMemoryBuffer(t *testing.T) {
-	trans := NewTMemoryBufferLen(1024)
+func TestIOStreamTransport(t *testing.T) {
+	trans := NewTIOStreamTransportRW(bytes.NewBuffer(make([]byte, 0, 1024)))
 	TransportTest(t, trans, trans)
 }

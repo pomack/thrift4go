@@ -17,13 +17,14 @@
  * under the License.
  */
 
-package thrift_test
+package thrift
 
 import (
+	. "github.com/apesternikov/thrift4go/lib/go/src/thrift"
 	"testing"
-	"thrift"
 )
 
-func TestReadWriteBinaryProtocol(t *testing.T) {
-	ReadWriteProtocolTest(t, thrift.NewTBinaryProtocolFactoryDefault())
+func TestMemoryBuffer(t *testing.T) {
+	trans := NewTMemoryBufferLen(1024)
+	TransportTest(t, trans, trans)
 }

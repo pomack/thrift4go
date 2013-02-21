@@ -539,7 +539,7 @@ string t_go_generator::go_imports()
         string("import (\n"
                "\t\"fmt\"\n"
                "\t\"math\"\n"
-               "\t\"thrift\"\n"
+               "\t\"github.com/apesternikov/thrift4go/lib/go/src/thrift\"\n"
                ")\n\n"
                "// This is a temporary safety measure to ensure that the `math'\n"
                "// import does not trip up any generated output that may not\n"

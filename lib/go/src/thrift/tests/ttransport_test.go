@@ -20,6 +20,7 @@
 package thrift
 
 import (
+	. "github.com/apesternikov/thrift4go/lib/go/src/thrift"
 	"net"
 	"strconv"
 	"testing"
