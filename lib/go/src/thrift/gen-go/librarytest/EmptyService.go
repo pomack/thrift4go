@@ -70,8 +70,8 @@ func (p *EmptyServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunct
 
 func NewEmptyServiceProcessor(handler IEmptyService) *EmptyServiceProcessor {
 
-	self1596 := &EmptyServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	return self1596
+	self1109 := &EmptyServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	return self1109
 }
 
 func (p *EmptyServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -83,12 +83,12 @@ func (p *EmptyServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success 
 	if !nameFound || process == nil {
 		iprot.Skip(thrift.STRUCT)
 		iprot.ReadMessageEnd()
-		x1597 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
+		x1110 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
 		oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-		x1597.Write(oprot)
+		x1110.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Transport().Flush()
-		return false, x1597
+		return false, x1110
 	}
 	return process.Process(seqId, iprot, oprot)
 }

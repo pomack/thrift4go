@@ -59,11 +59,6 @@ struct Nesting {
   2: OneOfEach my_ooe,
 }
 
-struct HolyMoley {
-  1: list<OneOfEach> big,
-  2: set<list<string>> contain,
-  3: map<string,list<Bonk>> bonks,
-}
 
 struct Backwards {
   2: i32 first_tag2,
@@ -131,7 +126,7 @@ struct CompactProtoTestStruct {
   25: set<string>   string_set;
   26: set<binary>   binary_set;
   27: set<bool>     boolean_set;
-  28: set<Empty>    struct_set;
+//  28: set<Empty>    struct_set;
   
   // maps
   // primitives as keys
@@ -194,7 +189,7 @@ const CompactProtoTestStruct COMPACT_TEST = {
   'string_set'         : ["first", "second", "third"],
 //'binary_set,'
   'boolean_set'        : [1, 0],
-  'struct_set'         : [{}],
+//  'struct_set'         : [{}],
   'byte_byte_map'      : {1 : 2},
   'i16_byte_map'       : {1 : 1, -1 : 1, 0x7fff : 1},
   'i32_byte_map'       : {1 : 1, -1 : 1, 0x7fffffff : 1},
@@ -251,16 +246,6 @@ service Srv {
 //}
 
 service EmptyService {}
-
-// The only purpose of this thing is to increase the size of the generated code
-// so that ZlibTest has more highly compressible data to play with.
-struct BlowUp {
-  1: map<list<i32>,set<map<i32,string>>> b1;
-  2: map<list<i32>,set<map<i32,string>>> b2;
-  3: map<list<i32>,set<map<i32,string>>> b3;
-  4: map<list<i32>,set<map<i32,string>>> b4;
-}
-
 
 struct ReverseOrderStruct {
   4: string first;

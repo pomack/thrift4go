@@ -20,10 +20,10 @@ func Usage() {
 	fmt.Fprint(os.Stderr, "Usage of ", os.Args[0], " [-h host:port] [-u url] [-f[ramed]] function [arg1 [arg2...]]:\n")
 	flag.PrintDefaults()
 	fmt.Fprint(os.Stderr, "Functions:\n")
-	fmt.Fprint(os.Stderr, "  Janky(arg int32) (retval1588 int32, err error)\n")
+	fmt.Fprint(os.Stderr, "  Janky(arg int32) (retval1101 int32, err error)\n")
 	fmt.Fprint(os.Stderr, "  voidMethod() (err error)\n")
-	fmt.Fprint(os.Stderr, "  primitiveMethod() (retval1590 int32, err error)\n")
-	fmt.Fprint(os.Stderr, "  structMethod() (retval1591 *CompactProtoTestStruct, err error)\n")
+	fmt.Fprint(os.Stderr, "  primitiveMethod() (retval1103 int32, err error)\n")
+	fmt.Fprint(os.Stderr, "  structMethod() (retval1104 *CompactProtoTestStruct, err error)\n")
 	fmt.Fprint(os.Stderr, "  methodWithDefaultArgs(something int32) (err error)\n")
 	fmt.Fprint(os.Stderr, "  onewayMethod() (err error)\n")
 	fmt.Fprint(os.Stderr, "\n")
@@ -121,8 +121,8 @@ func main() {
 			fmt.Fprint(os.Stderr, "Janky requires 1 args\n")
 			flag.Usage()
 		}
-		tmp0, err1594 := (strconv.Atoi(flag.Arg(1)))
-		if err1594 != nil {
+		tmp0, err1107 := (strconv.Atoi(flag.Arg(1)))
+		if err1107 != nil {
 			Usage()
 			return
 		}
@@ -160,8 +160,8 @@ func main() {
 			fmt.Fprint(os.Stderr, "MethodWithDefaultArgs requires 1 args\n")
 			flag.Usage()
 		}
-		tmp0, err1595 := (strconv.Atoi(flag.Arg(1)))
-		if err1595 != nil {
+		tmp0, err1108 := (strconv.Atoi(flag.Arg(1)))
+		if err1108 != nil {
 			Usage()
 			return
 		}

@@ -351,7 +351,7 @@ func (p *TSimpleJSONProtocol) ReadFieldBegin() (string, TType, int16, TProtocolE
 			if err != nil {
 				return name, STOP, 0, err
 			}
-			return name, GENERIC, -1, p.ParsePostValue()
+			return name, STOP, -1, p.ParsePostValue()
 			/*
 			   if err = p.ParsePostValue(); err != nil {
 			     return name, STOP, 0, err
@@ -1059,7 +1059,7 @@ func (p *TSimpleJSONProtocol) readSingleValue() (interface{}, TType, TProtocolEx
 			p.reader.ReadByte()
 			v, e := p.ParseStringBody()
 			if e != nil {
-				return v, UTF8, NewTProtocolExceptionFromOsError(e)
+				return v, STRING, NewTProtocolExceptionFromOsError(e)
 			}
 			if v == JSON_INFINITY {
 				return INFINITY, DOUBLE, nil
@@ -1068,7 +1068,7 @@ func (p *TSimpleJSONProtocol) readSingleValue() (interface{}, TType, TProtocolEx
 			} else if v == JSON_NAN {
 				return NAN, DOUBLE, nil
 			}
-			return v, UTF8, nil
+			return v, STRING, nil
 		case JSON_TRUE[0]:
 			buf := make([]byte, len(JSON_TRUE))
 			_, e := p.reader.Read(buf)

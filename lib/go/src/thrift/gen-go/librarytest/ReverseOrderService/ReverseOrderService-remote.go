@@ -118,22 +118,22 @@ func main() {
 		}
 		argvalue0 := flag.Arg(1)
 		value0 := argvalue0
-		tmp1, err1616 := (strconv.Atoi(flag.Arg(2)))
-		if err1616 != nil {
+		tmp1, err1129 := (strconv.Atoi(flag.Arg(2)))
+		if err1129 != nil {
 			Usage()
 			return
 		}
 		argvalue1 := byte(tmp1)
 		value1 := argvalue1
-		tmp2, err1617 := (strconv.Atoi(flag.Arg(3)))
-		if err1617 != nil {
+		tmp2, err1130 := (strconv.Atoi(flag.Arg(3)))
+		if err1130 != nil {
 			Usage()
 			return
 		}
 		argvalue2 := int32(tmp2)
 		value2 := argvalue2
-		argvalue3, err1618 := (strconv.ParseInt(flag.Arg(4), 10, 64))
-		if err1618 != nil {
+		argvalue3, err1131 := (strconv.ParseInt(flag.Arg(4), 10, 64))
+		if err1131 != nil {
 			Usage()
 			return
 		}

@@ -68,15 +68,6 @@ func (p *tStruct) String() string {
 	return p.name
 }
 
-func (p *tStruct) Equals(other interface{}) bool {
-	cmp, ok := p.CompareTo(other)
-	return ok && cmp == 0
-}
-
-func (p *tStruct) CompareTo(other interface{}) (int, bool) {
-	return TType(STRUCT).Compare(p, other)
-}
-
 func (p *tStruct) AttributeFromFieldId(fieldId int) interface{} {
 	return nil
 }

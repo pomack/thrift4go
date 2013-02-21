@@ -129,11 +129,7 @@ func (p *Work) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
 		if fieldId < 0 {
 			fieldId = int16(tstructWork.FieldIdFromFieldName(fieldName))
-		} else if fieldName == "" {
-			fieldName = tstructWork.FieldNameFromFieldId(int(fieldId))
-		}
-		if fieldTypeId == thrift.GENERIC {
-			fieldTypeId = tstructWork.FieldFromFieldId(int(fieldId)).TypeId()
+			fieldTypeId = tstructWork.FieldFromFieldName(fieldName).TypeId()
 		}
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -141,80 +137,61 @@ func (p *Work) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-		if fieldId == 1 || fieldName == "num1" {
+		switch fieldId {
+		case 1: //i32
 			if fieldTypeId == thrift.I32 {
 				err = p.ReadField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField1(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else if fieldId == 2 || fieldName == "num2" {
+		case 2: //i32
 			if fieldTypeId == thrift.I32 {
 				err = p.ReadField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField2(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else if fieldId == 3 || fieldName == "op" {
+		case 3: //Operation
 			if fieldTypeId == thrift.I32 {
 				err = p.ReadField3(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField3(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else if fieldId == 4 || fieldName == "comment" {
+		case 4: //string
 			if fieldTypeId == thrift.STRING {
 				err = p.ReadField4(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField4(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else {
+		default:
 			err = iprot.Skip(fieldTypeId)
 			if err != nil {
 				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 			}
-		}
+		} //switch
 		err = iprot.ReadFieldEnd()
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -379,7 +356,7 @@ func (p *Work) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolExceptio
 		if err != nil {
 			return thrift.NewTProtocolExceptionWriteField(4, "comment", p.ThriftName(), err)
 		}
-		err = oprot.WriteString(string(p.Comment))
+		err = oprot.WriteString(p.Comment)
 		if err != nil {
 			return thrift.NewTProtocolExceptionWriteField(4, "comment", p.ThriftName(), err)
 		}
@@ -401,24 +378,6 @@ func (p *Work) TStructName() string {
 
 func (p *Work) ThriftName() string {
 	return "Work"
-}
-
-func (p *Work) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("Work(%+v)", *p)
-}
-
-func (p *Work) CompareTo(other interface{}) (int, bool) {
-	if other == nil {
-		return 1, true
-	}
-	data, ok := other.(*Work)
-	if !ok {
-		return 0, false
-	}
-	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *Work) AttributeByFieldId(id int) interface{} {
@@ -480,11 +439,7 @@ func (p *InvalidOperation) Read(iprot thrift.TProtocol) (err thrift.TProtocolExc
 		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
 		if fieldId < 0 {
 			fieldId = int16(tstructInvalidOperation.FieldIdFromFieldName(fieldName))
-		} else if fieldName == "" {
-			fieldName = tstructInvalidOperation.FieldNameFromFieldId(int(fieldId))
-		}
-		if fieldTypeId == thrift.GENERIC {
-			fieldTypeId = tstructInvalidOperation.FieldFromFieldId(int(fieldId)).TypeId()
+			fieldTypeId = tstructInvalidOperation.FieldFromFieldName(fieldName).TypeId()
 		}
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -492,46 +447,37 @@ func (p *InvalidOperation) Read(iprot thrift.TProtocol) (err thrift.TProtocolExc
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-		if fieldId == 1 || fieldName == "what" {
+		switch fieldId {
+		case 1: //i32
 			if fieldTypeId == thrift.I32 {
 				err = p.ReadField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField1(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else if fieldId == 2 || fieldName == "why" {
+		case 2: //string
 			if fieldTypeId == thrift.STRING {
 				err = p.ReadField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField2(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else {
+		default:
 			err = iprot.Skip(fieldTypeId)
 			if err != nil {
 				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 			}
-		}
+		} //switch
 		err = iprot.ReadFieldEnd()
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -619,7 +565,7 @@ func (p *InvalidOperation) WriteField2(oprot thrift.TProtocol) (err thrift.TProt
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err)
 	}
-	err = oprot.WriteString(string(p.Why))
+	err = oprot.WriteString(p.Why)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err)
 	}
@@ -640,24 +586,6 @@ func (p *InvalidOperation) TStructName() string {
 
 func (p *InvalidOperation) ThriftName() string {
 	return "InvalidOperation"
-}
-
-func (p *InvalidOperation) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("InvalidOperation(%+v)", *p)
-}
-
-func (p *InvalidOperation) CompareTo(other interface{}) (int, bool) {
-	if other == nil {
-		return 1, true
-	}
-	data, ok := other.(*InvalidOperation)
-	if !ok {
-		return 0, false
-	}
-	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *InvalidOperation) AttributeByFieldId(id int) interface{} {
@@ -681,17 +609,17 @@ func (p *InvalidOperation) TStructFields() thrift.TFieldContainer {
 
 const I32_INT32CONSTANT = 9853
 
-var _MAPCONSTANT thrift.TMap
+var _MAPCONSTANT map[string]string
 
 func init() {
-	_MAPCONSTANT = thrift.NewTMap(thrift.STRING, thrift.STRING, 2)
+	_MAPCONSTANT = make(map[string]string, 2)
 	{
 		var k12 string = "hello"
 		var v13 string = "world"
-		_MAPCONSTANT.Set(k12, v13)
+		_MAPCONSTANT[k12] = v13
 		var k14 string = "goodnight"
 		var v15 string = "moon"
-		_MAPCONSTANT.Set(k14, v15)
+		_MAPCONSTANT[k14] = v15
 	}
 
 }

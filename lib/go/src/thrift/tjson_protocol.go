@@ -489,10 +489,6 @@ func (p *TJSONProtocol) TypeIdToString(fieldType TType) string {
 		return "lst"
 	case ENUM:
 		return "i32"
-	case UTF16:
-		return "str"
-	case GENERIC:
-		return "gen"
 	}
 	return ""
 }
@@ -527,10 +523,6 @@ func (p *TJSONProtocol) StringToTypeId(fieldType string) TType {
 		return TType(LIST)
 	case "enm":
 		return TType(ENUM)
-	case "u16":
-		return TType(UTF16)
-	case "gen":
-		return TType(GENERIC)
 	}
 	return TType(STOP)
 }

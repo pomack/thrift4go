@@ -78,12 +78,12 @@ func (p *ReverseOrderServiceClient) SendMyMethod(first string, second int16, thi
 	}
 	p.SeqId++
 	oprot.WriteMessageBegin("myMethod", thrift.CALL, p.SeqId)
-	args1600 := NewMyMethodArgs()
-	args1600.First = first
-	args1600.Second = second
-	args1600.Third = third
-	args1600.Fourth = fourth
-	err = args1600.Write(oprot)
+	args1113 := NewMyMethodArgs()
+	args1113.First = first
+	args1113.Second = second
+	args1113.Third = third
+	args1113.Fourth = fourth
+	err = args1113.Write(oprot)
 	oprot.WriteMessageEnd()
 	oprot.Transport().Flush()
 	return
@@ -100,24 +100,24 @@ func (p *ReverseOrderServiceClient) RecvMyMethod() (err error) {
 		return
 	}
 	if mTypeId == thrift.EXCEPTION {
-		error1602 := thrift.NewTApplicationExceptionDefault()
-		var error1603 error
-		error1603, err = error1602.Read(iprot)
+		error1115 := thrift.NewTApplicationExceptionDefault()
+		var error1116 error
+		error1116, err = error1115.Read(iprot)
 		if err != nil {
 			return
 		}
 		if err = iprot.ReadMessageEnd(); err != nil {
 			return
 		}
-		err = error1603
+		err = error1116
 		return
 	}
 	if p.SeqId != seqId {
 		err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "ping failed: out of sequence response")
 		return
 	}
-	result1601 := NewMyMethodResult()
-	err = result1601.Read(iprot)
+	result1114 := NewMyMethodResult()
+	err = result1114.Read(iprot)
 	iprot.ReadMessageEnd()
 	return
 }
@@ -146,9 +146,9 @@ func (p *ReverseOrderServiceProcessor) ProcessorMap() map[string]thrift.TProcess
 
 func NewReverseOrderServiceProcessor(handler IReverseOrderService) *ReverseOrderServiceProcessor {
 
-	self1604 := &ReverseOrderServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	self1604.processorMap["myMethod"] = &reverseOrderServiceProcessorMyMethod{handler: handler}
-	return self1604
+	self1117 := &ReverseOrderServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self1117.processorMap["myMethod"] = &reverseOrderServiceProcessorMyMethod{handler: handler}
+	return self1117
 }
 
 func (p *ReverseOrderServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -160,12 +160,12 @@ func (p *ReverseOrderServiceProcessor) Process(iprot, oprot thrift.TProtocol) (s
 	if !nameFound || process == nil {
 		iprot.Skip(thrift.STRUCT)
 		iprot.ReadMessageEnd()
-		x1605 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
+		x1118 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
 		oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-		x1605.Write(oprot)
+		x1118.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Transport().Flush()
-		return false, x1605
+		return false, x1118
 	}
 	return process.Process(seqId, iprot, oprot)
 }
@@ -253,11 +253,7 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
 		if fieldId < 0 {
 			fieldId = int16(tstructMyMethodArgs.FieldIdFromFieldName(fieldName))
-		} else if fieldName == "" {
-			fieldName = tstructMyMethodArgs.FieldNameFromFieldId(int(fieldId))
-		}
-		if fieldTypeId == thrift.GENERIC {
-			fieldTypeId = tstructMyMethodArgs.FieldFromFieldId(int(fieldId)).TypeId()
+			fieldTypeId = tstructMyMethodArgs.FieldFromFieldName(fieldName).TypeId()
 		}
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -265,80 +261,61 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-		if fieldId == 4 || fieldName == "first" {
+		switch fieldId {
+		case 4: //string
 			if fieldTypeId == thrift.STRING {
 				err = p.ReadField4(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField4(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else if fieldId == 3 || fieldName == "second" {
+		case 3: //i16
 			if fieldTypeId == thrift.I16 {
 				err = p.ReadField3(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField3(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else if fieldId == 2 || fieldName == "third" {
+		case 2: //i32
 			if fieldTypeId == thrift.I32 {
 				err = p.ReadField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField2(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else if fieldId == 1 || fieldName == "fourth" {
+		case 1: //i64
 			if fieldTypeId == thrift.I64 {
 				err = p.ReadField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField1(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else {
+		default:
 			err = iprot.Skip(fieldTypeId)
 			if err != nil {
 				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 			}
-		}
+		} //switch
 		err = iprot.ReadFieldEnd()
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -352,11 +329,11 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 }
 
 func (p *MyMethodArgs) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-	v1606, err1607 := iprot.ReadString()
-	if err1607 != nil {
-		return thrift.NewTProtocolExceptionReadField(4, "first", p.ThriftName(), err1607)
+	v1119, err1120 := iprot.ReadString()
+	if err1120 != nil {
+		return thrift.NewTProtocolExceptionReadField(4, "first", p.ThriftName(), err1120)
 	}
-	p.First = v1606
+	p.First = v1119
 	return err
 }
 
@@ -365,11 +342,11 @@ func (p *MyMethodArgs) ReadFieldFirst(iprot thrift.TProtocol) thrift.TProtocolEx
 }
 
 func (p *MyMethodArgs) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-	v1608, err1609 := iprot.ReadI16()
-	if err1609 != nil {
-		return thrift.NewTProtocolExceptionReadField(3, "second", p.ThriftName(), err1609)
+	v1121, err1122 := iprot.ReadI16()
+	if err1122 != nil {
+		return thrift.NewTProtocolExceptionReadField(3, "second", p.ThriftName(), err1122)
 	}
-	p.Second = v1608
+	p.Second = v1121
 	return err
 }
 
@@ -378,11 +355,11 @@ func (p *MyMethodArgs) ReadFieldSecond(iprot thrift.TProtocol) thrift.TProtocolE
 }
 
 func (p *MyMethodArgs) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-	v1610, err1611 := iprot.ReadI32()
-	if err1611 != nil {
-		return thrift.NewTProtocolExceptionReadField(2, "third", p.ThriftName(), err1611)
+	v1123, err1124 := iprot.ReadI32()
+	if err1124 != nil {
+		return thrift.NewTProtocolExceptionReadField(2, "third", p.ThriftName(), err1124)
 	}
-	p.Third = v1610
+	p.Third = v1123
 	return err
 }
 
@@ -391,11 +368,11 @@ func (p *MyMethodArgs) ReadFieldThird(iprot thrift.TProtocol) thrift.TProtocolEx
 }
 
 func (p *MyMethodArgs) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
-	v1612, err1613 := iprot.ReadI64()
-	if err1613 != nil {
-		return thrift.NewTProtocolExceptionReadField(1, "fourth", p.ThriftName(), err1613)
+	v1125, err1126 := iprot.ReadI64()
+	if err1126 != nil {
+		return thrift.NewTProtocolExceptionReadField(1, "fourth", p.ThriftName(), err1126)
 	}
-	p.Fourth = v1612
+	p.Fourth = v1125
 	return err
 }
 
@@ -500,7 +477,7 @@ func (p *MyMethodArgs) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocol
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(4, "first", p.ThriftName(), err)
 	}
-	err = oprot.WriteString(string(p.First))
+	err = oprot.WriteString(p.First)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(4, "first", p.ThriftName(), err)
 	}
@@ -521,24 +498,6 @@ func (p *MyMethodArgs) TStructName() string {
 
 func (p *MyMethodArgs) ThriftName() string {
 	return "myMethod_args"
-}
-
-func (p *MyMethodArgs) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("MyMethodArgs(%+v)", *p)
-}
-
-func (p *MyMethodArgs) CompareTo(other interface{}) (int, bool) {
-	if other == nil {
-		return 1, true
-	}
-	data, ok := other.(*MyMethodArgs)
-	if !ok {
-		return 0, false
-	}
-	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *MyMethodArgs) AttributeByFieldId(id int) interface{} {
@@ -588,11 +547,7 @@ func (p *MyMethodResult) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
 		if fieldId < 0 {
 			fieldId = int16(tstructMyMethodResult.FieldIdFromFieldName(fieldName))
-		} else if fieldName == "" {
-			fieldName = tstructMyMethodResult.FieldNameFromFieldId(int(fieldId))
-		}
-		if fieldTypeId == thrift.GENERIC {
-			fieldTypeId = tstructMyMethodResult.FieldFromFieldId(int(fieldId)).TypeId()
+			fieldTypeId = tstructMyMethodResult.FieldFromFieldName(fieldName).TypeId()
 		}
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -600,10 +555,13 @@ func (p *MyMethodResult) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-		err = iprot.Skip(fieldTypeId)
-		if err != nil {
-			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-		}
+		switch fieldId {
+		default:
+			err = iprot.Skip(fieldTypeId)
+			if err != nil {
+				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+			}
+		} //switch
 		err = iprot.ReadFieldEnd()
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -638,24 +596,6 @@ func (p *MyMethodResult) TStructName() string {
 
 func (p *MyMethodResult) ThriftName() string {
 	return "myMethod_result"
-}
-
-func (p *MyMethodResult) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("MyMethodResult(%+v)", *p)
-}
-
-func (p *MyMethodResult) CompareTo(other interface{}) (int, bool) {
-	if other == nil {
-		return 1, true
-	}
-	data, ok := other.(*MyMethodResult)
-	if !ok {
-		return 0, false
-	}
-	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *MyMethodResult) AttributeByFieldId(id int) interface{} {

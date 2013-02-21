@@ -64,8 +64,8 @@ func (p *ServiceForExceptionWithAMapClient) SendMethodThatThrowsAnException() (e
 	}
 	p.SeqId++
 	oprot.WriteMessageBegin("methodThatThrowsAnException", thrift.CALL, p.SeqId)
-	args1529 := NewMethodThatThrowsAnExceptionArgs()
-	err = args1529.Write(oprot)
+	args1042 := NewMethodThatThrowsAnExceptionArgs()
+	err = args1042.Write(oprot)
 	oprot.WriteMessageEnd()
 	oprot.Transport().Flush()
 	return
@@ -82,27 +82,27 @@ func (p *ServiceForExceptionWithAMapClient) RecvMethodThatThrowsAnException() (x
 		return
 	}
 	if mTypeId == thrift.EXCEPTION {
-		error1531 := thrift.NewTApplicationExceptionDefault()
-		var error1532 error
-		error1532, err = error1531.Read(iprot)
+		error1044 := thrift.NewTApplicationExceptionDefault()
+		var error1045 error
+		error1045, err = error1044.Read(iprot)
 		if err != nil {
 			return
 		}
 		if err = iprot.ReadMessageEnd(); err != nil {
 			return
 		}
-		err = error1532
+		err = error1045
 		return
 	}
 	if p.SeqId != seqId {
 		err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "ping failed: out of sequence response")
 		return
 	}
-	result1530 := NewMethodThatThrowsAnExceptionResult()
-	err = result1530.Read(iprot)
+	result1043 := NewMethodThatThrowsAnExceptionResult()
+	err = result1043.Read(iprot)
 	iprot.ReadMessageEnd()
-	if result1530.Xwamap != nil {
-		xwamap = result1530.Xwamap
+	if result1043.Xwamap != nil {
+		xwamap = result1043.Xwamap
 	}
 	return
 }
@@ -131,9 +131,9 @@ func (p *ServiceForExceptionWithAMapProcessor) ProcessorMap() map[string]thrift.
 
 func NewServiceForExceptionWithAMapProcessor(handler IServiceForExceptionWithAMap) *ServiceForExceptionWithAMapProcessor {
 
-	self1533 := &ServiceForExceptionWithAMapProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	self1533.processorMap["methodThatThrowsAnException"] = &serviceForExceptionWithAMapProcessorMethodThatThrowsAnException{handler: handler}
-	return self1533
+	self1046 := &ServiceForExceptionWithAMapProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self1046.processorMap["methodThatThrowsAnException"] = &serviceForExceptionWithAMapProcessorMethodThatThrowsAnException{handler: handler}
+	return self1046
 }
 
 func (p *ServiceForExceptionWithAMapProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -145,12 +145,12 @@ func (p *ServiceForExceptionWithAMapProcessor) Process(iprot, oprot thrift.TProt
 	if !nameFound || process == nil {
 		iprot.Skip(thrift.STRUCT)
 		iprot.ReadMessageEnd()
-		x1534 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
+		x1047 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
 		oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-		x1534.Write(oprot)
+		x1047.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Transport().Flush()
-		return false, x1534
+		return false, x1047
 	}
 	return process.Process(seqId, iprot, oprot)
 }
@@ -224,11 +224,7 @@ func (p *MethodThatThrowsAnExceptionArgs) Read(iprot thrift.TProtocol) (err thri
 		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
 		if fieldId < 0 {
 			fieldId = int16(tstructMethodThatThrowsAnExceptionArgs.FieldIdFromFieldName(fieldName))
-		} else if fieldName == "" {
-			fieldName = tstructMethodThatThrowsAnExceptionArgs.FieldNameFromFieldId(int(fieldId))
-		}
-		if fieldTypeId == thrift.GENERIC {
-			fieldTypeId = tstructMethodThatThrowsAnExceptionArgs.FieldFromFieldId(int(fieldId)).TypeId()
+			fieldTypeId = tstructMethodThatThrowsAnExceptionArgs.FieldFromFieldName(fieldName).TypeId()
 		}
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -236,10 +232,13 @@ func (p *MethodThatThrowsAnExceptionArgs) Read(iprot thrift.TProtocol) (err thri
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-		err = iprot.Skip(fieldTypeId)
-		if err != nil {
-			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-		}
+		switch fieldId {
+		default:
+			err = iprot.Skip(fieldTypeId)
+			if err != nil {
+				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
+			}
+		} //switch
 		err = iprot.ReadFieldEnd()
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -274,24 +273,6 @@ func (p *MethodThatThrowsAnExceptionArgs) TStructName() string {
 
 func (p *MethodThatThrowsAnExceptionArgs) ThriftName() string {
 	return "methodThatThrowsAnException_args"
-}
-
-func (p *MethodThatThrowsAnExceptionArgs) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("MethodThatThrowsAnExceptionArgs(%+v)", *p)
-}
-
-func (p *MethodThatThrowsAnExceptionArgs) CompareTo(other interface{}) (int, bool) {
-	if other == nil {
-		return 1, true
-	}
-	data, ok := other.(*MethodThatThrowsAnExceptionArgs)
-	if !ok {
-		return 0, false
-	}
-	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *MethodThatThrowsAnExceptionArgs) AttributeByFieldId(id int) interface{} {
@@ -337,11 +318,7 @@ func (p *MethodThatThrowsAnExceptionResult) Read(iprot thrift.TProtocol) (err th
 		fieldName, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
 		if fieldId < 0 {
 			fieldId = int16(tstructMethodThatThrowsAnExceptionResult.FieldIdFromFieldName(fieldName))
-		} else if fieldName == "" {
-			fieldName = tstructMethodThatThrowsAnExceptionResult.FieldNameFromFieldId(int(fieldId))
-		}
-		if fieldTypeId == thrift.GENERIC {
-			fieldTypeId = tstructMethodThatThrowsAnExceptionResult.FieldFromFieldId(int(fieldId)).TypeId()
+			fieldTypeId = tstructMethodThatThrowsAnExceptionResult.FieldFromFieldName(fieldName).TypeId()
 		}
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -349,29 +326,25 @@ func (p *MethodThatThrowsAnExceptionResult) Read(iprot thrift.TProtocol) (err th
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-		if fieldId == 1 || fieldName == "xwamap" {
+		switch fieldId {
+		case 1: //ExceptionWithAMap
 			if fieldTypeId == thrift.STRUCT {
 				err = p.ReadField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else if fieldTypeId == thrift.VOID {
+			} else {
 				err = iprot.Skip(fieldTypeId)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
-			} else {
-				err = p.ReadField1(iprot)
-				if err != nil {
-					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
-				}
 			}
-		} else {
+		default:
 			err = iprot.Skip(fieldTypeId)
 			if err != nil {
 				return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 			}
-		}
+		} //switch
 		err = iprot.ReadFieldEnd()
 		if err != nil {
 			return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
@@ -386,9 +359,9 @@ func (p *MethodThatThrowsAnExceptionResult) Read(iprot thrift.TProtocol) (err th
 
 func (p *MethodThatThrowsAnExceptionResult) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	p.Xwamap = NewExceptionWithAMap()
-	err1537 := p.Xwamap.Read(iprot)
-	if err1537 != nil {
-		return thrift.NewTProtocolExceptionReadStruct("p.XwamapExceptionWithAMap", err1537)
+	err1050 := p.Xwamap.Read(iprot)
+	if err1050 != nil {
+		return thrift.NewTProtocolExceptionReadStruct("p.XwamapExceptionWithAMap", err1050)
 	}
 	return err
 }
@@ -447,24 +420,6 @@ func (p *MethodThatThrowsAnExceptionResult) TStructName() string {
 
 func (p *MethodThatThrowsAnExceptionResult) ThriftName() string {
 	return "methodThatThrowsAnException_result"
-}
-
-func (p *MethodThatThrowsAnExceptionResult) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("MethodThatThrowsAnExceptionResult(%+v)", *p)
-}
-
-func (p *MethodThatThrowsAnExceptionResult) CompareTo(other interface{}) (int, bool) {
-	if other == nil {
-		return 1, true
-	}
-	data, ok := other.(*MethodThatThrowsAnExceptionResult)
-	if !ok {
-		return 0, false
-	}
-	return thrift.TType(thrift.STRUCT).Compare(p, data)
 }
 
 func (p *MethodThatThrowsAnExceptionResult) AttributeByFieldId(id int) interface{} {

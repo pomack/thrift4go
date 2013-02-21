@@ -553,9 +553,7 @@ func ReadWriteCalculate(t *testing.T, p TProtocol, trans TTransport) {
 	calcArgs := tutorial.NewCalculateArgs()
 	err2 := calcArgs.Read(p)
 	if !reflect.DeepEqual(args31, calcArgs) {
-		//cmp1, _ := args31.W.CompareTo(calcArgs.W)
-		cmp2, ok := args31.CompareTo(calcArgs)
-		t.Errorf("%s: %T %T Calculate args not as expected, %T vs %T, cmp: %#v, ok: %#v, equals: %#v", messageName, p, trans, args31, calcArgs, cmp2, ok, reflect.DeepEqual(args31, calcArgs))
+		t.Errorf("%s: %T %T Calculate args not as expected, %+v vs %+v", messageName, p, trans, args31, calcArgs)
 	}
 	if err2 != nil {
 		t.Fatalf("%s: %T %T Unable to read message end: %s", messageName, p, trans, err2.Error())
