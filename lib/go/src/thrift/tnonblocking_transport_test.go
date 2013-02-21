@@ -24,7 +24,6 @@ import (
 	"testing"
 )
 
-/*
 func TestNonblockingTransportServerToClient(t *testing.T) {
 
 	addr, err := FindAvailableTCPServerPort(40000)
@@ -54,7 +53,6 @@ func TestNonblockingTransportServerToClient(t *testing.T) {
 	TransportTest(t, NewTFramedTransport(s), NewTFramedTransport(trans2))
 	trans1.Close()
 }
-*/
 func TestNonblockingTransportClientToServer(t *testing.T) {
 	addr, err := FindAvailableTCPServerPort(40000)
 	if err != nil {
