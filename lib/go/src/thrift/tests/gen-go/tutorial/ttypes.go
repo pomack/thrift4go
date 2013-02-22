@@ -140,7 +140,7 @@ func (p *Work) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 		switch fieldId {
 		case 1: //i32
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -152,7 +152,7 @@ func (p *Work) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 			}
 		case 2: //i32
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField2(iprot)
+				err = p.readField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -164,7 +164,7 @@ func (p *Work) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 			}
 		case 3: //Operation
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField3(iprot)
+				err = p.readField3(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -176,7 +176,7 @@ func (p *Work) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 			}
 		case 4: //string
 			if fieldTypeId == thrift.STRING {
-				err = p.ReadField4(iprot)
+				err = p.readField4(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -204,7 +204,7 @@ func (p *Work) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	return err
 }
 
-func (p *Work) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v0, err1 := iprot.ReadI32()
 	if err1 != nil {
 		return thrift.NewTProtocolExceptionReadField(1, "num1", p.ThriftName(), err1)
@@ -213,11 +213,7 @@ func (p *Work) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException
 	return err
 }
 
-func (p *Work) ReadFieldNum1(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
-}
-
-func (p *Work) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) readField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v2, err3 := iprot.ReadI32()
 	if err3 != nil {
 		return thrift.NewTProtocolExceptionReadField(2, "num2", p.ThriftName(), err3)
@@ -226,11 +222,7 @@ func (p *Work) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException
 	return err
 }
 
-func (p *Work) ReadFieldNum2(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField2(iprot)
-}
-
-func (p *Work) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) readField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v4, err5 := iprot.ReadI32()
 	if err5 != nil {
 		return thrift.NewTProtocolExceptionReadField(3, "op", p.ThriftName(), err5)
@@ -239,11 +231,7 @@ func (p *Work) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolException
 	return err
 }
 
-func (p *Work) ReadFieldOp(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField3(iprot)
-}
-
-func (p *Work) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) readField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v6, err7 := iprot.ReadString()
 	if err7 != nil {
 		return thrift.NewTProtocolExceptionReadField(4, "comment", p.ThriftName(), err7)
@@ -252,28 +240,24 @@ func (p *Work) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolException
 	return err
 }
 
-func (p *Work) ReadFieldComment(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField4(iprot)
-}
-
 func (p *Work) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteStructBegin("Work")
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
 	}
-	err = p.WriteField1(oprot)
+	err = p.writeField1(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField2(oprot)
+	err = p.writeField2(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField3(oprot)
+	err = p.writeField3(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField4(oprot)
+	err = p.writeField4(oprot)
 	if err != nil {
 		return err
 	}
@@ -288,7 +272,7 @@ func (p *Work) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	return err
 }
 
-func (p *Work) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("num1", thrift.I32, 1)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(1, "num1", p.ThriftName(), err)
@@ -304,11 +288,7 @@ func (p *Work) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolExceptio
 	return err
 }
 
-func (p *Work) WriteFieldNum1(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
-}
-
-func (p *Work) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) writeField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("num2", thrift.I32, 2)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(2, "num2", p.ThriftName(), err)
@@ -324,11 +304,7 @@ func (p *Work) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolExceptio
 	return err
 }
 
-func (p *Work) WriteFieldNum2(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField2(oprot)
-}
-
-func (p *Work) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) writeField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.IsSetOp() {
 		err = oprot.WriteFieldBegin("op", thrift.I32, 3)
 		if err != nil {
@@ -346,11 +322,7 @@ func (p *Work) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolExceptio
 	return err
 }
 
-func (p *Work) WriteFieldOp(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField3(oprot)
-}
-
-func (p *Work) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Work) writeField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.IsSetComment() {
 		err = oprot.WriteFieldBegin("comment", thrift.STRING, 4)
 		if err != nil {
@@ -366,10 +338,6 @@ func (p *Work) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolExceptio
 		}
 	}
 	return err
-}
-
-func (p *Work) WriteFieldComment(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField4(oprot)
 }
 
 func (p *Work) TStructName() string {
@@ -450,7 +418,7 @@ func (p *InvalidOperation) Read(iprot thrift.TProtocol) (err thrift.TProtocolExc
 		switch fieldId {
 		case 1: //i32
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -462,7 +430,7 @@ func (p *InvalidOperation) Read(iprot thrift.TProtocol) (err thrift.TProtocolExc
 			}
 		case 2: //string
 			if fieldTypeId == thrift.STRING {
-				err = p.ReadField2(iprot)
+				err = p.readField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -490,7 +458,7 @@ func (p *InvalidOperation) Read(iprot thrift.TProtocol) (err thrift.TProtocolExc
 	return err
 }
 
-func (p *InvalidOperation) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *InvalidOperation) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v8, err9 := iprot.ReadI32()
 	if err9 != nil {
 		return thrift.NewTProtocolExceptionReadField(1, "what", p.ThriftName(), err9)
@@ -499,11 +467,7 @@ func (p *InvalidOperation) ReadField1(iprot thrift.TProtocol) (err thrift.TProto
 	return err
 }
 
-func (p *InvalidOperation) ReadFieldWhat(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
-}
-
-func (p *InvalidOperation) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *InvalidOperation) readField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v10, err11 := iprot.ReadString()
 	if err11 != nil {
 		return thrift.NewTProtocolExceptionReadField(2, "why", p.ThriftName(), err11)
@@ -512,20 +476,16 @@ func (p *InvalidOperation) ReadField2(iprot thrift.TProtocol) (err thrift.TProto
 	return err
 }
 
-func (p *InvalidOperation) ReadFieldWhy(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField2(iprot)
-}
-
 func (p *InvalidOperation) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteStructBegin("InvalidOperation")
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
 	}
-	err = p.WriteField1(oprot)
+	err = p.writeField1(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField2(oprot)
+	err = p.writeField2(oprot)
 	if err != nil {
 		return err
 	}
@@ -540,7 +500,7 @@ func (p *InvalidOperation) Write(oprot thrift.TProtocol) (err thrift.TProtocolEx
 	return err
 }
 
-func (p *InvalidOperation) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *InvalidOperation) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("what", thrift.I32, 1)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(1, "what", p.ThriftName(), err)
@@ -556,11 +516,7 @@ func (p *InvalidOperation) WriteField1(oprot thrift.TProtocol) (err thrift.TProt
 	return err
 }
 
-func (p *InvalidOperation) WriteFieldWhat(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
-}
-
-func (p *InvalidOperation) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *InvalidOperation) writeField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("why", thrift.STRING, 2)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err)
@@ -574,10 +530,6 @@ func (p *InvalidOperation) WriteField2(oprot thrift.TProtocol) (err thrift.TProt
 		return thrift.NewTProtocolExceptionWriteField(2, "why", p.ThriftName(), err)
 	}
 	return err
-}
-
-func (p *InvalidOperation) WriteFieldWhy(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField2(oprot)
 }
 
 func (p *InvalidOperation) TStructName() string {

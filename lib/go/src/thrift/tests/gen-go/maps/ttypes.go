@@ -58,7 +58,7 @@ func (p *Intstruct) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 		switch fieldId {
 		case 1: //i32
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -86,7 +86,7 @@ func (p *Intstruct) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 	return err
 }
 
-func (p *Intstruct) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Intstruct) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v0, err1 := iprot.ReadI32()
 	if err1 != nil {
 		return thrift.NewTProtocolExceptionReadField(1, "ifield", p.ThriftName(), err1)
@@ -95,16 +95,12 @@ func (p *Intstruct) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Intstruct) ReadFieldIfield(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
-}
-
 func (p *Intstruct) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteStructBegin("intstruct")
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
 	}
-	err = p.WriteField1(oprot)
+	err = p.writeField1(oprot)
 	if err != nil {
 		return err
 	}
@@ -119,7 +115,7 @@ func (p *Intstruct) Write(oprot thrift.TProtocol) (err thrift.TProtocolException
 	return err
 }
 
-func (p *Intstruct) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Intstruct) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("ifield", thrift.I32, 1)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(1, "ifield", p.ThriftName(), err)
@@ -133,10 +129,6 @@ func (p *Intstruct) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolExc
 		return thrift.NewTProtocolExceptionWriteField(1, "ifield", p.ThriftName(), err)
 	}
 	return err
-}
-
-func (p *Intstruct) WriteFieldIfield(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
 }
 
 func (p *Intstruct) TStructName() string {
@@ -222,7 +214,7 @@ func (p *Manymaps) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) 
 		switch fieldId {
 		case 1: //
 			if fieldTypeId == thrift.MAP {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -234,7 +226,7 @@ func (p *Manymaps) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) 
 			}
 		case 2: //
 			if fieldTypeId == thrift.MAP {
-				err = p.ReadField2(iprot)
+				err = p.readField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -246,7 +238,7 @@ func (p *Manymaps) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) 
 			}
 		case 3: //
 			if fieldTypeId == thrift.MAP {
-				err = p.ReadField3(iprot)
+				err = p.readField3(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -258,7 +250,7 @@ func (p *Manymaps) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) 
 			}
 		case 4: //
 			if fieldTypeId == thrift.MAP {
-				err = p.ReadField4(iprot)
+				err = p.readField4(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -270,7 +262,7 @@ func (p *Manymaps) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) 
 			}
 		case 5: //
 			if fieldTypeId == thrift.MAP {
-				err = p.ReadField5(iprot)
+				err = p.readField5(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -282,7 +274,7 @@ func (p *Manymaps) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) 
 			}
 		case 6: //
 			if fieldTypeId == thrift.MAP {
-				err = p.ReadField6(iprot)
+				err = p.readField6(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -310,7 +302,7 @@ func (p *Manymaps) Read(iprot thrift.TProtocol) (err thrift.TProtocolException) 
 	return err
 }
 
-func (p *Manymaps) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_ktype5, _vtype6, _size4, err := iprot.ReadMapBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Bytemap", "", err)
@@ -337,11 +329,7 @@ func (p *Manymaps) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 	return err
 }
 
-func (p *Manymaps) ReadFieldBytemap(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
-}
-
-func (p *Manymaps) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) readField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_ktype18, _vtype19, _size17, err := iprot.ReadMapBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.I16map", "", err)
@@ -368,11 +356,7 @@ func (p *Manymaps) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 	return err
 }
 
-func (p *Manymaps) ReadFieldI16map(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField2(iprot)
-}
-
-func (p *Manymaps) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) readField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_ktype31, _vtype32, _size30, err := iprot.ReadMapBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.I32map", "", err)
@@ -399,11 +383,7 @@ func (p *Manymaps) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 	return err
 }
 
-func (p *Manymaps) ReadFieldI32map(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField3(iprot)
-}
-
-func (p *Manymaps) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) readField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_ktype44, _vtype45, _size43, err := iprot.ReadMapBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Stringmap", "", err)
@@ -430,11 +410,7 @@ func (p *Manymaps) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 	return err
 }
 
-func (p *Manymaps) ReadFieldStringmap(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField4(iprot)
-}
-
-func (p *Manymaps) ReadField5(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) readField5(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_ktype57, _vtype58, _size56, err := iprot.ReadMapBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Binarymap", "", err)
@@ -461,11 +437,7 @@ func (p *Manymaps) ReadField5(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 	return err
 }
 
-func (p *Manymaps) ReadFieldBinarymap(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField5(iprot)
-}
-
-func (p *Manymaps) ReadField6(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) readField6(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_ktype70, _vtype71, _size69, err := iprot.ReadMapBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Binarstructymap", "", err)
@@ -492,36 +464,32 @@ func (p *Manymaps) ReadField6(iprot thrift.TProtocol) (err thrift.TProtocolExcep
 	return err
 }
 
-func (p *Manymaps) ReadFieldBinarstructymap(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField6(iprot)
-}
-
 func (p *Manymaps) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteStructBegin("manymaps")
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
 	}
-	err = p.WriteField1(oprot)
+	err = p.writeField1(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField2(oprot)
+	err = p.writeField2(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField3(oprot)
+	err = p.writeField3(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField4(oprot)
+	err = p.writeField4(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField5(oprot)
+	err = p.writeField5(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField6(oprot)
+	err = p.writeField6(oprot)
 	if err != nil {
 		return err
 	}
@@ -536,7 +504,7 @@ func (p *Manymaps) Write(oprot thrift.TProtocol) (err thrift.TProtocolException)
 	return err
 }
 
-func (p *Manymaps) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Bytemap != nil {
 		err = oprot.WriteFieldBegin("bytemap", thrift.MAP, 1)
 		if err != nil {
@@ -568,11 +536,7 @@ func (p *Manymaps) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manymaps) WriteFieldBytemap(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
-}
-
-func (p *Manymaps) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) writeField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.I16map != nil {
 		if p.IsSetI16map() {
 			err = oprot.WriteFieldBegin("i16map", thrift.MAP, 2)
@@ -606,11 +570,7 @@ func (p *Manymaps) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manymaps) WriteFieldI16map(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField2(oprot)
-}
-
-func (p *Manymaps) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) writeField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.I32map != nil {
 		err = oprot.WriteFieldBegin("i32map", thrift.MAP, 3)
 		if err != nil {
@@ -642,11 +602,7 @@ func (p *Manymaps) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manymaps) WriteFieldI32map(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField3(oprot)
-}
-
-func (p *Manymaps) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) writeField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Stringmap != nil {
 		err = oprot.WriteFieldBegin("stringmap", thrift.MAP, 4)
 		if err != nil {
@@ -678,11 +634,7 @@ func (p *Manymaps) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manymaps) WriteFieldStringmap(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField4(oprot)
-}
-
-func (p *Manymaps) WriteField5(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) writeField5(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Binarymap != nil {
 		err = oprot.WriteFieldBegin("binarymap", thrift.MAP, 5)
 		if err != nil {
@@ -714,11 +666,7 @@ func (p *Manymaps) WriteField5(oprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manymaps) WriteFieldBinarymap(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField5(oprot)
-}
-
-func (p *Manymaps) WriteField6(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manymaps) writeField6(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Binarstructymap != nil {
 		err = oprot.WriteFieldBegin("binarstructymap", thrift.MAP, 6)
 		if err != nil {
@@ -748,10 +696,6 @@ func (p *Manymaps) WriteField6(oprot thrift.TProtocol) (err thrift.TProtocolExce
 		}
 	}
 	return err
-}
-
-func (p *Manymaps) WriteFieldBinarstructymap(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField6(oprot)
 }
 
 func (p *Manymaps) TStructName() string {

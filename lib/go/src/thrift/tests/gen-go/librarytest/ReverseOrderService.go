@@ -264,7 +264,7 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 		switch fieldId {
 		case 4: //string
 			if fieldTypeId == thrift.STRING {
-				err = p.ReadField4(iprot)
+				err = p.readField4(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -276,7 +276,7 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 			}
 		case 3: //i16
 			if fieldTypeId == thrift.I16 {
-				err = p.ReadField3(iprot)
+				err = p.readField3(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -288,7 +288,7 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 			}
 		case 2: //i32
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField2(iprot)
+				err = p.readField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -300,7 +300,7 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 			}
 		case 1: //i64
 			if fieldTypeId == thrift.I64 {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -328,7 +328,7 @@ func (p *MyMethodArgs) Read(iprot thrift.TProtocol) (err thrift.TProtocolExcepti
 	return err
 }
 
-func (p *MyMethodArgs) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) readField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v1119, err1120 := iprot.ReadString()
 	if err1120 != nil {
 		return thrift.NewTProtocolExceptionReadField(4, "first", p.ThriftName(), err1120)
@@ -337,11 +337,7 @@ func (p *MyMethodArgs) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolE
 	return err
 }
 
-func (p *MyMethodArgs) ReadFieldFirst(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField4(iprot)
-}
-
-func (p *MyMethodArgs) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) readField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v1121, err1122 := iprot.ReadI16()
 	if err1122 != nil {
 		return thrift.NewTProtocolExceptionReadField(3, "second", p.ThriftName(), err1122)
@@ -350,11 +346,7 @@ func (p *MyMethodArgs) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolE
 	return err
 }
 
-func (p *MyMethodArgs) ReadFieldSecond(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField3(iprot)
-}
-
-func (p *MyMethodArgs) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) readField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v1123, err1124 := iprot.ReadI32()
 	if err1124 != nil {
 		return thrift.NewTProtocolExceptionReadField(2, "third", p.ThriftName(), err1124)
@@ -363,11 +355,7 @@ func (p *MyMethodArgs) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolE
 	return err
 }
 
-func (p *MyMethodArgs) ReadFieldThird(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField2(iprot)
-}
-
-func (p *MyMethodArgs) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v1125, err1126 := iprot.ReadI64()
 	if err1126 != nil {
 		return thrift.NewTProtocolExceptionReadField(1, "fourth", p.ThriftName(), err1126)
@@ -376,28 +364,24 @@ func (p *MyMethodArgs) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolE
 	return err
 }
 
-func (p *MyMethodArgs) ReadFieldFourth(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
-}
-
 func (p *MyMethodArgs) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteStructBegin("myMethod_args")
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
 	}
-	err = p.WriteField1(oprot)
+	err = p.writeField1(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField2(oprot)
+	err = p.writeField2(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField3(oprot)
+	err = p.writeField3(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField4(oprot)
+	err = p.writeField4(oprot)
 	if err != nil {
 		return err
 	}
@@ -412,7 +396,7 @@ func (p *MyMethodArgs) Write(oprot thrift.TProtocol) (err thrift.TProtocolExcept
 	return err
 }
 
-func (p *MyMethodArgs) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("fourth", thrift.I64, 1)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(1, "fourth", p.ThriftName(), err)
@@ -428,11 +412,7 @@ func (p *MyMethodArgs) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocol
 	return err
 }
 
-func (p *MyMethodArgs) WriteFieldFourth(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
-}
-
-func (p *MyMethodArgs) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) writeField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("third", thrift.I32, 2)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(2, "third", p.ThriftName(), err)
@@ -448,11 +428,7 @@ func (p *MyMethodArgs) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocol
 	return err
 }
 
-func (p *MyMethodArgs) WriteFieldThird(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField2(oprot)
-}
-
-func (p *MyMethodArgs) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) writeField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("second", thrift.I16, 3)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(3, "second", p.ThriftName(), err)
@@ -468,11 +444,7 @@ func (p *MyMethodArgs) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocol
 	return err
 }
 
-func (p *MyMethodArgs) WriteFieldSecond(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField3(oprot)
-}
-
-func (p *MyMethodArgs) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MyMethodArgs) writeField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("first", thrift.STRING, 4)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(4, "first", p.ThriftName(), err)
@@ -486,10 +458,6 @@ func (p *MyMethodArgs) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocol
 		return thrift.NewTProtocolExceptionWriteField(4, "first", p.ThriftName(), err)
 	}
 	return err
-}
-
-func (p *MyMethodArgs) WriteFieldFirst(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField4(oprot)
 }
 
 func (p *MyMethodArgs) TStructName() string {

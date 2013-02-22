@@ -58,7 +58,7 @@ func (p *Intstruct) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 		switch fieldId {
 		case 1: //i32
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -86,7 +86,7 @@ func (p *Intstruct) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 	return err
 }
 
-func (p *Intstruct) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Intstruct) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v0, err1 := iprot.ReadI32()
 	if err1 != nil {
 		return thrift.NewTProtocolExceptionReadField(1, "ifield", p.ThriftName(), err1)
@@ -95,16 +95,12 @@ func (p *Intstruct) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Intstruct) ReadFieldIfield(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
-}
-
 func (p *Intstruct) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteStructBegin("intstruct")
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
 	}
-	err = p.WriteField1(oprot)
+	err = p.writeField1(oprot)
 	if err != nil {
 		return err
 	}
@@ -119,7 +115,7 @@ func (p *Intstruct) Write(oprot thrift.TProtocol) (err thrift.TProtocolException
 	return err
 }
 
-func (p *Intstruct) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Intstruct) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteFieldBegin("ifield", thrift.I32, 1)
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteField(1, "ifield", p.ThriftName(), err)
@@ -133,10 +129,6 @@ func (p *Intstruct) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolExc
 		return thrift.NewTProtocolExceptionWriteField(1, "ifield", p.ThriftName(), err)
 	}
 	return err
-}
-
-func (p *Intstruct) WriteFieldIfield(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
 }
 
 func (p *Intstruct) TStructName() string {
@@ -283,7 +275,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 		switch fieldId {
 		case 1: //
 			if fieldTypeId == thrift.LIST {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -295,7 +287,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 			}
 		case 2: //
 			if fieldTypeId == thrift.LIST {
-				err = p.ReadField2(iprot)
+				err = p.readField2(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -307,7 +299,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 			}
 		case 3: //
 			if fieldTypeId == thrift.LIST {
-				err = p.ReadField3(iprot)
+				err = p.readField3(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -319,7 +311,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 			}
 		case 4: //
 			if fieldTypeId == thrift.LIST {
-				err = p.ReadField4(iprot)
+				err = p.readField4(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -331,7 +323,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 			}
 		case 5: //
 			if fieldTypeId == thrift.LIST {
-				err = p.ReadField5(iprot)
+				err = p.readField5(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -343,7 +335,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 			}
 		case 6: //
 			if fieldTypeId == thrift.LIST {
-				err = p.ReadField6(iprot)
+				err = p.readField6(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -355,7 +347,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 			}
 		case 7: //i32
 			if fieldTypeId == thrift.I32 {
-				err = p.ReadField7(iprot)
+				err = p.readField7(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -383,7 +375,7 @@ func (p *Manylists) Read(iprot thrift.TProtocol) (err thrift.TProtocolException)
 	return err
 }
 
-func (p *Manylists) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_etype11, _size8, err := iprot.ReadListBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Bytelist", "", err)
@@ -405,11 +397,7 @@ func (p *Manylists) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manylists) ReadFieldBytelist(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
-}
-
-func (p *Manylists) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) readField2(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_etype21, _size18, err := iprot.ReadListBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.I16list", "", err)
@@ -431,11 +419,7 @@ func (p *Manylists) ReadField2(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manylists) ReadFieldI16list(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField2(iprot)
-}
-
-func (p *Manylists) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) readField3(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_etype31, _size28, err := iprot.ReadListBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.I32list", "", err)
@@ -457,11 +441,7 @@ func (p *Manylists) ReadField3(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manylists) ReadFieldI32list(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField3(iprot)
-}
-
-func (p *Manylists) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) readField4(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_etype41, _size38, err := iprot.ReadListBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Stringlist", "", err)
@@ -483,11 +463,7 @@ func (p *Manylists) ReadField4(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manylists) ReadFieldStringlist(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField4(iprot)
-}
-
-func (p *Manylists) ReadField5(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) readField5(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_etype51, _size48, err := iprot.ReadListBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Structlist", "", err)
@@ -509,11 +485,7 @@ func (p *Manylists) ReadField5(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manylists) ReadFieldStructlist(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField5(iprot)
-}
-
-func (p *Manylists) ReadField6(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) readField6(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	_etype62, _size59, err := iprot.ReadListBegin()
 	if err != nil {
 		return thrift.NewTProtocolExceptionReadField(-1, "p.Listoflist", "", err)
@@ -548,11 +520,7 @@ func (p *Manylists) ReadField6(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manylists) ReadFieldListoflist(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField6(iprot)
-}
-
-func (p *Manylists) ReadField7(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) readField7(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	v75, err76 := iprot.ReadI32()
 	if err76 != nil {
 		return thrift.NewTProtocolExceptionReadField(7, "optionalint", p.ThriftName(), err76)
@@ -561,40 +529,36 @@ func (p *Manylists) ReadField7(iprot thrift.TProtocol) (err thrift.TProtocolExce
 	return err
 }
 
-func (p *Manylists) ReadFieldOptionalint(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField7(iprot)
-}
-
 func (p *Manylists) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	err = oprot.WriteStructBegin("manylists")
 	if err != nil {
 		return thrift.NewTProtocolExceptionWriteStruct(p.ThriftName(), err)
 	}
-	err = p.WriteField1(oprot)
+	err = p.writeField1(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField2(oprot)
+	err = p.writeField2(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField3(oprot)
+	err = p.writeField3(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField4(oprot)
+	err = p.writeField4(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField5(oprot)
+	err = p.writeField5(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField6(oprot)
+	err = p.writeField6(oprot)
 	if err != nil {
 		return err
 	}
-	err = p.WriteField7(oprot)
+	err = p.writeField7(oprot)
 	if err != nil {
 		return err
 	}
@@ -609,7 +573,7 @@ func (p *Manylists) Write(oprot thrift.TProtocol) (err thrift.TProtocolException
 	return err
 }
 
-func (p *Manylists) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Bytelist != nil {
 		err = oprot.WriteFieldBegin("bytelist", thrift.LIST, 1)
 		if err != nil {
@@ -637,11 +601,7 @@ func (p *Manylists) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolExc
 	return err
 }
 
-func (p *Manylists) WriteFieldBytelist(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
-}
-
-func (p *Manylists) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) writeField2(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.I16list != nil {
 		if p.IsSetI16list() {
 			err = oprot.WriteFieldBegin("i16list", thrift.LIST, 2)
@@ -671,11 +631,7 @@ func (p *Manylists) WriteField2(oprot thrift.TProtocol) (err thrift.TProtocolExc
 	return err
 }
 
-func (p *Manylists) WriteFieldI16list(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField2(oprot)
-}
-
-func (p *Manylists) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) writeField3(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.I32list != nil {
 		err = oprot.WriteFieldBegin("i32list", thrift.LIST, 3)
 		if err != nil {
@@ -703,11 +659,7 @@ func (p *Manylists) WriteField3(oprot thrift.TProtocol) (err thrift.TProtocolExc
 	return err
 }
 
-func (p *Manylists) WriteFieldI32list(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField3(oprot)
-}
-
-func (p *Manylists) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) writeField4(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Stringlist != nil {
 		err = oprot.WriteFieldBegin("stringlist", thrift.LIST, 4)
 		if err != nil {
@@ -735,11 +687,7 @@ func (p *Manylists) WriteField4(oprot thrift.TProtocol) (err thrift.TProtocolExc
 	return err
 }
 
-func (p *Manylists) WriteFieldStringlist(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField4(oprot)
-}
-
-func (p *Manylists) WriteField5(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) writeField5(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Structlist != nil {
 		err = oprot.WriteFieldBegin("structlist", thrift.LIST, 5)
 		if err != nil {
@@ -767,11 +715,7 @@ func (p *Manylists) WriteField5(oprot thrift.TProtocol) (err thrift.TProtocolExc
 	return err
 }
 
-func (p *Manylists) WriteFieldStructlist(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField5(oprot)
-}
-
-func (p *Manylists) WriteField6(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) writeField6(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Listoflist != nil {
 		err = oprot.WriteFieldBegin("listoflist", thrift.LIST, 6)
 		if err != nil {
@@ -809,11 +753,7 @@ func (p *Manylists) WriteField6(oprot thrift.TProtocol) (err thrift.TProtocolExc
 	return err
 }
 
-func (p *Manylists) WriteFieldListoflist(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField6(oprot)
-}
-
-func (p *Manylists) WriteField7(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *Manylists) writeField7(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.IsSetOptionalint() {
 		err = oprot.WriteFieldBegin("optionalint", thrift.I32, 7)
 		if err != nil {
@@ -829,10 +769,6 @@ func (p *Manylists) WriteField7(oprot thrift.TProtocol) (err thrift.TProtocolExc
 		}
 	}
 	return err
-}
-
-func (p *Manylists) WriteFieldOptionalint(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField7(oprot)
 }
 
 func (p *Manylists) TStructName() string {

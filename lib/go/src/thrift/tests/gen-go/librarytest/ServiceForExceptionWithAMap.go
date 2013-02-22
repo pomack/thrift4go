@@ -329,7 +329,7 @@ func (p *MethodThatThrowsAnExceptionResult) Read(iprot thrift.TProtocol) (err th
 		switch fieldId {
 		case 1: //ExceptionWithAMap
 			if fieldTypeId == thrift.STRUCT {
-				err = p.ReadField1(iprot)
+				err = p.readField1(iprot)
 				if err != nil {
 					return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err)
 				}
@@ -357,17 +357,13 @@ func (p *MethodThatThrowsAnExceptionResult) Read(iprot thrift.TProtocol) (err th
 	return err
 }
 
-func (p *MethodThatThrowsAnExceptionResult) ReadField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MethodThatThrowsAnExceptionResult) readField1(iprot thrift.TProtocol) (err thrift.TProtocolException) {
 	p.Xwamap = NewExceptionWithAMap()
 	err1050 := p.Xwamap.Read(iprot)
 	if err1050 != nil {
 		return thrift.NewTProtocolExceptionReadStruct("p.XwamapExceptionWithAMap", err1050)
 	}
 	return err
-}
-
-func (p *MethodThatThrowsAnExceptionResult) ReadFieldXwamap(iprot thrift.TProtocol) thrift.TProtocolException {
-	return p.ReadField1(iprot)
 }
 
 func (p *MethodThatThrowsAnExceptionResult) Write(oprot thrift.TProtocol) (err thrift.TProtocolException) {
@@ -377,7 +373,7 @@ func (p *MethodThatThrowsAnExceptionResult) Write(oprot thrift.TProtocol) (err t
 	}
 	switch {
 	case p.Xwamap != nil:
-		if err = p.WriteField1(oprot); err != nil {
+		if err = p.writeField1(oprot); err != nil {
 			return err
 		}
 	}
@@ -392,7 +388,7 @@ func (p *MethodThatThrowsAnExceptionResult) Write(oprot thrift.TProtocol) (err t
 	return err
 }
 
-func (p *MethodThatThrowsAnExceptionResult) WriteField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
+func (p *MethodThatThrowsAnExceptionResult) writeField1(oprot thrift.TProtocol) (err thrift.TProtocolException) {
 	if p.Xwamap != nil {
 		err = oprot.WriteFieldBegin("xwamap", thrift.STRUCT, 1)
 		if err != nil {
@@ -408,10 +404,6 @@ func (p *MethodThatThrowsAnExceptionResult) WriteField1(oprot thrift.TProtocol) 
 		}
 	}
 	return err
-}
-
-func (p *MethodThatThrowsAnExceptionResult) WriteFieldXwamap(oprot thrift.TProtocol) thrift.TProtocolException {
-	return p.WriteField1(oprot)
 }
 
 func (p *MethodThatThrowsAnExceptionResult) TStructName() string {

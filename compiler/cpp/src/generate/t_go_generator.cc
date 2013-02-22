@@ -1183,7 +1183,7 @@ void t_go_generator::generate_go_struct_reader(ofstream& out,
 
         out <<
             indent() << "if fieldTypeId == " << thriftFieldTypeId << " {" << endl <<
-            indent() << "  err = p.ReadField" << field_id << "(iprot)" << endl <<
+            indent() << "  err = p.readField" << field_id << "(iprot)" << endl <<
             indent() << "  if err != nil { return thrift.NewTProtocolExceptionReadField(int(fieldId), fieldName, p.ThriftName(), err); }" << endl <<
             indent() << "} else {" << endl <<
             indent() << "  err = iprot.Skip(fieldTypeId)" << endl <<
@@ -1222,16 +1222,16 @@ void t_go_generator::generate_go_struct_reader(ofstream& out,
         string field_name(publicize((*f_iter)->get_name()));
         int32_t field_id = (*f_iter)->get_key();
         out <<
-            indent() << "func (p *" << tstruct_name << ") ReadField" << field_id << "(iprot thrift.TProtocol) (err thrift.TProtocolException) {" << endl;
+            indent() << "func (p *" << tstruct_name << ") readField" << field_id << "(iprot thrift.TProtocol) (err thrift.TProtocolException) {" << endl;
         indent_up();
         generate_deserialize_field(out, *f_iter, false, "p.");
         indent_down();
         out <<
             indent() << "  return err" << endl <<
-            indent() << "}" << endl << endl <<
-            indent() << "func (p *" << tstruct_name << ") ReadField" << field_name << "(iprot thrift.TProtocol) (thrift.TProtocolException) {" << endl <<
-            indent() << "  return p.ReadField" << field_id << "(iprot)" << endl <<
-            indent() << "}" << endl << endl;
+            indent() << "}" << endl << endl ;
+//            indent() << "func (p *" << tstruct_name << ") ReadField" << field_name << "(iprot thrift.TProtocol) (thrift.TProtocolException) {" << endl <<
+//            indent() << "  return p.ReadField" << field_id << "(iprot)" << endl <<
+//            indent() << "}" << endl << endl;
     }
 }
 
@@ -1269,13 +1269,13 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
             if (can_be_nil((*fr_iter)->get_type()) && fieldId != 0) {
                 out <<
                     indent() << "case p." << publicize(variable_name_to_go_name(field_name)) << " != nil:" << endl <<
-                    indent() << "  if err = p.WriteField" << fieldId << "(oprot); err != nil {" << endl <<
+                    indent() << "  if err = p.writeField" << fieldId << "(oprot); err != nil {" << endl <<
                     indent() << "    return err" << endl <<
                     indent() << "  }" << endl;
             } else {
                 out <<
                     indent() << "default:" << endl <<
-                    indent() << "  if err = p.WriteField" << fieldId << "(oprot); err != nil {" << endl <<
+                    indent() << "  if err = p.writeField" << fieldId << "(oprot); err != nil {" << endl <<
                     indent() << "    return err" << endl <<
                     indent() << "  }" << endl;
             }
@@ -1289,7 +1289,7 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
             escape_field_name = escape_string(field_name);
             fieldId = (*f_iter)->get_key();
             out <<
-                indent() << "err = p.WriteField" << fieldId << "(oprot)" << endl <<
+                indent() << "err = p.writeField" << fieldId << "(oprot)" << endl <<
                 indent() << "if err != nil { return err }" << endl;
         }
     }
@@ -1314,7 +1314,7 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
         field_required = (*f_iter)->get_req();
         field_can_be_nil = can_be_nil((*f_iter)->get_type());
         out <<
-            indent() << "func (p *" << tstruct_name << ") WriteField" << fieldId << "(oprot thrift.TProtocol) (err thrift.TProtocolException) {" << endl;
+            indent() << "func (p *" << tstruct_name << ") writeField" << fieldId << "(oprot thrift.TProtocol) (err thrift.TProtocolException) {" << endl;
         indent_up();
 
         // Write field header
@@ -1364,10 +1364,10 @@ void t_go_generator::generate_go_struct_writer(ofstream& out,
         indent_down();
         out <<
             indent() << "  return err" << endl <<
-            indent() << "}" << endl << endl <<
-            indent() << "func (p *" << tstruct_name << ") WriteField" << publicize(field_name) << "(oprot thrift.TProtocol) (thrift.TProtocolException) {" << endl <<
-            indent() << "  return p.WriteField" << fieldId << "(oprot)" << endl <<
             indent() << "}" << endl << endl;
+//            indent() << "func (p *" << tstruct_name << ") WriteField" << publicize(field_name) << "(oprot thrift.TProtocol) (thrift.TProtocolException) {" << endl <<
+//            indent() << "  return p.WriteField" << fieldId << "(oprot)" << endl <<
+//            indent() << "}" << endl << endl;
     }
 }
 
