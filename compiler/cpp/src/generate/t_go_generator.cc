@@ -3249,6 +3249,7 @@ string t_go_generator::type_to_enum(t_type* type)
  * Converts the parse type to a go map key type
  */
 string t_go_generator::type_to_go_key_type(t_type* type) {
+	type = type->get_true_type();
 	if(type->is_enum())
         return type_to_go_type(type);
     if (type->is_base_type()) {
@@ -3261,7 +3262,7 @@ string t_go_generator::type_to_go_key_type(t_type* type) {
     }
 }
 /**
- * Converts the parse type to a go tyoe
+ * Converts the parse type to a go type
  */
 string t_go_generator::type_to_go_type(t_type* type)
 {
