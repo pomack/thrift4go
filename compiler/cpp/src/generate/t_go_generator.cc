@@ -1795,7 +1795,7 @@ void t_go_generator::generate_service_remote(t_service* tservice)
              indent() << "        \"net/url\"" << endl <<
              indent() << "        \"os\"" << endl <<
              indent() << "        \"strconv\"" << endl <<
-             indent() << "        \"thrift\"" << endl <<
+             indent() << "        \"github.com/apesternikov/thrift4go/lib/go/src/thrift\"" << endl <<
              indent() << "        \"" << service_module << "\"" << endl <<
              indent() << ")" << endl <<
              indent() << endl <<
@@ -2521,13 +2521,13 @@ void t_go_generator::generate_deserialize_field(ofstream &out,
             "\", " << structName << ", " << err2 << "); }" << endl;
 
         if (!prefix.size() || prefix.find(".") == string::npos) {
-            if (type->is_enum() || orig_type->is_typedef()) {
+            if (type->is_enum() || (orig_type->is_typedef() && !isKey)) {
                 indent(out) << name << " := " << publicize(orig_type->get_name()) << "(" << v << ")" << endl;
             } else {
                 indent(out) << name << " := " << v << endl;
             }
         } else {
-            if (type->is_enum() || orig_type->is_typedef()) {
+            if (type->is_enum() || (orig_type->is_typedef() && !isKey)) {
                 indent(out) << name << " = " << publicize(orig_type->get_name()) << "(" << v << ")" << endl;
             } else {
                 indent(out) << name << " = " << v << endl;
