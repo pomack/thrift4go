@@ -907,9 +907,9 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
 
         for (m_iter = sorted_members.begin(); m_iter != sorted_members.end(); ++m_iter) {
             for (; sorted_keys_pos != (*m_iter)->get_key(); sorted_keys_pos++) {
-                if (sorted_keys_pos != 0) {
-                    indent(out) << "_ interface{}; // nil # " << sorted_keys_pos << endl;
-                }
+//                if (sorted_keys_pos != 0) {
+//                    indent(out) << "_ interface{}; // nil # " << sorted_keys_pos << endl;
+//                }
             }
 
             t_type* fieldType = (*m_iter)->get_type();
