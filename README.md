@@ -132,6 +132,19 @@ arguments use the custom JSON parser, so you can just pass in JSON strings as
 arguments when you need to populate a struct, which I find better than any
 other alternative.
 
+You can use thrift annotation to generate go tags on struct fields, like
+struct S {
+        1: optional i64 X,
+        2: optional i64 Y,
+	3: optional i64 Id (go.tag = "json:\"structid,string\"" ), 
+}
+will generate
+type S struct {
+        X            int64    `json:"X"`                // 1
+        Y            int64    `json:"Y"`                // 2
+        Id           int64    `json:"structid,string"`  // 3
+}
+
 - ThriftTestProcessor implements the server side and you would want to implement
 the server handlers using ``NewThriftTestProcessor()``.
 

@@ -914,9 +914,13 @@ void t_go_generator::generate_go_struct_definition(ofstream& out,
 
             t_type* fieldType = (*m_iter)->get_type();
             string goType(type_to_go_type(fieldType));
+            string gotag("json:\"" + escape_string((*m_iter)->get_name()) + "\"");
+            std::map<string, string>::iterator it = (*m_iter)->annotations_.find("go.tag");
+            if (it != (*m_iter)->annotations_.end()) {
+                  gotag = it->second;
+                }
             indent(out) << publicize(variable_name_to_go_name((*m_iter)->get_name())) << " "
-                        << goType << " `json:\"" << escape_string((*m_iter)->get_name())
-                        << "\"`; // " << sorted_keys_pos
+                        << goType <<" `"<<  gotag  <<"` // " << sorted_keys_pos
                         << endl;
             sorted_keys_pos ++;
         }
