@@ -22,7 +22,6 @@ package thrift
 import (
 	"log"
 	"os"
-	"runtime/debug"
 	"net"
 )
 
@@ -165,7 +164,6 @@ func ReadAllTransport(p TTransport, buf []byte) (n int, err error) {
 		ret, err = p.Read(buf[n:])
 		if ret <= 0 {
 			if err != nil {
-				debug.PrintStack()
 				e, ok := err.(net.Error)
 				if ok && e.Timeout() {
 					err = NewTTransportException(TIMED_OUT, err.Error())
