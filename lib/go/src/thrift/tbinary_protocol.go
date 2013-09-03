@@ -22,6 +22,7 @@ package thrift
 import (
 	"encoding/binary"
 	"io"
+	"log"
 	"math"
 	"strings"
 )
@@ -486,7 +487,11 @@ func (p *TBinaryProtocol) readStringBody(size int) (value string, err TProtocolE
 		return "", err
 	}
 	isize := int(size)
+	log.Printf("[PPROF] Read Buffer Size %v", isize)
 	buf := make([]byte, isize)
 	_, e := p.trans.ReadAll(buf)
+	if e != nil {
+		log.Printf("[PPROF] Error in ReadAll %+v", e)
+	}
 	return string(buf), NewTProtocolExceptionFromOsError(e)
 }
