@@ -73,9 +73,13 @@ func (p *TFramedTransport) Read(buf []byte) (int, error) {
 	}
 
 	// Read another frame of data
-	p.readFrame()
+	got, err := p.readFrame()
+	if err != nil {
+		return got, err
+	}
 
-	got, err := p.readBuffer.Read(buf)
+	got, err = p.readBuffer.Read(buf)
+
 	return got, NewTTransportExceptionFromOsError(err)
 }
 
@@ -114,11 +118,13 @@ func (p *TFramedTransport) readFrame() (int, error) {
 		return 0, err
 	}
 	size := int(binary.BigEndian.Uint32(buf))
+
 	if size < 0 {
 		// TODO(pomack) log error
 		return 0, NewTTransportException(UNKNOWN_TRANSPORT_EXCEPTION, "Read a negative frame size ("+string(size)+")")
 	}
 	if size == 0 {
+
 		return 0, nil
 	}
 	buf2 := make([]byte, size)
