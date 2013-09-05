@@ -20,10 +20,9 @@
 package thrift
 
 import (
-	"io"
 	"log"
-	"net"
 	"os"
+	"net"
 )
 
 type Flusher interface {
@@ -159,12 +158,10 @@ func (p* TTransportBase) Flush() error {
  * @return TTransportException if there was an error reading data
  */
 func ReadAllTransport(p TTransport, buf []byte) (n int, err error) {
-	tr := io.TeeReader(p, dump)
-
 	ret := 0
 	size := len(buf)
 	for n < size {
-		ret, err = tr.Read(buf[n:])
+		ret, err = p.Read(buf[n:])
 		if ret <= 0 {
 			if err != nil {
 				e, ok := err.(net.Error)
@@ -184,15 +181,8 @@ func ReadAllTransport(p TTransport, buf []byte) (n int, err error) {
 
 var (
 	LOGGER *log.Logger
-	dump   io.WriteCloser
 )
 
 func init() {
-	var err error
-	dump, err = os.Create("/tmp/thriftdump.bin")
-	if err != nil {
-		panic(err.Error())
-	}
-
 	LOGGER = log.New(os.Stderr, "", log.Ldate|log.Ltime|log.Lshortfile)
 }
