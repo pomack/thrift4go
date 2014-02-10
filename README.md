@@ -1,3 +1,11 @@
+**NOTE: This repository has not been maintained in over a year.**
+
+**Development has continued in the official Apache Thrift repositories, with significant fixes in thrift-0.9.1 and even more changes in thrift-0.9.2.**
+
+
+*I'm leaving the remainder of this README in place for personal record-keeping in case I get a chance to come back to thrift4go.*
+
+
 The contents of this repository were originally incorporated into Apache Thrift
 as of version 0.7 or commit revision 1072478.*  However, unfortunately upstream
 development ceased and necessitated continued development here; thusly, these
